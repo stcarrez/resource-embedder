@@ -1,0 +1,6 @@
+akt extract: extract files or directories from the keystore
+
+Usage: extract <keystore>.akt <file...>
+
+  The extract command allows to extract content stored in the keystore
+  and save it to a file.

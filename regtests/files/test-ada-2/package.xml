@@ -1,0 +1,24 @@
+<package>
+
+  <resource name='Resources2'>
+    <install mode='copy'>
+      <fileset dir="web">
+        <include name="**/*.xhtml"/>
+        <include name="**/*.html"/> 
+        <include name="**/*.gif"/>
+        <include name="WEB-INF/**"/>
+        <exclude name="preview/**"/>
+        <exclude name="WEB-INF/layouts/**"/>
+      </fileset>
+    </install>
+
+    <install mode='exec' source-timestamp="yes">
+      <command output="#{dst}">gzip -c #{src}</command>
+      <fileset dir="web">
+        <include name="**/*.js"/>
+        <include name="**/*.css"/>
+      </fileset>
+    </install>
+  </resource>
+
+</package>

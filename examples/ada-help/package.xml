@@ -1,0 +1,15 @@
+<package>
+
+  <resource name='Bundle'>
+    <!-- Bundle merge the 'bundle' and 'bunder-override' directories -->
+    <install mode='bundle'>
+      <fileset dir="bundles">
+        <include name="**/*.properties"/>
+      </fileset>
+      <fileset dir="bundles-override">
+        <include name="**/*.properties"/>
+      </fileset>
+    </install>
+  </resource>
+
+</package>

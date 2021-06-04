@@ -1,0 +1,19 @@
+<package>
+
+  <resource name='Concat'>
+
+    <install mode='concat' dir='css' source-timestamp="yes">
+      <fileset dir="web">
+        <include name="**/*.css"/>
+      </fileset>
+    </install>
+
+    <install mode='concat' dir='js' source-timestamp="yes">
+      <fileset dir="web">
+        <include name="**/*.js"/>
+      </fileset>
+    </install>
+
+  </resource>
+
+</package>

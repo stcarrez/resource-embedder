@@ -1,0 +1,53 @@
+<package>
+
+  <resource name='web'
+            type="web_content"
+            function-name="web_get_content">
+    <!-- Copy files with .xhtml extension from 'web' directory -->
+    <install mode='copy'>
+      <fileset dir="web">
+        <include name="**/*.xhtml"/>
+        <exclude name="WEB-INF/layouts/**"/>
+      </fileset>
+    </install>
+
+    <!-- Copy files with .js or .css extension from 'web' directory -->
+    <install mode='copy'>
+      <fileset dir="web">
+        <include name="**/*.js"/>
+        <include name="**/*.css"/>
+        <include name="**/*.png"/>
+      </fileset>
+    </install>
+
+    <!-- Merge Javascript and CSS files from some XHTML file.  -->
+    <install mode='merge' log='info' source-timestamp='yes'
+             merge-start='RESOURCE-MERGE-START'
+             merge-end='RESOURCE-MERGE-END'>
+       <!-- Define transformation variables: the #{name} are replaced by the given value -->
+       <property name="contextPath"></property>
+       <property name="jquery.path">/js/jquery-3.4.1.js</property>
+       <property name="jquery.uiCssPath">/css/redmond/jquery-ui-1.12.1.css</property>
+       <property name="jquery.chosenCssPath">/css/jquery-chosen-1.8.7/chosen.css</property>
+       <property name="jquery.uiPath">/js/jquery-ui-1.12.1/</property>
+
+       <!-- When CSS is merged, the relative path can change: do some URL transformation
+            so that the relative path remains valid -->
+       <replace>
+         <from>url("images/</from>
+         <to>url("redmond/images/</to>
+       </replace>
+       <replace>
+         <from>url(../../images/</from>
+         <to>url(../images/</to>
+       </replace>
+
+       <!-- Files to merge are located in 'WEB-INF/layouts' directory under 'web' -->
+       <fileset dir="web">
+          <include name="WEB-INF/layouts/*.xhtml"/>
+       </fileset>
+    </install>
+
+  </resource>
+
+</package>

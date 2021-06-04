@@ -1,0 +1,23 @@
+<package>
+
+  <resource name='help'>
+    <!-- Copy files with .txt extension from 'help' directory -->
+    <install mode='copy'>
+      <fileset dir="help">
+        <include name="**/*.txt"/>
+      </fileset>
+    </install>
+  </resource>
+
+  <resource name='man'>
+    <!-- Run the 'man X' command for each name found in the 'man' directory.
+         We then include the full formatted man page of the given name. -->
+    <install mode='exec'>
+      <command output='#{dst}'>man #{name}</command>
+      <fileset dir="man">
+        <include name="*"/>
+      </fileset>
+    </install>
+  </resource>
+
+</package>

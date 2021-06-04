@@ -1,0 +1,14 @@
+<package>
+
+  <resource name='Error1'>
+
+    <install mode='exec' dir='web/css' source-timestamp="yes">
+      <command output="#{dst}">missing-command -c #{src}</command>
+      <fileset dir="web">
+        <include name="*"/>
+      </fileset>
+    </install>
+
+  </resource>
+
+</package>

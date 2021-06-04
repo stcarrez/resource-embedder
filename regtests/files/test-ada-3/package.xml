@@ -1,0 +1,38 @@
+<package>
+
+  <resource name='Resource.Web'>
+    <install mode='copy'>
+      <fileset dir="web">
+        <include name="**/*.xhtml"/>
+        <include name="**/*.html"/> 
+        <include name="**/*.gif"/>
+        <include name="WEB-INF/**"/>
+        <exclude name="preview/**"/>
+        <exclude name="WEB-INF/layouts/**"/>
+      </fileset>
+    </install>
+
+    <install mode='exec'>
+      <command output="#{dst}">gzip -c #{src}</command>
+      <fileset dir="web">
+        <include name="**/*.js"/>
+        <include name="**/*.css"/>
+      </fileset>
+    </install>
+
+    <install mode='copy'>
+      <fileset dir="web">
+        <include name="images/*.png"/>
+      </fileset>
+    </install>
+  </resource>
+
+  <resource name='Resource.Config'>
+    <install mode='copy'>
+      <fileset dir="config">
+        <include name="*.xml"/>
+      </fileset>
+    </install>
+  </resource>
+
+</package>

@@ -1,0 +1,1 @@
+var asf_widgets = {}

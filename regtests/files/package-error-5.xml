@@ -1,0 +1,15 @@
+<package>
+
+  <resource name='Error1'>
+
+    <install mode='some-plugin' dir='web/css' source-timestamp="yes">
+      <command output="#{dst}">gzip -c #{src}</command>
+      <fileset dir="web">
+        <include name="*"/>
+        <exclude name="*.txt"/>
+      </fileset>
+    </install>
+
+  </resource>
+
+</package>

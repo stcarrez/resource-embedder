@@ -1,0 +1,35 @@
+<package>
+
+  <resource name='Resource4'>
+    <install mode='copy' dir='web'>
+      <fileset dir="web">
+        <include name="**/*.xhtml"/>
+        <include name="**/*.html"/> 
+        <include name="**/*.gif"/>
+        <include name="WEB-INF/**"/>
+        <exclude name="preview/**"/>
+        <exclude name="WEB-INF/layouts/**"/>
+      </fileset>
+    </install>
+
+    <install mode='exec' dir='web/css' source-timestamp="yes">
+      <command output="#{dst}">gzip -c #{src}</command>
+      <fileset dir="web/css">
+        <include name="*"/>
+      </fileset>
+    </install>
+
+    <install mode='copy' dir='web'>
+      <fileset dir="web">
+        <include name="images/**"/>
+      </fileset>
+    </install>
+
+    <install mode='copy' dir='config'>
+      <fileset dir="config">
+        <include name="*.xml"/>
+      </fileset>
+    </install>
+  </resource>
+
+</package>

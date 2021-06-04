@@ -1,0 +1,1 @@
+var awa_images = {}

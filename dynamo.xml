@@ -1,0 +1,11 @@
+<project>
+    <name>are</name>
+    <property name="author_email">Stephane.Carrez@gmail.com</property>
+    <property name="is_ado">FALSE</property>
+    <property name="license">apache</property>
+    <property name="is_gtk">FALSE</property>
+    <property name="is_lib">FALSE</property>
+    <property name="author">Stephane Carrez</property>
+    <property name="is_web">FALSE</property>
+    <property name="is_tool">TRUE</property>
+</project>
