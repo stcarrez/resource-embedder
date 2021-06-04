@@ -52,7 +52,7 @@ source file can then be used in the final program and taken into account
 during the compilation process of that program.  At the end, the binary
 will contain the embedded files with their optional transformations.
 
-![Resource Embedder Overview](https://github.com/stcarrez/resource-embedder/wiki/images/resource-embedder.png)
+![Resource Embedder Overview](https://github.com/stcarrez/resource-embedder/blog/master/resource-embedder.png)
 
 
 # Building ARE
