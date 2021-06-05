@@ -34,7 +34,17 @@ test:	build
 	bin/are_harness -xml are-aunit.xml
 
 
-$(eval $(call ada_library,$(NAME)))
+$(eval $(call ada_program,$(NAME)))
+
+install:: install-data
+
+install-data::
+	$(INSTALL) bin/are $(DESTDIR)$(prefix)/bin/are
+	$(INSTALL) docs/are.1 $(DESTDIR)$(prefix)/share/man/man1/are.1
+
+uninstall::
+	rm -rf $(DESTDIR)${prefix}/bin/are
+	rm -rf $(DESTDIR)${prefix}/share/man/man1/are.1
 
 ARE_DOC= \
   title.md \
