@@ -1,0 +1,205 @@
+.\"
+.\"
+.TH ARE 1 "Jun 5, 2021" "Advanced Resource Embedderl"
+.SH NAME
+are - Resource embedder to include files in your Ada, C/C++, Go binaries
+.SH SYNOPSIS
+.B are
+[ -v ] [-vv] [-vv] [-V] [--tmp
+.I directory
+] [-k] [--keep]
+.br
+    [-o
+.I directory
+] [-l
+.I lang
+] [--rule
+.I path
+] [--resource
+.I name
+]
+.br
+    [--fileset
+.I pattern
+] [--ignore-case] [--list-access] [--var-access]
+.br
+    [--no-type-declaration] [--type-name
+.I name
+] [--function-name
+.I name
+]
+.br
+    [--member-content
+.I name
+] [--member-length
+.I name
+]
+.br
+    [--member-modtime
+.I name
+] [--member-format
+.I name
+] [--preelaborate]
+.br
+    [--content-only]
+.br
+.SH DESCRIPTION
+\fIare\fR is a tool to generate C, Ada or Go source allowing to embed files
+in a binary program by compiling and linking with the compiled generated sources.
+.\"
+.PP
+The process to use \fIare\fR is simple and composed of three steps:
+.\"
+.IP \(bu 4
+First, you describe the resources that you want to embed.
+The description is either made on command line arguments or by writing an XML file.
+The XML description gives more flexibility as it allows to define a transformation rule that
+must be executed on the original file before being embedded.  This allows to minify a Javascript
+or CSS file, compress some files and even encrypt a file before its integration.
+.\"
+.IP \(bu 4
+You run the \fIare\fR command with the your target language and rule description and you give the tool
+a list of directories that must be scanned to identify the files that must be collected.
+The \fIare\fR tool scan the directories according to the patterns that you have given either on
+the command line or in the XML rule description.  After identifying the files, the tool applies
+the rules and execute the transformations.
+The \fIare\fR tool then invokes the target language generator that writes one or several files depending
+on the list of resources.
+.\"
+.IP \(bu 4
+Once the files are generated, you use them in your program and add them in your build process
+as they are now part of your sources.  After building your program, it now embeds the
+resource files that were collected and optionally transformed.
+.\"
+.SH OPTIONS
+The following options are recognized by \fIare\fR:
+.TP 5
+-V
+Prints the
+.I are
+version.
+.TP 5
+-v
+Enable the verbose mode.
+.TP 5
+-vv
+Enable debugging output.
+.TP 5
+--tmp \fIdirectory\fR
+Use the directory to build the resource files.  The default directory is
+.I are-generator
+and it is created in the current working directory.  This option allows to
+choose another path.
+.TP 5
+--keep
+Keep the directory used to prepare the resource files.  By default the
+.I are-generator
+directory (which can be overriden by the
+.I --tmp
+option) is removed when the code generation is finished.  By keeping the
+directory, you can have a look at the files and their transformations.
+.TP 5
+--output \fIdirectory\fR
+Set the output directory path where generators writes the code.
+.TP 5
+--lang \fIlanguage\fR
+Select the target generator language.
+.TP 5
+--rule \fIpath\fR
+Read the XML file that describes the resources to generate.
+.\"
+.TP 5
+--resource \fIname\fR
+Define the name of the resource collection.  This option is used to create a resource
+with the given name.  
+.\"
+.TP 5
+--fileset \fIpattern\fR
+Define the pattern to match files for the resource collection.
+After the
+.I --resource
+option, this indicates the pattern to match the files for that resource.
+.\"
+.TP 5
+--name-access
+Generate support to query content with a name.
+.\"
+.TP 5
+--list-access
+Generate support to list the content names.
+.\"
+.TP 5
+--var-access
+Declare a variable to give access to each content.
+.\"
+.TP 5
+--no-type-declaration
+Do not declare any type in the package specification.  It is assumed that the
+types used by the generated code is declared elsewere and is visible during the
+compilation.
+.\"
+.TP 5
+--type-name \fIname\fR
+Define the name of the type used to hold the information.
+.\"
+.TP 5
+--member-content \fIname\fR
+Define the name data structure member holding the content.
+.\"
+.TP 5
+--member-length \fIname\fR
+Define the name data structure member holding the length.
+.\"
+.TP 5
+--member-modtime \fIname\fR
+Define the name data structure member holding the modification time.
+.\"
+.TP 5
+--member-format \fIname\fR
+Define the name data structure member holding the content format
+.\"
+.TP 5
+--preelaborate
+[Ada] Generate a pragma Preelaborate in the specification
+.\"
+.TP 5
+--content-only
+[Ada] Give access only to the file content
+.\"
+.\"
+.SH RULE DESCRIPTION
+.\"
+The rule descritions are best expressed by using an XML file.
+The XML file can describe several resources and for each of them
+it defines the files that must be included with their optional
+transformation.  The XML file must have a
+.B package
+root element.
+.\"
+.PP
+A resource is described by the
+.B resource
+XML element with a mandatory
+.B name
+attribute that indicates the name of the resource.
+.\"
+.PP
+.RS 0
+ <resource name='help'>
+  <install mode='copy'>
+    <fileset dir='help'>
+      <include name='**/*.txt'/>
+    </fileset>
+  </install>
+ </resource>
+.RE
+.\"
+.SH SEE ALSO
+\fIgprbuild(1)\fR, \fIgzip(1)\fR, \fIclosure(1)\fR,
+\fIyui-compressor(1)\fR
+.\"
+.\"
+.SH AUTHOR
+Written by Stephane Carrez.
+.\"
+
