@@ -2,7 +2,7 @@
 .\"
 .TH ARE 1 "Jun 5, 2021" "Advanced Resource Embedderl"
 .SH NAME
-are - Resource embedder to include files in your Ada, C/C++, Go binaries
+are - Resource embedder to include files in Ada, C/C++, Go binaries
 .SH SYNOPSIS
 .B are
 [ -v ] [-vv] [-vv] [-V] [--tmp
@@ -41,7 +41,7 @@ are - Resource embedder to include files in your Ada, C/C++, Go binaries
 .I name
 ] [--preelaborate]
 .br
-    [--content-only]
+    [--content-only] directory...
 .br
 .SH DESCRIPTION
 \fIare\fR is a tool to generate C, Ada or Go source allowing to embed files
@@ -70,6 +70,45 @@ on the list of resources.
 Once the files are generated, you use them in your program and add them in your build process
 as they are now part of your sources.  After building your program, it now embeds the
 resource files that were collected and optionally transformed.
+.\"
+.PP
+The identification of files is made by using fileset patterns similar to the
+.IR ant (1)
+tool.  The patterns are applied to the directories that are passed to the \fIare\fR tool.
+Files that match the pattern are selected and taken into account.
+The pattern can be an exact relative path definition or it may contain wildcards.
+Below are some examples:
+.\"
+.TP 20
+*.txt
+This pattern matches all files with a
+.I .txt
+extension in the directories passed to the command.  Only the root directories are taken
+into account (the
+.I .txt
+files in sub-directories are ignored).
+.TP 20
+**/*.txt
+The
+.I **/
+pattern indicates that the pattern is applied on directories recursively.
+The files must then match the
+.I *.txt
+pattern to be taken into account.  Therefore, the
+.I **/*.txt
+pattern will match all
+.I .txt
+files in any directory.
+.TP 20
+config/*.conf
+This pattern will match the
+.I .conf
+files in the
+.I config
+directory.
+.TP 20
+web/index.html
+This pattern matches a fixed path.
 .\"
 .SH OPTIONS
 The following options are recognized by \fIare\fR:
@@ -103,15 +142,24 @@ directory, you can have a look at the files and their transformations.
 Set the output directory path where generators writes the code.
 .TP 5
 --lang \fIlanguage\fR
-Select the target generator language.
+Select the target generator language.  The supported languages are
+.IR Ada ,
+.IR C ,
+and
+.IR Go .
+The default language is
+.IR Ada .
 .TP 5
 --rule \fIpath\fR
-Read the XML file that describes the resources to generate.
+Read the XML file that describes the resources to generate.  The use of a XML resource
+file allows to use the advance features of the tool such as doing some transformations
+on the input files.  The XML resource file can describe several resources and
+provides mechanisms to control the generation for each of them.
 .\"
 .TP 5
 --resource \fIname\fR
 Define the name of the resource collection.  This option is used to create a resource
-with the given name.  
+with the given name.
 .\"
 .TP 5
 --fileset \fIpattern\fR
@@ -130,7 +178,10 @@ Generate support to list the content names.
 .\"
 .TP 5
 --var-access
-Declare a variable to give access to each content.
+Declare a variable to give access to each content.  When this option is given,
+the code generator will emit a global variable declaration with the name of the
+file.  By using the global variable, the program can access the resource
+directly.
 .\"
 .TP 5
 --no-type-declaration
@@ -140,7 +191,9 @@ compilation.
 .\"
 .TP 5
 --type-name \fIname\fR
-Define the name of the type used to hold the information.
+Define the name of the type used to hold the information.  This is the name
+of the C, Ada or Go type that is generated.  It must be a valid name
+of the target language.
 .\"
 .TP 5
 --member-content \fIname\fR
@@ -160,11 +213,13 @@ Define the name data structure member holding the content format
 .\"
 .TP 5
 --preelaborate
-[Ada] Generate a pragma Preelaborate in the specification
+This option is recognized by the Ada generator and it tells
+it to emit a pragma Preelaborate in the generated specification file.
 .\"
 .TP 5
 --content-only
-[Ada] Give access only to the file content
+This option is specific to the Ada generator and instructs
+the generator to only give access to the content.
 .\"
 .\"
 .SH RULE DESCRIPTION
@@ -173,15 +228,19 @@ The rule descritions are best expressed by using an XML file.
 The XML file can describe several resources and for each of them
 it defines the files that must be included with their optional
 transformation.  The XML file must have a
-.B package
+.I package
 root element.
 .\"
 .PP
 A resource is described by the
-.B resource
+.I resource
 XML element with a mandatory
-.B name
+.I name
 attribute that indicates the name of the resource.
+It then contains an
+.I install
+XML element which describes the installation rule with the patterns
+that identify the files.
 .\"
 .PP
 .RS 0
@@ -194,8 +253,40 @@ attribute that indicates the name of the resource.
  </resource>
 .RE
 .\"
+.SH INSTALL MODES
+The \fIare\fR tool provides several installation modes:
+.TP 5
+copy
+Copy the file.
+.\"
+.TP 5
+copy-first
+Copy the first file.
+.\"
+.TP 5
+exec
+Execute a command with the file.
+.\"
+.TP 5
+copy-exec
+The file is copied and a command is then executed with the target path for some transformations.
+.\"
+.TP 5
+concat
+The files that match the pattern are concatenated.
+.\"
+.TP 5
+bundle
+This mode concern Java like property files and allows to do some specific merge in
+the files.
+.\"
+.TP 5
+merge
+This mode concern Java like property files and allows to do some specific merge in
+the files.
+.\"
 .SH SEE ALSO
-\fIgprbuild(1)\fR, \fIgzip(1)\fR, \fIclosure(1)\fR,
+\fIant(1)\fR, \fIgprbuild(1)\fR, \fIgzip(1)\fR, \fIclosure(1)\fR,
 \fIyui-compressor(1)\fR
 .\"
 .\"
