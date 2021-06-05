@@ -1,7 +1,7 @@
 with "config";
 with "utilada_sys";
 with "elada";
-with "xmlada";
+with "xmlada_dom";
 project Are_Tool is
 
    Mains := ("are-main.adb");

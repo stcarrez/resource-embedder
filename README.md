@@ -110,7 +110,7 @@ AdaCore GNAT Community 2021 edition.
 
 Install the following packages:
 ```
-sudo apt-get install -y make gnat-7 gprbuild git
+sudo apt-get install -y make gnat-7 gprbuild git libxmlada-sax7-dev libxmlada-dom7-dev
 ```
 
 ### FreeBSD 12
@@ -159,7 +159,7 @@ To build the resource embedder, run the command:
 make
 ```
 
-If you have a recent GNAT compiler you may build with:
+If you have a recent GNAT compiler (gcc >= 8) you may build with:
 
 ```
 make GNAT_SWITCH=HAS_CALLBACK
