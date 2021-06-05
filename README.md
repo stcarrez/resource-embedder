@@ -55,6 +55,26 @@ will contain the embedded files with their optional transformations.
 ![Resource Embedder Overview](https://github.com/stcarrez/resource-embedder/raw/master/docs/images/resource-embedder.png)
 
 
+## Examples
+
+This first set of example shows how to you can embedd configuration files in a C, Ada or Go program.
+The Advance Resource Embedder simply puts the configuration files in an array of bytes that can easily
+be retrieved by a generated function.
+
+* [Embedding configuration files in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-config)
+* [Embedding configuration files in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-config)
+* [Embedding configuration files in Go](https://github.com/stcarrez/resource-embedder/tree/master/examples/go-config)
+
+A second set of example is more advanced by the use of an XML file that describes what must be embedded with
+the transformations that must be made.  It creates two distinct resource sets `help` and `man`.  The `help` resource
+set is composed of a set of fixed documentation files provided in the example.  The `man` resource set is created
+by running the `man` Unix command on various names to embed the man page of `ls`, `pwd` and `sh`.
+
+* [Embedding help and documentation in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-help)
+* [Embedding help and documentation in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-help)
+* [Embedding help and documentation in Go](https://github.com/stcarrez/resource-embedder/tree/master/examples/go-help)
+
+
 # Building ARE
 
 To build the ARE you will need the GNAT Ada compiler, either
@@ -97,27 +117,37 @@ The project uses a sub-module to help you in the integration and build
 process.  You should checkout the project with the following commands:
 
 ```
-   git clone --recursive https://github.com/stcarrez/resource-embedder.git
-   cd resource-embedder
+git clone --recursive https://github.com/stcarrez/resource-embedder.git
+cd resource-embedder
 ```
 
-## Configuration
+## Configuration (optional)
 
+Running the `configure` script is optional
 To configure the resource embedder, use the following command:
 ```
-   ./configure
+./configure
 ```
 
 ## Build
 
-Then, build the application:
+To build the resource embedder, run the command:
 ```
-   make
+make
 ```
 
-And install it:
+If you have a recent GNAT compiler you may build with:
+
 ```
-   make install
+make GNAT_SWITCH=HAS_CALLBACK
+```
+
+and this allows to use multiple `--resource=` and `--fileset=` options.
+
+And install it:
+
+```
+make install
 ```
 
 # Documents
