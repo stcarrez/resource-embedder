@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with Ada.Strings.Unbounded;
+with GNAT.Source_Info;
 
 with Util.Tests;
 package Are.Testsuite is
@@ -30,4 +31,10 @@ package Are.Testsuite is
                       Result  : out Ada.Strings.Unbounded.Unbounded_String;
                       Status  : in Natural := 0);
 
+   procedure Assert_Equal_Files (T       : in Test'Class;
+                                 Expect  : in String;
+                                 Test    : in String;
+                                 Message : in String := "Test failed";
+                                 Source  : String := GNAT.Source_Info.File;
+                                 Line    : Natural := GNAT.Source_Info.Line);
 end Are.Testsuite;
