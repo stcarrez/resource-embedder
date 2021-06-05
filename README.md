@@ -52,7 +52,30 @@ source file can then be used in the final program and taken into account
 during the compilation process of that program.  At the end, the binary
 will contain the embedded files with their optional transformations.
 
+The process to use ARE is simple:
+
+* You describe the resources that you want to embed.
+  The description is either made on command line arguments or by writing an XML file.
+  The XML description gives more flexibility as it allows to define a transformation rule that
+  must be executed on the original file before being embedded.  This allows to minify a Javascript
+  or CSS file, compress some files and even encrypt a file before its integration.
+* You run the ARE command with the your target language and rule description and you give the tool
+  a list of directories that must be scanned to identify the files that must be collected.
+  The ARE tool scan the directories according to the patterns that you have given either on
+  the command line or in the XML rule description.  After identifying the files, the tool applies
+  the rules and execute the transformations.
+  The ARE tool then invokes the target language generator that writes one or several files depending
+  on the list of resources.
+* Once the files are generated, you use them in your program and add them in your build process
+  as they are now part of your sources.  After building your program, it now embeds the
+  resource files that were collected and optionally transformed.
+
 ![Resource Embedder Overview](https://github.com/stcarrez/resource-embedder/raw/master/docs/images/resource-embedder.png)
+
+Note:
+
+The generated code is not coverred by any license but because it integrates the resource file,
+you have to consider the license of these resource file.
 
 
 ## Examples
