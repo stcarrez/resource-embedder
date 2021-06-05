@@ -28,9 +28,11 @@ begin
    GC.Define_Switch (Config => Config,
                      Output => Context.Resource_Name'Access,
                      Long_Switch => "--resource=",
+                     Argument => "NAME",
                      Help   => -("Define the name of the resource collection"));
    GC.Define_Switch (Config => Config,
                      Output => Context.Fileset_Pattern'Access,
                      Long_Switch => "--fileset=",
+                     Argument => "PATTERN",
                      Help   => -("Define the pattern to match files for the resource collection"));
 end Specific_Options;
