@@ -1295,6 +1295,7 @@ package body web is
 
 
 
+   type Name_Access is access constant String;
    type Keyword_Array is array (Natural range <>) of Name_Access;
 
    K_0             : aliased constant String := "WEB-INF/layouts/anonymous.xhtml";
@@ -1374,23 +1375,23 @@ package body web is
       K_52'Access, K_53'Access, K_54'Access, K_55'Access,
       K_56'Access, K_57'Access, K_58'Access);
 
-   type Content_Array is array (Natural range <>) of Content_Type;
+   type Content_Array is array (Natural range <>) of Content_Access;
    Contents : constant Content_Array := (
-      (K_0'Access, C_0'Access, 1622723537, FILE_RAW), (K_1'Access, C_1'Access, 1538944123, FILE_RAW), (K_2'Access, C_2'Access, 1622723527, FILE_RAW), (K_3'Access, C_3'Access, 1587837322, FILE_RAW), (K_4'Access, C_4'Access, 1538944578, FILE_RAW), (K_5'Access, C_5'Access, 1622707360, FILE_RAW),
-      (K_6'Access, C_6'Access, 1622706977, FILE_RAW), (K_7'Access, C_7'Access, 1622706990, FILE_RAW), (K_8'Access, C_8'Access, 1622707238, FILE_RAW), (K_9'Access, C_9'Access, 1622706847, FILE_RAW), (K_10'Access, C_10'Access, 1622707230, FILE_RAW), (K_11'Access, C_11'Access, 1622706960, FILE_RAW),
-      (K_12'Access, C_12'Access, 1622707219, FILE_RAW), (K_13'Access, C_13'Access, 1622707308, FILE_RAW), (K_14'Access, C_14'Access, 1622707291, FILE_RAW), (K_15'Access, C_15'Access, 1622212604, FILE_RAW), (K_16'Access, C_16'Access, 1622707268, FILE_RAW), (K_17'Access, C_17'Access, 1622723527, FILE_RAW),
-      (K_18'Access, C_18'Access, 1622707165, FILE_RAW), (K_19'Access, C_19'Access, 1622707276, FILE_RAW), (K_20'Access, C_20'Access, 1622707335, FILE_RAW), (K_21'Access, C_21'Access, 1622707009, FILE_RAW), (K_22'Access, C_22'Access, 1622707282, FILE_RAW), (K_23'Access, C_23'Access, 1622210880, FILE_RAW),
-      (K_24'Access, C_24'Access, 1622722793, FILE_RAW), (K_25'Access, C_25'Access, 1622710286, FILE_RAW), (K_26'Access, C_26'Access, 1622710271, FILE_RAW), (K_27'Access, C_27'Access, 1622710138, FILE_RAW), (K_28'Access, C_28'Access, 1622710147, FILE_RAW), (K_29'Access, C_29'Access, 1622710263, FILE_RAW),
-      (K_30'Access, C_30'Access, 1622710130, FILE_RAW), (K_31'Access, C_31'Access, 1622710356, FILE_RAW), (K_32'Access, C_32'Access, 1622710294, FILE_RAW), (K_33'Access, C_33'Access, 1622710277, FILE_RAW), (K_34'Access, C_34'Access, 1622710121, FILE_RAW), (K_35'Access, C_35'Access, 1622710213, FILE_RAW),
-      (K_36'Access, C_36'Access, 1622710183, FILE_RAW), (K_37'Access, C_37'Access, 1622710081, FILE_RAW), (K_38'Access, C_38'Access, 1622710220, FILE_RAW), (K_39'Access, C_39'Access, 1622710195, FILE_RAW), (K_40'Access, C_40'Access, 1622710161, FILE_RAW), (K_41'Access, C_41'Access, 1622710205, FILE_RAW),
-      (K_42'Access, C_42'Access, 1622710103, FILE_RAW), (K_43'Access, C_43'Access, 1622710097, FILE_RAW), (K_44'Access, C_44'Access, 1622710171, FILE_RAW), (K_45'Access, C_45'Access, 1622710060, FILE_RAW), (K_46'Access, C_46'Access, 1622710178, FILE_RAW), (K_47'Access, C_47'Access, 1622710200, FILE_RAW),
-      (K_48'Access, C_48'Access, 1622710235, FILE_RAW), (K_49'Access, C_49'Access, 1622710089, FILE_RAW), (K_50'Access, C_50'Access, 1622710254, FILE_RAW), (K_51'Access, C_51'Access, 1622710306, FILE_RAW), (K_52'Access, C_52'Access, 1622183646, FILE_RAW), (K_53'Access, C_53'Access, 1622710343, FILE_RAW),
-      (K_54'Access, C_54'Access, 1622710329, FILE_RAW), (K_55'Access, C_55'Access, 1622723527, FILE_RAW), (K_56'Access, C_56'Access, 1622723527, FILE_RAW), (K_57'Access, C_57'Access, 1622722835, FILE_RAW), (K_58'Access, C_58'Access, 1622722821, FILE_RAW));
+      C_0'Access, C_1'Access, C_2'Access, C_3'Access, C_4'Access, C_5'Access,
+      C_6'Access, C_7'Access, C_8'Access, C_9'Access, C_10'Access, C_11'Access,
+      C_12'Access, C_13'Access, C_14'Access, C_15'Access, C_16'Access, C_17'Access,
+      C_18'Access, C_19'Access, C_20'Access, C_21'Access, C_22'Access, C_23'Access,
+      C_24'Access, C_25'Access, C_26'Access, C_27'Access, C_28'Access, C_29'Access,
+      C_30'Access, C_31'Access, C_32'Access, C_33'Access, C_34'Access, C_35'Access,
+      C_36'Access, C_37'Access, C_38'Access, C_39'Access, C_40'Access, C_41'Access,
+      C_42'Access, C_43'Access, C_44'Access, C_45'Access, C_46'Access, C_47'Access,
+      C_48'Access, C_49'Access, C_50'Access, C_51'Access, C_52'Access, C_53'Access,
+      C_54'Access, C_55'Access, C_56'Access, C_57'Access, C_58'Access);
 
-   function Get_Content (Name : String) return Content_Type is
+   function Get_Content (Name : String) return Content_Access is
       H : constant Natural := Hash (Name);
    begin
-      return (if Keywords (H).all = Name then Contents (H) else Null_Content);
+      return (if Keywords (H).all = Name then Contents (H) else null);
    end Get_Content;
 
 end web;

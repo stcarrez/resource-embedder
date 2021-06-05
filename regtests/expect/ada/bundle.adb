@@ -43,6 +43,7 @@ package body Bundle is
 
 
 
+   type Name_Access is access constant String;
    type Keyword_Array is array (Natural range <>) of Name_Access;
 
    K_0             : aliased constant String := "msg.properties";
@@ -51,14 +52,14 @@ package body Bundle is
    Keywords : constant Keyword_Array := (
       K_0'Access, K_1'Access);
 
-   type Content_Array is array (Natural range <>) of Content_Type;
+   type Content_Array is array (Natural range <>) of Content_Access;
    Contents : constant Content_Array := (
-      (K_0'Access, C_0'Access, 1622793802, FILE_RAW), (K_1'Access, C_1'Access, 1622793797, FILE_RAW));
+      C_0'Access, C_1'Access);
 
-   function Get_Content (Name : String) return Content_Type is
+   function Get_Content (Name : String) return Content_Access is
       H : constant Natural := Hash (Name);
    begin
-      return (if Keywords (H).all = Name then Contents (H) else Null_Content);
+      return (if Keywords (H).all = Name then Contents (H) else null);
    end Get_Content;
 
 end Bundle;

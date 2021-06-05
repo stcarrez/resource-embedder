@@ -221,7 +221,8 @@ package body Are.Generator.Ada2012.Tests is
       Result  : Ada.Strings.Unbounded.Unbounded_String;
    begin
       --  Generate the web.ad[bs] files
-      T.Execute (Tool & " -o " & Dir & " --name-access --rule=" & Rule & " " & Web, Result);
+      T.Execute (Tool & " -o " & Dir & " --content-only --name-access --rule="
+                 & Rule & " " & Web, Result);
 
       T.Assert (Ada.Directories.Exists (Web_Ads),
                 "Resource file 'web.ads' not generated");
@@ -246,7 +247,7 @@ package body Are.Generator.Ada2012.Tests is
       Result     : Ada.Strings.Unbounded.Unbounded_String;
    begin
       --  Generate the concat.ad[bs] files
-      T.Execute (Tool & " -o " & Dir & " --name-access --rule=" & Rule & " "
+      T.Execute (Tool & " -o " & Dir & " --content-only --name-access --rule=" & Rule & " "
                  & " regtests/files/test-ada-2 regtests/files/test-ada-3"
                  & " regtests/files/test-ada-4 regtests/files/test-c-1", Result);
 
@@ -274,7 +275,7 @@ package body Are.Generator.Ada2012.Tests is
       Result     : Ada.Strings.Unbounded.Unbounded_String;
    begin
       --  Generate the bundle.ad[bs] files
-      T.Execute (Tool & " -o " & Dir & " --name-access --rule=" & Rule & " "
+      T.Execute (Tool & " -o " & Dir & " --content-only --name-access --rule=" & Rule & " "
                  & Web, Result);
 
       T.Assert (Ada.Directories.Exists (Bundle_Ads),
