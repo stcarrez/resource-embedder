@@ -291,6 +291,69 @@ package body Are.Generator.Ada2012 is
    end Generate_Resource_Contents;
 
    --  ------------------------------
+   --  Generate the keyword table.
+   --  ------------------------------
+   procedure Generate_Keyword_Table (Generator : in out Generator_Type;
+                                     Into      : in out Ada.Text_IO.File_Type;
+                                     Context   : in out Are.Context_Type'Class) is
+
+      Index : Integer := 0;
+
+      procedure Print_Keyword (Pos : in Util.Strings.Vectors.Cursor);
+      procedure Print_Table (Pos : in Util.Strings.Vectors.Cursor);
+
+      --  ------------------------------
+      --  Print a keyword as an Ada constant string.
+      --  ------------------------------
+      procedure Print_Keyword (Pos : in Util.Strings.Vectors.Cursor) is
+         Name : constant String := Util.Strings.Vectors.Element (Pos);
+      begin
+         Put (Into, "   K_");
+         Put (Into, Util.Strings.Image (Index));
+         Set_Col (Into, 20);
+         Put (Into, ": aliased constant String := """);
+         Put (Into, Name);
+         Put_Line (Into, """;");
+         Index := Index + 1;
+      end Print_Keyword;
+
+      --  ------------------------------
+      --  Build the keyword table.
+      --  ------------------------------
+      procedure Print_Table (Pos : in Util.Strings.Vectors.Cursor) is
+         pragma Unreferenced (Pos);
+      begin
+         if Index > 0 then
+            if Index mod 4 = 0 then
+               Put_Line (Into, ",");
+               Put (Into, "      ");
+            else
+               Put (Into, ", ");
+            end if;
+         end if;
+         Put (Into, "K_");
+         Put (Into, Util.Strings.Image (Index));
+         Put (Into, "'Access");
+         Index := Index + 1;
+      end Print_Table;
+
+   begin
+      New_Line (Into);
+
+      Generator.Names.Iterate (Print_Keyword'Access);
+      New_Line (Into);
+
+      Index := 0;
+      Put_Line (Into, "   Names : constant Name_Array := (");
+      Put (Into, "      ");
+      if Generator.Names.Length = 1 then
+         Put (Into, "0 => ");
+      end if;
+      Generator.Names.Iterate (Print_Table'Access);
+      Put_Line (Into, ");");
+   end Generate_Keyword_Table;
+
+   --  ------------------------------
    --  Generate the package specification.
    --  ------------------------------
    procedure Generate_Specs (Generator   : in out Generator_Type;
@@ -345,6 +408,14 @@ package body Are.Generator.Ada2012 is
       if Context.Declare_Var then
          Generate_Resource_Declarations (Resource, File, Context.Declare_Var);
       end if;
+      if Context.List_Content then
+         if not Context.No_Type_Declaration then
+            Put_Line (File, "   type Name_Array is array (Natural range <>) of Name_Access;");
+            New_Line (File);
+         end if;
+         Put_Line (File, "   Names : constant Name_Array;");
+         New_Line (File);
+      end if;
       if Context.Name_Index then
          Put_Line (File, "   --  Returns the data stream with the given name or null.");
          Put (File, "   function Get_Content (Name : String) return ");
@@ -370,6 +441,14 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, "   Null_Content : constant Content_Type := (others => <>);");
          New_Line (File);
       end if;
+      if Context.List_Content then
+         if not Has_Private then
+            Put_Line (File, "private");
+            New_Line (File);
+            Has_Private := True;
+         end if;
+         Generate_Keyword_Table (Generator, File, Context);
+      end if;
       Put      (File, "end ");
       Put      (File, Name);
       Put      (File, ";");
@@ -384,9 +463,6 @@ package body Are.Generator.Ada2012 is
                             Resource    : in Are.Resource_Type;
                             Context     : in out Are.Context_Type'Class) is
 
-      procedure Generate_Keyword_Table (Into     : in out Ada.Text_IO.File_Type;
-                                        Names    : in Util.Strings.Vectors.Vector);
-
       --  Read the generated body file.
       procedure Read_Body (Line : in String);
 
@@ -396,72 +472,6 @@ package body Are.Generator.Ada2012 is
       File     : Ada.Text_IO.File_Type;
       Count    : Natural;
       Lines    : Util.Strings.Vectors.Vector;
-
-      --  ------------------------------
-      --  Generate the keyword table.
-      --  ------------------------------
-      procedure Generate_Keyword_Table (Into     : in out Ada.Text_IO.File_Type;
-                                        Names    : in Util.Strings.Vectors.Vector) is
-
-         Index : Integer := 0;
-
-         procedure Print_Keyword (Pos : in Util.Strings.Vectors.Cursor);
-         procedure Print_Table (Pos : in Util.Strings.Vectors.Cursor);
-
-         --  ------------------------------
-         --  Print a keyword as an Ada constant string.
-         --  ------------------------------
-         procedure Print_Keyword (Pos : in Util.Strings.Vectors.Cursor) is
-            Name : constant String := Util.Strings.Vectors.Element (Pos);
-         begin
-            Put (Into, "   K_");
-            Put (Into, Util.Strings.Image (Index));
-            Set_Col (Into, 20);
-            Put (Into, ": aliased constant String := """);
-            Put (Into, Name);
-            Put_Line (Into, """;");
-            Index := Index + 1;
-         end Print_Keyword;
-
-         --  ------------------------------
-         --  Build the keyword table.
-         --  ------------------------------
-         procedure Print_Table (Pos : in Util.Strings.Vectors.Cursor) is
-            pragma Unreferenced (Pos);
-         begin
-            if Index > 0 then
-               if Index mod 4 = 0 then
-                  Put_Line (Into, ",");
-                  Put (Into, "      ");
-               else
-                  Put (Into, ", ");
-               end if;
-            end if;
-            Put (Into, "K_");
-            Put (Into, Util.Strings.Image (Index));
-            Put (Into, "'Access");
-            Index := Index + 1;
-         end Print_Table;
-
-      begin
-         New_Line (Into);
-         if Generator.Content_Only then
-            Put_Line (Into, "   type Name_Access is access constant String;");
-         end if;
-         Put_Line (Into, "   type Keyword_Array is array (Natural range <>) of Name_Access;");
-         New_Line (Into);
-         Names.Iterate (Print_Keyword'Access);
-         New_Line (Into);
-
-         Index := 0;
-         Put_Line (Into, "   Keywords : constant Keyword_Array := (");
-         Put (Into, "      ");
-         if Names.Length = 1 then
-            Put (Into, "0 => ");
-         end if;
-         Names.Iterate (Print_Table'Access);
-         Put_Line (Into, ");");
-      end Generate_Keyword_Table;
 
       --  ------------------------------
       --  Read the generated body file.
@@ -506,8 +516,13 @@ package body Are.Generator.Ada2012 is
                   Generate_Resource_Contents (Resource, File, Context.Declare_Var);
                end if;
 
-               if Context.Name_Index then
-                  Generate_Keyword_Table (File, Generator.Names);
+               if Context.Name_Index and not Context.List_Content then
+                  if Generator.Content_Only then
+                     Put_Line (File, "   type Name_Access is access constant String;");
+                  end if;
+                  Put_Line (File, "   type Name_Array is array (Natural range <>) of Name_Access;");
+                  New_Line (File);
+                  Generate_Keyword_Table (Generator, File, Context);
                end if;
 
                New_Line (File);
@@ -584,9 +599,9 @@ package body Are.Generator.Ada2012 is
                end if;
                Put_Line (File, "   begin");
                if Context.Ignore_Case then
-                  Put (File, "      return (if Keywords (H).all = K then Contents (H) else ");
+                  Put (File, "      return (if Names (H).all = K then Contents (H) else ");
                else
-                  Put (File, "      return (if Keywords (H).all = Name then Contents (H) else ");
+                  Put (File, "      return (if Names (H).all = Name then Contents (H) else ");
                end if;
                if Generator.Content_Only then
                   Put_Line (File, "null);");
