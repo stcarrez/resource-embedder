@@ -30,7 +30,7 @@ a C structure is declared that gives information about the raw data content,
 the content size, the modification date and data format.
 The header file will declare the following structure and function declaration:
 
-The `package.xml` file describes a list of resources with they content.
+The `package.xml` file describes a list of resources with their content.
 The root XML element is `package` and each resource is described by a `resource`
 XML element.  The resource is assigned a name that will be used to prefix the
 C function and C type declaration and also choose the file name for the generation.
@@ -84,6 +84,12 @@ Run the command
 
 ```
 make
+```
+
+or
+
+```
+make ARE=../../bin/are
 ```
 
 and this generates:

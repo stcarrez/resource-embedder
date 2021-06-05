@@ -2,11 +2,12 @@ GNATMAKE=gnatmake
 CFLAGS=-g -O
 ARE=are
 
-all:  src/bundle.adb
-	$(GNATMAKE) -O2 -g src/show_message.adb
+all:  src/resources-help.adb
+	$(GNATMAKE) -O2 -g src/show_help.adb
 
-src/bundle.adb: Makefile
-	$(ARE) --lang=Ada -o src --name-access --rule=package.xml .
+src/resources-help.adb: Makefile
+	$(ARE) --lang=Ada -o src --list-access --name-access --no-type-declaration --rule=package.xml .
 
 clean:
-	rm -f src/bundle.adb src/bundle.ads show_message *.ali *.o *.ads *.adb
+	rm -f src/resources-help.adb src/resources-help.ads src/resources-man.ads \
+          src/resources-man.adb show_help *.ali *.o *.ads *.adb

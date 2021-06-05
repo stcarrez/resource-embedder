@@ -1,4 +1,4 @@
-# Embedding configuration files in G
+# Embedding configuration files in Go
 
 This example is an adaptation of the C example but in Go.
 
@@ -35,6 +35,12 @@ Run the command
 
 ```
 make
+```
+
+or
+
+```
+make ARE=../../bin/are
 ```
 
 and this generates:

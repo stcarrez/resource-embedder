@@ -1,13 +1,21 @@
 <package>
 
-  <resource name='Bundle'>
-    <!-- Bundle merge the 'bundle' and 'bunder-override' directories -->
-    <install mode='bundle'>
-      <fileset dir="bundles">
-        <include name="**/*.properties"/>
+  <resource name='Resources.Help'>
+    <!-- Copy files with .txt extension from 'help' directory -->
+    <install mode='copy'>
+      <fileset dir="help">
+        <include name="**/*.txt"/>
       </fileset>
-      <fileset dir="bundles-override">
-        <include name="**/*.properties"/>
+    </install>
+  </resource>
+
+  <resource name='Resources.Man'>
+    <!-- Run the 'man X' command for each name found in the 'man' directory.
+         We then include the full formatted man page of the given name. -->
+    <install mode='exec'>
+      <command output='#{dst}'>man #{name}</command>
+      <fileset dir="man">
+        <include name="*"/>
       </fileset>
     </install>
   </resource>
