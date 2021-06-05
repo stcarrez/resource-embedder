@@ -584,8 +584,6 @@ PACKAGE_URL=
 ac_unique_file="src/are.ads"
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-EL_DIR
-UTIL_DIR
 NR_CPUS
 BUILD
 BUILDS_COVERAGE
@@ -669,8 +667,6 @@ enable_shared
 enable_default_shared
 enable_distrib
 enable_coverage
-with_ada_util
-with_ada_el
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1307,8 +1303,6 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-build-root=PATH  Path to find the Ada libraries
-  --with-ada-util=x       Path for Ada Utility Library
-  --with-ada-el=x         Path for Ada Expression Language Library
 
 Report bugs to the package provider.
 _ACEOF
@@ -2532,256 +2526,7 @@ $as_echo "done" >&6; }
 
 
 
-
-
-
-# Check whether --with-ada-util was given.
-if test "${with_ada_util+set}" = set; then :
-  withval=$with_ada_util;
-      if test "${withval}/" = "yes/"; then
-        ac_cv_gnat_project_name_utilada_base=${awa_build_root}ada-util
-      else
-        ac_cv_gnat_project_name_utilada_base=${withval}/
-        if test -d "${withval}"; then
-	      ac_cv_gnat_project_name_utilada_base=${withval}/utilada_base
-	    fi
-      fi
-
-else
-
-      ac_cv_gnat_project_name_utilada_base=${awa_build_root}utilada_base
-
-fi
-
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking Ada Utility Library" >&5
-$as_echo_n "checking Ada Utility Library... " >&6; }
-if ${ac_cv_gnat_project_utilada_base+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-    rm -f conftest.gpr
-    # Search in the GNAT project path.
-    echo "with \"${ac_cv_gnat_project_name_utilada_base}\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
-    if { ac_try='$GNATCHECK -Pconftest.gpr $GNATCHECK_ARG > /dev/null 2>conftest.out'
-  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }
-    then
-      ac_cv_gnat_project_utilada_base=yes
-    else
-      ac_cv_gnat_project_utilada_base=no
-
-      # Search in ../ada-util-*/utilada_base.gpr
-      dir=`cd .. && pwd ${awa_pwd_option}`
-      files=`ls -r $dir/ada-util/utilada_base.gpr $dir/utilada_base/utilada_base.gpr $dir/ada-util-*/utilada_base.gpr 2>/dev/null`
-      for name in $files; do
-        dir=`dirname $name`
-        # AC_MSG_CHECKING([for Ada Utility Library project in ${dir}])
-        echo "with \"${name}\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
-        if { ac_try='$GNATCHECK -Pconftest.gpr $GNATCHECK_ARG > /dev/null 2>conftest.out'
-  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }
-        then
-           ac_cv_gnat_project_utilada_base=yes
-		   ac_cv_gnat_project_name_utilada_base=${name}
-           # AC_MSG_RESULT(yes, using ${name})
-           break
-        else
-           ac_cv_gnat_project_utilada_base=no
-           # AC_MSG_RESULT(no)
-        fi
-      done
-      if test x${ac_cv_gnat_project_utilada_base} != xyes; then
-        echo "with \"utilada_base\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
-        if { ac_try='$GNATCHECK -Pconftest.gpr $GNATCHECK_ARG > /dev/null 2>conftest.out'
-  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }
-        then
-           ac_cv_gnat_project_utilada_base=yes
-           ac_cv_gnat_project_name_utilada_base=utilada_base
-        else
-           ac_cv_gnat_project_utilada_base=no
-        fi
-      fi
-    fi
-    rm -f conftest.gpr
-
-    if test x${ac_cv_gnat_project_utilada_base} = xyes; then
-      ac_cv_gnat_project_with_utilada_base="with \"${ac_cv_gnat_project_name_utilada_base}\";";
-      ac_cv_gnat_project_dir_utilada_base=`dirname ${ac_cv_gnat_project_name_utilada_base}`
-      if test ${ac_cv_gnat_project_dir_utilada_base} = . ; then
-        ac_cv_gnat_project_dir_utilada_base=
-      else
-        ac_cv_gnat_project_dir_utilada_base="${ac_cv_gnat_project_dir_utilada_base}/"
-      fi
-    else
-      ac_cv_gnat_project_dir_utilada_base=
-      ac_cv_gnat_project_name_utilada_base=
-    fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_gnat_project_utilada_base" >&5
-$as_echo "$ac_cv_gnat_project_utilada_base" >&6; }
-
-  if test x${ac_cv_gnat_project_utilada_base} = xyes; then
-
-      UTIL_DIR=${ac_cv_gnat_project_dir_utilada_base}
-
-  else
-    if test x"Building are requires the Ada Utility Library." != x; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-      as_fn_error $? "Building are requires the Ada Utility Library.
-  You should build and install the Ada Utility Library component.
-  It must be available and found by ${GNATMAKE}.
-  This project was not found in the ADA_PROJECT_PATH environment variable.
-  This project was not found in ../utilada_base nor in ../ada-util-*.
-  The component is available at git@github.com:stcarrez/ada-util.git.
-  Please, download and configure Ada Utility Library.
-  The current configuration was using:
-    ${GNATMAKE}
-    ADA_PROJECT_PATH=$ADA_PROJECT_PATH
-" "$LINENO" 5
-    fi
-  fi
-
-
-
-
-
-
-# Check whether --with-ada-el was given.
-if test "${with_ada_el+set}" = set; then :
-  withval=$with_ada_el;
-      if test "${withval}/" = "yes/"; then
-        ac_cv_gnat_project_name_elada=${awa_build_root}ada-el
-      else
-        ac_cv_gnat_project_name_elada=${withval}/
-        if test -d "${withval}"; then
-	      ac_cv_gnat_project_name_elada=${withval}/elada
-	    fi
-      fi
-
-else
-
-      ac_cv_gnat_project_name_elada=${awa_build_root}elada
-
-fi
-
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking Ada Expression Language Library" >&5
-$as_echo_n "checking Ada Expression Language Library... " >&6; }
-if ${ac_cv_gnat_project_elada+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-    rm -f conftest.gpr
-    # Search in the GNAT project path.
-    echo "with \"${ac_cv_gnat_project_name_elada}\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
-    if { ac_try='$GNATCHECK -Pconftest.gpr $GNATCHECK_ARG > /dev/null 2>conftest.out'
-  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }
-    then
-      ac_cv_gnat_project_elada=yes
-    else
-      ac_cv_gnat_project_elada=no
-
-      # Search in ../ada-el-*/elada.gpr
-      dir=`cd .. && pwd ${awa_pwd_option}`
-      files=`ls -r $dir/ada-el/elada.gpr $dir/elada/elada.gpr $dir/ada-el-*/elada.gpr 2>/dev/null`
-      for name in $files; do
-        dir=`dirname $name`
-        # AC_MSG_CHECKING([for Ada Expression Language Library project in ${dir}])
-        echo "with \"${name}\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
-        if { ac_try='$GNATCHECK -Pconftest.gpr $GNATCHECK_ARG > /dev/null 2>conftest.out'
-  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }
-        then
-           ac_cv_gnat_project_elada=yes
-		   ac_cv_gnat_project_name_elada=${name}
-           # AC_MSG_RESULT(yes, using ${name})
-           break
-        else
-           ac_cv_gnat_project_elada=no
-           # AC_MSG_RESULT(no)
-        fi
-      done
-      if test x${ac_cv_gnat_project_elada} != xyes; then
-        echo "with \"elada\"; project conftest is for Source_Dirs use (); end conftest;" > conftest.gpr
-        if { ac_try='$GNATCHECK -Pconftest.gpr $GNATCHECK_ARG > /dev/null 2>conftest.out'
-  { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_try\""; } >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }
-        then
-           ac_cv_gnat_project_elada=yes
-           ac_cv_gnat_project_name_elada=elada
-        else
-           ac_cv_gnat_project_elada=no
-        fi
-      fi
-    fi
-    rm -f conftest.gpr
-
-    if test x${ac_cv_gnat_project_elada} = xyes; then
-      ac_cv_gnat_project_with_elada="with \"${ac_cv_gnat_project_name_elada}\";";
-      ac_cv_gnat_project_dir_elada=`dirname ${ac_cv_gnat_project_name_elada}`
-      if test ${ac_cv_gnat_project_dir_elada} = . ; then
-        ac_cv_gnat_project_dir_elada=
-      else
-        ac_cv_gnat_project_dir_elada="${ac_cv_gnat_project_dir_elada}/"
-      fi
-    else
-      ac_cv_gnat_project_dir_elada=
-      ac_cv_gnat_project_name_elada=
-    fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_gnat_project_elada" >&5
-$as_echo "$ac_cv_gnat_project_elada" >&6; }
-
-  if test x${ac_cv_gnat_project_elada} = xyes; then
-
-      EL_DIR=${ac_cv_gnat_project_dir_elada}
-
-  else
-    if test x"Building are requires the Ada EL Library." != x; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-      as_fn_error $? "Building are requires the Ada EL Library.
-  You should build and install the Ada Expression Language Library component.
-  It must be available and found by ${GNATMAKE}.
-  This project was not found in the ADA_PROJECT_PATH environment variable.
-  This project was not found in ../elada nor in ../ada-el-*.
-  The component is available at git@github.com:stcarrez/ada-el.git.
-  Please, download and configure Ada Expression Language Library.
-  The current configuration was using:
-    ${GNATMAKE}
-    ADA_PROJECT_PATH=$ADA_PROJECT_PATH
-" "$LINENO" 5
-    fi
-  fi
-
-
-
-
-ac_config_files="$ac_config_files Makefile.conf are.gpr are_tests.gpr"
+ac_config_files="$ac_config_files Makefile.conf"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -3490,8 +3235,6 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile.conf") CONFIG_FILES="$CONFIG_FILES Makefile.conf" ;;
-    "are.gpr") CONFIG_FILES="$CONFIG_FILES are.gpr" ;;
-    "are_tests.gpr") CONFIG_FILES="$CONFIG_FILES are_tests.gpr" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

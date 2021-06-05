@@ -13,8 +13,6 @@ Makefile.conf
 ChangeLog
 .settings
 configure.lineno
-are.gpr
-are_tests.gpr
 gnatinspect.db*
 clang_ref_cache.db
 gpsauto.cgpr

@@ -21,11 +21,6 @@ AC_CHECK_PROG(HAVE_DYNAMO,dynamo,yes)
 
 AM_GNAT_LIBRARY_PROJECT(are)
 
-AM_GNAT_FIND_ADA_UTIL([are])
-AM_GNAT_FIND_ADA_EL([are])
-
 AC_OUTPUT(
 Makefile.conf
-are.gpr
-are_tests.gpr
 )

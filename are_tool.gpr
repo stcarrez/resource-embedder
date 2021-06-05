@@ -1,0 +1,45 @@
+with "config";
+with "utilada_sys";
+with "elada";
+with "xmlada";
+project Are_Tool is
+
+   Mains := ("are-main.adb");
+   for Main use Mains;
+   for Source_Dirs use ("src");
+   for Object_Dir use "./" & Config'Object_Dir & "/obj";
+   for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
+
+   type Define_Switch_Type is ("HAS_CALLBACK", "NO_CALLBACK");
+
+   --  GCC 7.3 and below don't support the GNAT.Command_Line.Define_Switch
+   --  with a callback.  It seems that this is introduced in GCC 9.
+   --  The callback version allows to provide multiple options but the
+   --  older version supports only one option.
+   --  (ie: --fileset '*.txt' --fileset '*.conf' is supported only for
+   --  the HAS_CALLBACK mode)
+   Define_Switch_Version : Define_Switch_Type := external ("ARE_SWITCH", "NO_CALLBACK");
+
+   package Naming is
+      case Define_Switch_Version is
+         when "HAS_CALLBACK" =>
+            for Implementation ("Are.Generator.Specific_Options")
+               use "are-generator-specific_options.adb";
+
+         when "NO_CALLBACK" =>
+            for Implementation ("Are.Generator.Specific_Options")
+               use "are-generator-specific_old_options.adb";
+
+      end case;
+   end Naming;
+
+   package Binder renames Config.Binder;
+   package Builder is
+      for Default_Switches ("Ada") use
+         Config.Builder'Default_Switches ("Ada");
+      for Executable ("are-main.adb") use "are";
+   end Builder;
+   package Compiler renames Config.Compiler;
+   package Linker renames Config.Linker;
+
+end Are_Tool;

@@ -1,14 +1,14 @@
-with "@UTIL_DIR@config";
-with "@UTIL_DIR@utilada_sys";
-with "@UTIL_DIR@utilada_unit";
-with "@EL_DIR@elada";
-with "are";
+with "config";
+with "utilada_sys";
+with "utilada_unit";
+with "elada";
+with "xmlada";
 
 project are_Tests is
 
    Mains := ("are_harness.adb");
    for Main use Mains;
-   for Source_Dirs use ("regtests");
+   for Source_Dirs use ("regtests", "src");
    for Object_Dir use "./" & Config'Object_Dir & "/obj";
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
 

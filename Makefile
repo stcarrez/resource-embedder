@@ -2,17 +2,29 @@ NAME=are
 
 -include Makefile.conf
 
-STATIC_MAKE_ARGS = $(MAKE_ARGS) -XARE_LIBRARY_TYPE=static
-SHARED_MAKE_ARGS = $(MAKE_ARGS) -XARE_LIBRARY_TYPE=relocatable
-SHARED_MAKE_ARGS += -XUTILADA_BASE_BUILD=relocatable -XUTIL_LIBRARY_TYPE=relocatable
-SHARED_MAKE_ARGS += -XXMLADA_BUILD=relocatable
-SHARED_MAKE_ARGS += -XLIBRARY_TYPE=relocatable
+ifeq ($(OS),Windows_NT)
+URIL_OS=win64
+else
+
+ARE_SYSTEM := $(shell uname -sm | sed "s- -_-g")
+
+ifeq ($(ARE_SYSTEM),Linux_x86_64)
+UTIL_OS=linux64
+endif
+
+ifeq ($(ARE_SYSTEM),Linux_i686)
+UTIL_OS=linux32
+endif
+
+ifeq ($(ARE_SYSTEM),Darwin_x86_64)
+UTIL_OS=macos64
+endif
+
+endif
+
+STATIC_MAKE_ARGS = $(MAKE_ARGS) -XARE_LIBRARY_TYPE=static -XUTIL_OS=$(UTIL_OS)
 
 include Makefile.defaults
-
-# Build executables for all mains defined by the project.
-build-test::	setup
-	$(GNATMAKE) $(GPRFLAGS) -p -P$(NAME)_tests $(MAKE_ARGS)
 
 # Build and run the unit tests
 test:	build
