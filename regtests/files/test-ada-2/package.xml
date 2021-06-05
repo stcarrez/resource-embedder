@@ -13,7 +13,7 @@
     </install>
 
     <install mode='exec' source-timestamp="yes">
-      <command output="#{dst}">gzip -c #{src}</command>
+      <command output="#{dst}">gzip --no-name -c #{src}</command>
       <fileset dir="web">
         <include name="**/*.js"/>
         <include name="**/*.css"/>

@@ -54,7 +54,7 @@ begin
       Ada.Command_Line.Set_Exit_Status (Ada.Command_Line.Failure);
       return;
    end if;
-   if C'Length /= 103 then
+   if C'Length /= 94 then
       Ada.Text_IO.Put_Line ("FAIL: Invalid length for 'web/css/main.css'");
       Ada.Command_Line.Set_Exit_Status (Ada.Command_Line.Failure);
    end if;
