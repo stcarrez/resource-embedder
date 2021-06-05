@@ -5,31 +5,25 @@ are - Resource embedder to include files in Ada, C/C++, Go binaries
 
 ## SYNOPSIS
 
-*are* [ -v ] [-vv] [-vv] [-V] [--tmp
+*are* [ -v ] [-vv] [-V] [--tmp
 _directory_ ] [-k] [--keep]
-
     [-o
 _directory_ ] [-l
 _lang_ ] [--rule
 _path_ ] [--resource
 _name_ ]
-
     [--fileset
 _pattern_ ] [--ignore-case] [--list-access] [--var-access]
-
     [--no-type-declaration] [--type-name
 _name_ ] [--function-name
 _name_ ]
-
     [--member-content
 _name_ ] [--member-length
 _name_ ]
-
     [--member-modtime
 _name_ ] [--member-format
-_name_ ] [--preelaborate]
-
-    [--content-only] directory...
+_name_ ]
+    [--preelaborate] [--content-only] directory...
 
 
 ## DESCRIPTION
