@@ -24,8 +24,6 @@ with Are.Generator.Go;
 with Are.Installer;
 package body Are.Generator is
 
-   procedure Add_Option (Switch, Value : in String);
-
    use type GNAT.Strings.String_Access;
    use type Ada.Command_Line.Exit_Status;
 
@@ -48,6 +46,9 @@ package body Are.Generator is
                              Pattern  => Value);
       end if;
    end Add_Option;
+
+   procedure Specific_Options (Config  : in out GC.Command_Line_Configuration;
+                               Context : in out Are.Context_Type'Class) is separate;
 
    --  ------------------------------
    --  Return a string that identifies the program.
@@ -115,6 +116,10 @@ package body Are.Generator is
                         Long_Switch => "--rule=",
                         Argument => "PATH",
                         Help   => -("Read the XML file that describe the resources to generate"));
+
+      --  Hack to cope with different implementations of GNAT.Command_Line package.
+      Specific_Options (Config, Context);
+
       GC.Define_Switch (Config => Config,
                         Output => Context.Ignore_Case'Access,
                         Long_Switch => "--ignore-case",
@@ -165,17 +170,17 @@ package body Are.Generator is
                         Long_Switch => "--member-format=",
                         Argument => "NAME",
                         Help   => -("Define the name data structure member holding the content format"));
-      GC.Define_Switch (Config => Config,
-                        Callback => Add_Option'Access,
-                        Long_Switch => "--resource=",
-                        Help   => -("Define the name of the resource collection"));
-      GC.Define_Switch (Config => Config,
-                        Callback => Add_Option'Access,
-                        Long_Switch => "--fileset=",
-                        Help   => -("Define the pattern to match files for the resource collection"));
 
       Ada_Generator.Setup (Config);
       GC.Getopt (Config => Config);
+
+      --  Emulate the Define_Switch with the Callback support
+      if Context.Resource_Name /= null and then Context.Resource_Name'Length > 0 then
+         Add_Option ("--resource", Context.Resource_Name.all);
+      end if;
+      if Context.Fileset_Pattern /= null and then Context.Fileset_Pattern'Length > 0 then
+         Add_Option ("--fileset", Context.Fileset_Pattern.all);
+      end if;
 
       if Context.Verbose or Context.Debug or Context.Dump then
          Are.Configure_Logs (Verbose => Context.Verbose,

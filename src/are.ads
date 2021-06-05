@@ -153,6 +153,8 @@ private
       Member_Length_Name  : aliased GNAT.Strings.String_Access;
       Member_Modtime_Name : aliased GNAT.Strings.String_Access;
       Member_Format_Name  : aliased GNAT.Strings.String_Access;
+      Resource_Name       : aliased GNAT.Strings.String_Access;
+      Fileset_Pattern     : aliased GNAT.Strings.String_Access;
    end record;
 
    --  Release the context information.

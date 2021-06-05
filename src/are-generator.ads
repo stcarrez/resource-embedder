@@ -41,4 +41,10 @@ private
    --  Return a string that identifies the program.
    function Get_Title return String;
 
+   procedure Add_Option (Switch, Value : in String);
+
+   --  Portability hack to support old GNAT.Command_Line before gcc 7.3
+   procedure Specific_Options (Config  : in out GC.Command_Line_Configuration;
+                               Context : in out Are.Context_Type'Class);
+
 end Are.Generator;
