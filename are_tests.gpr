@@ -3,12 +3,12 @@ with "utilada_sys";
 with "utilada_unit";
 with "elada";
 with "xmlada";
-
+with "are_tool";
 project are_Tests is
 
    Mains := ("are_harness.adb");
    for Main use Mains;
-   for Source_Dirs use ("regtests", "src");
+   for Source_Dirs use ("regtests");
    for Object_Dir use "./" & Config'Object_Dir & "/obj";
    for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
 
