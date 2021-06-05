@@ -5,10 +5,9 @@
 are - Resource embedder to include files in Ada, C/C++, Go binaries
 .SH SYNOPSIS
 .B are
-[ -v ] [-vv] [-vv] [-V] [--tmp
+[ -v ] [-vv] [-V] [--tmp
 .I directory
 ] [-k] [--keep]
-.br
     [-o
 .I directory
 ] [-l
@@ -18,30 +17,25 @@ are - Resource embedder to include files in Ada, C/C++, Go binaries
 ] [--resource
 .I name
 ]
-.br
     [--fileset
 .I pattern
 ] [--ignore-case] [--list-access] [--var-access]
-.br
     [--no-type-declaration] [--type-name
 .I name
 ] [--function-name
 .I name
 ]
-.br
     [--member-content
 .I name
 ] [--member-length
 .I name
 ]
-.br
     [--member-modtime
 .I name
 ] [--member-format
 .I name
-] [--preelaborate]
-.br
-    [--content-only] directory...
+]
+    [--preelaborate] [--content-only] directory...
 .br
 .SH DESCRIPTION
 \fIare\fR is a tool to generate C, Ada or Go source allowing to embed files
@@ -149,6 +143,7 @@ and
 .IR Go .
 The default language is
 .IR Ada .
+.\"
 .TP 5
 --rule \fIpath\fR
 Read the XML file that describes the resources to generate.  The use of a XML resource
