@@ -1,0 +1,9 @@
+site_name: Advanced Resource Embedder
+docs_dir: docs
+pages:
+  - Introduction: index.md
+  - Installation: Installation.md
+  - Using: Are_Using.md
+  - Rules: Are_Installer.md
+  - Generator: Are_Generator.md
+theme: readthedocs
