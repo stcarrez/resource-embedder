@@ -102,15 +102,26 @@ by running the `man` Unix command on various names to embed the man page of `ls`
 
 To build the ARE you will need the GNAT Ada compiler, either
 the FSF version available in Debian, FreeBSD systems, NetBSD or the
-AdaCore GNAT Community 2021 edition.
+AdaCore GNAT Community 2021 edition.  Because there exists different versions of
+the compiler, you may have to adapt some of the commands proposed below for
+the installation.
 
 ## Development Host Installation
 
-### Ubuntu
+### Ubuntu 18.04
 
 Install the following packages:
 ```
-sudo apt-get install -y make gnat-7 gprbuild git libxmlada-sax7-dev libxmlada-dom7-dev
+sudo apt install -y make git
+sudo apt install -y gnat-7 gprbuild libxmlada-dom7-dev
+```
+
+### Ubuntu 20.04
+
+Install the following packages:
+```
+sudo apt install -y make git
+sudo apt install -y gnat-9 gprbuild libxmlada-dom9-dev
 ```
 
 ### FreeBSD 12
