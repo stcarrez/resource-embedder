@@ -16,13 +16,23 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
---  The `Are.Installer.Concat` package provides distribution rules
---  to concatenate a list of files to the distribution area.  The rule is
---  created by using the following XML definition:
+--  == Install mode: concat ==
+--  The `concat` mode provides a distribution rule that concatenates a list of
+--  files.  The rule is created by using the following XML definition:
 --
---  <install mode='copy' file='NOTICE.txt' source-timestamp='yes'>
---     <include name="NOTICE.txt"/>
---  </install>
+--    <install mode='concat' source-timestamp='yes'>
+--      <include name="NOTICE.txt"/>
+--    </install>
+--
+--  This rule is useful when the tool is invoked with several directories that
+--  contain files with identical names.  Unlike the `copy` and `copy-first`
+--  rules that take into account only one source file, the `concat` mode handles
+--  this situation by concatenatating the source files.
+--
+--  By default the generated file has a timestamp which correspond to the time
+--  when the `are` command is executed.  By setting the `source-timestamp`
+--  attribute to `true`, the generated file is assigned the timestamp of the
+--  newest file in the source files.
 --
 private package Are.Installer.Concat is
 

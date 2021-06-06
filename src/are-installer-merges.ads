@@ -20,22 +20,22 @@ with EL.Contexts.Default;
 with Util.Strings.Maps;
 with Util.Beans.Objects.Maps;
 
---  === Distribution: webmerge ===
+--  == Install mode: webmerge ==
 --  The `webmerge` distribution rule is intended to merge Javascript or CSS files
 --  which are used by XHTML presentation files.  It requires some help from the
 --  developer to describe what files must be merged.  The XHTML file must contain
 --  well defined XML comments which are used to identify the merging areas.
 --  The CSS file merge start section begins with:
 --
---    <!-- DYNAMO-MERGE-START link=#{contextPath}/css/target-merge-1.css -->
+--    <!-- ARE-MERGE-START link=#{contextPath}/css/target-merge-1.css -->
 --
 --  and the Javascript merge start begings with:
 --
---    <!-- DYNAMO-MERGE-START script=#{contextPath}/js/target-merge-1.js -->
+--    <!-- ARE-MERGE-START script=#{contextPath}/js/target-merge-1.js -->
 --
 --  The merge section is terminated by the following XML comment:
 --
---    <!-- DYNAMO-MERGE-END -->
+--    <!-- ARE-MERGE-END -->
 --
 --  Everything withing these XML comments is then replaced either by a `link`
 --  HTML tag or by a `script` HTML tag and a file described either by the
@@ -43,11 +43,11 @@ with Util.Beans.Objects.Maps;
 --  that was defined within the XML comment markers.  For example, with the following
 --  XHTML extract:
 --
---    <!-- DYNAMO-MERGE-START link=#{contextPath}/css/merged.css -->
+--    <!-- ARE-MERGE-START link=#{contextPath}/css/merged.css -->
 --    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/awa.css"/>
 --    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}"/>
 --    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.chosenCssPath}"/>
---    <!-- DYNAMO-MERGE-END -->
+--    <!-- ARE-MERGE-END -->
 --
 --  The generated file `css/merged.css` will include `awa.css`, `jquery-ui-1.12.1.css`,
 --  `chosen.css` and the XHTML will be replaced to include `css/merge.css` only

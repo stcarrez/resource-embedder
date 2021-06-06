@@ -52,9 +52,17 @@ ARE_DOC= \
   index.md \
   pagebreak.tex \
   Installation.md \
+  pagebreak.tex \
+  Are_Using.md \
+  pagebreak.tex \
+  Are_Installer.md \
+  pagebreak.tex \
+  Are_Generator.md \
   pagebreak.tex
 
 DOC_OPTIONS=-f markdown -o are-book.pdf --listings --number-sections --toc
 HTML_OPTIONS=-f markdown -o are-book.html --listings --number-sections --toc --css pandoc.css
 
-$(eval $(call pandoc_build,are-book,$(ARE_DOC),))
+$(eval $(call pandoc_build,are-book,$(ARE_DOC),\
+	cp docs/Using.md docs/Are_Using.md; \
+	sed -e s/^\\\#\\\#/\\\#\\\#\\\#/ docs/are.md >> docs/Are_Using.md))

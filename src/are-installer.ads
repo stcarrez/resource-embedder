@@ -24,26 +24,33 @@ private with GNAT.Regpat;
 private with DOM.Core;
 private with Util.Log;
 
---  The `Are.Installer` package handles the operations to install files before their
---  inclusion in the generated code:
+--  = Rules =
+--  The `Advanced Resource Embedder` provides several mechanisms to integrate
+--  files in the generated code.
 --
---  1/ The package.xml file contains a set of rules which describe how to select the
---     files to include in the generator.  This file is read and resource rules are
---     collected in the `Rules` artifact.
+--  An XML file file contains a set of rules which describe how to select the
+--  files to include in the generator.  The XML file is read and resource rules
+--  introduced by the `resource` XML element are collected.
 --
---  2/ The source paths are then scanned and a complete tree of source files is created
---     in the `Trees` artifact member.
+--  The source paths are then scanned and a complete tree of source files is created.
+--  Because several source paths are given, we have several source trees with possibly
+--  duplicate files and names in them.
 --
---  3/ The source paths are matched against the resource rules and each installation rule
---     is filled with the source files that they match.
+--  The source paths are matched against the resource rules and each installation rule
+--  is filled with the source files that they match.
 --
---  5/ The resource installation rules are executed in the order defined
---     in the `package.xml` file.  Each resource rule can have its own way to make
---     the installation for the set of files that matched the rule definition.
---     A resource rule can copy the file, another can concatenate the source files,
---     another can do some transformation on the source files and prepare it before being
---     embedded and used by the generator.
+--  The resource installation rules are executed in the order defined
+--  in the `package.xml` file.  Each resource rule can have its own way to make
+--  the installation for the set of files that matched the rule definition.
+--  A resource rule can copy the file, another can concatenate the source files,
+--  another can do some transformation on the source files and prepare it before being
+--  embedded and used by the generator.
 --
+--  @include are-installer-copies.ads
+--  @include are-installer-concat.ads
+--  @include are-installer-exec.ads
+--  @include are-installer-bundles.ads
+--  @include are-installer-merges.ads
 package Are.Installer is
 
    type Installer_Type is limited new Ada.Finalization.Limited_Controlled with private;

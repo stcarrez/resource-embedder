@@ -16,8 +16,20 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
---  The <b>Gen.Artifacts.Distribs.Copies</b> package provides distribution rules
---  to copy a file or a directory to the distribution area.
+--  == Install mode: copy and copy-first ==
+--  The `copy` and `copy-first` mode are the simpler distribution rules that
+--- only copy the source file to the destination.  The rule is created by using
+--  the following XML definition:
+--
+--    <install mode='copy'>
+--      <include name="*.txt"/>
+--    </install>
+--
+--  If the tool is called with several directories that contain a same file name
+--  then the `copy` installer will complain because it has two source files for
+--  a same destination name.  When this happens, you may instead use the `copy-first`
+--  mode which will take into account only the first found in the first directory.
+--
 private package Are.Installer.Copies is
 
    --  Create a distribution rule to copy a set of files or directories.

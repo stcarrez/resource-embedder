@@ -16,15 +16,16 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 
+--  == Install mode: bundles ==
 --  The `Are.Installer.Bundles` package provides distribution rules
 --  to merge a list of bundles to the distribution area.  The rule is
 --  created by using the following XML definition:
 --
---  <install mode='bundles' source-timestamp='true'>
---     <fileset dir='bundles'>
+--    <install mode='bundles' source-timestamp='true'>
+--      <fileset dir='bundles'>
 --        <include name="**/*.properties"/>
---     </fileset>
---  </install>
+--      </fileset>
+--    </install>
 --
 private package Are.Installer.Bundles is
 

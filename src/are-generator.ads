@@ -16,6 +16,15 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with GNAT.Command_Line;
+
+--  = Generator =
+--  The code generators are invoked when the installer has scanned the directories,
+--  selected the files and applied the installation rules to produce the content
+--  that must be embedded.
+--
+--  @include are-generator-ada2012.ads
+--  @include are-generator-c.ads
+--  @include are-generator-go.ads
 package Are.Generator is
 
    package GC renames GNAT.Command_Line;

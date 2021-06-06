@@ -16,6 +16,48 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 private with Util.Strings.Vectors;
+
+--  == C Generator ==
+--  The C code generator produces for each resource description a C
+--  header and a C source file with the name of that resource.  The header
+--  contains the public declaration and the C source file contains the generated
+--  files with an optional function that allows to query
+--  and retrieve the file content.  The C code generator is driven by the
+--  resource description and also by the tool options.
+--
+--  The header file declares a C structure that describes the content information.
+--  The C structure gives access to the content, its size,
+--  the modification time of the file and the target file format.
+--  The structure name is prefixed by the resource name.
+--
+--    struct <resource>_content {
+--      const unsigned char* content;
+--      size_t size;
+--      time_t modtime;
+--      int format;
+--    }
+--
+--  This type definition gives access to a readonly binary content and provides
+--  enough information to also indicate the size of that content.  Then when
+--  the `--name-access` option is passed, the code generator declares and
+--  implements the following function:
+--
+--    extern const struct <resource>_content *
+--         <resource>_get_content(const char* name);
+--
+--  That function will return either a pointer to the resource description
+--  or null if the name was not found.
+--
+--  When the `--list-access` option is passed, the C code generator also
+--  declares two global constant variables:
+--
+--    extern const char* const <resource>_names[];
+--    static const int <resource>_names_length = NNN;
+--
+--  The generated array gives access to the list of file names embedded in
+--  the resource.  That list is sorted on the name so that a dichotomic
+--  search can be used to find an entry.
+--
 private package Are.Generator.C is
 
    type Generator_Type is new Are.Generator.Generator_Type with private;

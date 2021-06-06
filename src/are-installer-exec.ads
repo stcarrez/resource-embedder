@@ -17,16 +17,18 @@
 -----------------------------------------------------------------------
 with EL.Expressions;
 
---  The `Are.Installer.Exec` package provides distribution rules
+--  == Install mode: exec ==
+--  The `exec` mode is the most powerful installation rule since it allows
+--  to execute a command on the source file.
 --  to copy a file or a directory by using an external program.  The rule is
 --  created by using the following XML definition:
 --
---  <install mode='exec' dir='target' source-timestamp='true'>
---    <command slow='false' output='...'>cmd #{src} #{dst}</command>
---    <fileset dir="source">
+--    <install mode='exec' dir='target' source-timestamp='true'>
+--      <command slow='false' output='...'>cmd #{src} #{dst}</command>
+--      <fileset dir="source">
 --        <include name="**/*"/>
---    </fileset>
---  </install>
+--      </fileset>
+--    </install>
 --
 --  The command is a string which can contain EL expressions that are
 --  evaluated before executing the command.  The command is executed for
