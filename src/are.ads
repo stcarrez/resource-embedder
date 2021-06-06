@@ -137,6 +137,7 @@ private
       Verbose     : aliased Boolean := False;
       Debug       : aliased Boolean := False;
       Dump        : aliased Boolean := False;
+      Version     : aliased Boolean := False;
       Ignore_Case : aliased Boolean := False;
       Name_Index  : aliased Boolean := False;
       Declare_Var : aliased Boolean := False;

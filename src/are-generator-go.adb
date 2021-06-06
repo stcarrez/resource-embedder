@@ -292,7 +292,7 @@ package body Are.Generator.Go is
          else
             Put (File, "  r := strings.Compare(");
             Put (File, List_Names);
-            Put (File, "[0], name)");
+            Put_Line (File, "[0], name)");
             Put_Line (File, "  if r == 0 {");
             Put_Line (File, "    return &contents[0]");
             Put_Line (File, "  }");

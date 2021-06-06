@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Directories;
 with Ada.Command_Line;
+with Ada.Text_IO;
 
 with Are.Generator.Ada2012;
 with Are.Generator.C;
@@ -55,7 +56,7 @@ package body Are.Generator is
    --  ------------------------------
    function Get_Title return String is
    begin
-      return "Advanced Resource Embedder";
+      return "Advanced Resource Embedder 1.0.0";
    end Get_Title;
 
    --  ------------------------------
@@ -83,6 +84,11 @@ package body Are.Generator is
                         Switch => "-vv",
                         Long_Switch => "--debug",
                         Help   => -("Enable debug execution"));
+      GC.Define_Switch (Config => Config,
+                        Output => Context.Version'Access,
+                        Switch => "-V",
+                        Long_Switch => "--version",
+                        Help   => -("Print the program version"));
       GC.Define_Switch (Config => Config,
                         Output => Context.Dump'Access,
                         Switch => "-vvv",
@@ -174,18 +180,23 @@ package body Are.Generator is
       Ada_Generator.Setup (Config);
       GC.Getopt (Config => Config);
 
-      --  Emulate the Define_Switch with the Callback support
-      if Context.Resource_Name /= null and then Context.Resource_Name'Length > 0 then
-         Add_Option ("--resource", Context.Resource_Name.all);
-      end if;
-      if Context.Fileset_Pattern /= null and then Context.Fileset_Pattern'Length > 0 then
-         Add_Option ("--fileset", Context.Fileset_Pattern.all);
+      if Context.Version then
+         Ada.Text_IO.Put_Line (Get_Title);
+         return;
       end if;
 
       if Context.Verbose or Context.Debug or Context.Dump then
          Are.Configure_Logs (Verbose => Context.Verbose,
                              Debug   => Context.Debug,
                              Dump    => Context.Dump);
+      end if;
+
+      --  Emulate the Define_Switch with the Callback support
+      if Context.Resource_Name /= null and then Context.Resource_Name'Length > 0 then
+         Add_Option ("--resource", Context.Resource_Name.all);
+      end if;
+      if Context.Fileset_Pattern /= null and then Context.Fileset_Pattern'Length > 0 then
+         Add_Option ("--fileset", Context.Fileset_Pattern.all);
       end if;
 
       --  Read the rule definitions.
