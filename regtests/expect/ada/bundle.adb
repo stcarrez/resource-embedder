@@ -1,4 +1,4 @@
--- Advanced Resource Embedder
+-- Advanced Resource Embedder 1.0.0
 with Interfaces; use Interfaces;
 
 package body Bundle is
@@ -42,14 +42,14 @@ package body Bundle is
       105, 116, 108, 101, 61, 84, 105, 116, 114, 101, 10);
 
 
-
    type Name_Access is access constant String;
-   type Keyword_Array is array (Natural range <>) of Name_Access;
+   type Name_Array is array (Natural range <>) of Name_Access;
+
 
    K_0             : aliased constant String := "msg.properties";
    K_1             : aliased constant String := "msg_fr.properties";
 
-   Keywords : constant Keyword_Array := (
+   Names : constant Name_Array := (
       K_0'Access, K_1'Access);
 
    type Content_Array is array (Natural range <>) of Content_Access;
@@ -59,7 +59,7 @@ package body Bundle is
    function Get_Content (Name : String) return Content_Access is
       H : constant Natural := Hash (Name);
    begin
-      return (if Keywords (H).all = Name then Contents (H) else null);
+      return (if Names (H).all = Name then Contents (H) else null);
    end Get_Content;
 
 end Bundle;

@@ -1,4 +1,4 @@
--- Advanced Resource Embedder
+-- Advanced Resource Embedder 1.0.0
 with Interfaces; use Interfaces;
 
 package body Concat is
@@ -75,14 +75,14 @@ package body Concat is
       46, 50, 32, 93, 10, 125, 10);
 
 
-
    type Name_Access is access constant String;
-   type Keyword_Array is array (Natural range <>) of Name_Access;
+   type Name_Array is array (Natural range <>) of Name_Access;
+
 
    K_0             : aliased constant String := "css/css/main.css";
    K_1             : aliased constant String := "js/js/main.js";
 
-   Keywords : constant Keyword_Array := (
+   Names : constant Name_Array := (
       K_0'Access, K_1'Access);
 
    type Content_Array is array (Natural range <>) of Content_Access;
@@ -92,7 +92,7 @@ package body Concat is
    function Get_Content (Name : String) return Content_Access is
       H : constant Natural := Hash (Name);
    begin
-      return (if Keywords (H).all = Name then Contents (H) else null);
+      return (if Names (H).all = Name then Contents (H) else null);
    end Get_Content;
 
 end Concat;

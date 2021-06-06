@@ -1,4 +1,4 @@
-// Advanced Resource Embedder
+// Advanced Resource Embedder 1.0.0
 package Resources1
 
 import (
@@ -25,11 +25,11 @@ var names= []string {
 var contents = []Content {
  { []byte("body {\n    background: #eee;  \n}\np {\n    color: #2a" +
 "2a2a;  \n}"),
-    60,  1622183580, 0,
+    60,  1622894890, 0,
  }, 
  { []byte("var elec = {\n    e12: [ 1.0, 1.2, 1.5, 1.8, 2.2, 2." +
 "7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2 ]\n}\n"),
-    87,  1622183646, 0,
+    87,  1622894887, 0,
  }, 
  { []byte("<!DOCTYPE html>\n<html xmlns=\x22http://www.w3.org/1999" +
 "/xhtml\x22 lang=\x22en\x22>\n  <head>\n    <meta http-equiv=\x22C" +
@@ -38,7 +38,7 @@ var contents = []Content {
 "pe=\x22text/css\x22 rel=\x22stylesheet\x22 href=\x22css/main.css\x22 " +
 "/>\n  </head>\n  <body>\n    <p>Hello Test</p>\n    <sc" +
 "ript src=\x22js/main.js\x22></script>\n  </body>\n</html>\n"),
-    356,  1622183738, 0,
+    356,  1622894877, 0,
  }, 
 }
 

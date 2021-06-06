@@ -26,6 +26,7 @@ with Util.Streams.Pipes;
 with Util.Streams.Buffered;
 
 with Are.Generator.Tests;
+with Are.Tests;
 package body Are.Testsuite is
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are.Testsuite");
@@ -36,6 +37,7 @@ package body Are.Testsuite is
    begin
       Are.Generator.Tests.Add_Tests (Tests'Access);
 
+      Are.Tests.Add_Tests (Tests'Access);
       return Tests'Access;
    end Suite;
 

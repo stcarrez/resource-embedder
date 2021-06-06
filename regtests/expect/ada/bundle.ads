@@ -1,4 +1,4 @@
--- Advanced Resource Embedder
+-- Advanced Resource Embedder 1.0.0
 with Ada.Streams;
 package Bundle is
 

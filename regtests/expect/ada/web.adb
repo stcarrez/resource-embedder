@@ -1,4 +1,4 @@
--- Advanced Resource Embedder
+-- Advanced Resource Embedder 1.0.0
 with Interfaces; use Interfaces;
 
 package body web is
@@ -1294,9 +1294,9 @@ package body web is
       116, 105, 111, 110, 62, 10, 10);
 
 
-
    type Name_Access is access constant String;
-   type Keyword_Array is array (Natural range <>) of Name_Access;
+   type Name_Array is array (Natural range <>) of Name_Access;
+
 
    K_0             : aliased constant String := "WEB-INF/layouts/anonymous.xhtml";
    K_1             : aliased constant String := "WEB-INF/layouts/footer.xhtml";
@@ -1358,7 +1358,7 @@ package body web is
    K_57            : aliased constant String := "main.xhtml";
    K_58            : aliased constant String := "view.xhtml";
 
-   Keywords : constant Keyword_Array := (
+   Names : constant Name_Array := (
       K_0'Access, K_1'Access, K_2'Access, K_3'Access,
       K_4'Access, K_5'Access, K_6'Access, K_7'Access,
       K_8'Access, K_9'Access, K_10'Access, K_11'Access,
@@ -1391,7 +1391,7 @@ package body web is
    function Get_Content (Name : String) return Content_Access is
       H : constant Natural := Hash (Name);
    begin
-      return (if Keywords (H).all = Name then Contents (H) else null);
+      return (if Names (H).all = Name then Contents (H) else null);
    end Get_Content;
 
 end web;
