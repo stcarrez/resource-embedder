@@ -1,4 +1,4 @@
-// Advanced Resource Embedder
+// Advanced Resource Embedder 1.0.0
 #ifndef _MAN_H_
 #define _MAN_H_
 

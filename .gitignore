@@ -26,3 +26,8 @@ regtests/results/
 wiki
 alire
 cover
+examples/c-config/src/config.*
+examples/go-config/config/config.go
+examples/ada-config/src/config.*
+examples/c-help/src/man.*
+examples/c-help/src/help.*
