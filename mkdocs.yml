@@ -1,6 +1,6 @@
 site_name: Advanced Resource Embedder
 docs_dir: docs
-pages:
+nav:
   - Introduction: index.md
   - Installation: Installation.md
   - Using: Are_Using.md
