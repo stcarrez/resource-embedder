@@ -22,6 +22,7 @@ embedded and used by the generator.
 
 ## Install mode: copy and copy-first
 The `copy` and `copy-first` mode are the simpler distribution rules that
+only copy the source file to the destination.  The rule is created by using
 the following XML definition:
 
 ```Ada
@@ -33,8 +34,21 @@ the following XML definition:
 If the tool is called with several directories that contain a same file name
 then the `copy` installer will complain because it has two source files for
 a same destination name.  When this happens, you may instead use the `copy-first`
-mode which will take into account only the first found in the first directory.
+mode which will take into account only the first file found in the first directory.
 
+By default the relative path name of the file is used to identify the embedded
+content.  Sometimes, you may want to drop the file extension and access the
+content by using only the name of the file without its extension.  This is
+possible by setting the `strip-extension` attribute to `yes` as follows:
+
+```Ada
+<install mode='copy' strip-extension='yes'>
+  <install name="*.txt"/>
+</install>
+```
+
+If the file has the name `help.txt`, then it is known internally by the
+name `help`.
 ## Install mode: concat
 The `concat` mode provides a distribution rule that concatenates a list of
 files.  The rule is created by using the following XML definition:
@@ -133,14 +147,15 @@ The generated file `css/merged.css` will include `awa.css`, `jquery-ui-1.12.1.cs
 by using the following XHTML:
 
 ```Ada
-<link media='screen' type='text/css' rel='stylesheet' href='#{contextPath}/css/merged.css'/>
+<link media='screen' type='text/css' rel='stylesheet'
+      href='#{contextPath}/css/merged.css'/>
 ```
 
 To use the `webmerge`, the `package.xml` description file should contain
 the following command:
 
 ```Ada
-<install mode='merge' dir='web' source-timestamp='true'>
+<install mode='webmerge' dir='web' source-timestamp='true'>
    <property name="contextPath"></property>
    <property name="jquery.path">/js/jquery-3.4.1.js</property>
    <property name="jquery.uiCssPath">/css/redmond/jquery-ui-1.12.1.css</property>
@@ -150,5 +165,24 @@ the following command:
       <include name="WEB-INF/layouts/*.xhtml"/>
    </fileset>
 </install>
+```
+
+The merging areas are identified by the default tags `ARE-MERGE-START` and `ARE-MERGE-END`.
+These tags can be changed by specifying the expected value in the `merge-start` and `merge-end`
+attributes in the `install` XML element.  For example, with
+
+```Ada
+<install mode='webmerge' dir='web' source-timestamp='true'
+         merge-start='RESOURCE-MERGE-START'
+         merge-end='RESOURCE-MERGE-END'>
+</install>
+
+```
+
+the markers will becomes:
+
+```Ada
+<!-- RESOURCE-MERGE-START link=#{contextPath}/css/target-merge-1.css -->
+<!-- RESOURCE-MERGE-END -->
 ```
 
