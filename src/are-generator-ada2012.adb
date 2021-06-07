@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Ada.Text_IO;
 with Ada.Strings.Fixed;
 with Ada.Calendar.Conversions;
 with Interfaces.C;
@@ -294,8 +293,7 @@ package body Are.Generator.Ada2012 is
    --  Generate the keyword table.
    --  ------------------------------
    procedure Generate_Keyword_Table (Generator : in out Generator_Type;
-                                     Into      : in out Ada.Text_IO.File_Type;
-                                     Context   : in out Are.Context_Type'Class) is
+                                     Into      : in out Ada.Text_IO.File_Type) is
 
       Index : Integer := 0;
 
@@ -447,7 +445,7 @@ package body Are.Generator.Ada2012 is
             New_Line (File);
             Has_Private := True;
          end if;
-         Generate_Keyword_Table (Generator, File, Context);
+         Generate_Keyword_Table (Generator, File);
       end if;
       Put      (File, "end ");
       Put      (File, Name);
@@ -522,7 +520,7 @@ package body Are.Generator.Ada2012 is
                   end if;
                   Put_Line (File, "   type Name_Array is array (Natural range <>) of Name_Access;");
                   New_Line (File);
-                  Generate_Keyword_Table (Generator, File, Context);
+                  Generate_Keyword_Table (Generator, File);
                end if;
 
                New_Line (File);

@@ -15,6 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
+private with Ada.Text_IO;
 private with Util.Strings.Vectors;
 
 --  == Ada Generator ==
@@ -104,5 +105,9 @@ private
    procedure Generate_Perfect_Hash (Generator : in out Generator_Type;
                                     Resource  : in Are.Resource_Type;
                                     Context   : in out Are.Context_Type'Class);
+
+   --  Generate the keyword table.
+   procedure Generate_Keyword_Table (Generator : in out Generator_Type;
+                                     Into      : in out Ada.Text_IO.File_Type);
 
 end Are.Generator.Ada2012;

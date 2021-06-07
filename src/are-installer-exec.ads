@@ -17,11 +17,11 @@
 -----------------------------------------------------------------------
 with EL.Expressions;
 
---  == Install mode: exec ==
---  The `exec` mode is the most powerful installation rule since it allows
---  to execute a command on the source file.
---  to copy a file or a directory by using an external program.  The rule is
---  created by using the following XML definition:
+--  == Install mode: exec and copy-exec ==
+--  The `exec` and `copy-exec` mode are the most powerful installation rules
+--  since they allow to execute a command on the source file.  The `copy-exec`
+--  will first copy the source file to the destination area and it will execute
+--  the command.  The rule is created by using the following XML definition:
 --
 --    <install mode='exec' dir='target' source-timestamp='true'>
 --      <command slow='false' output='...'>cmd #{src} #{dst}</command>

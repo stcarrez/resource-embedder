@@ -283,7 +283,11 @@ package body Are.Installer is
 
    exception
       when Ada.IO_Exceptions.Name_Error =>
-         Context.Error ("Package file {0} does not exist", File);
+         Context.Error ("package file {0} does not exist", File);
+
+      when E : Sax.Readers.XML_Fatal_Error =>
+         Context.Error ("{0}",
+                        Ada.Exceptions.Exception_Message (E));
 
    end Read_Package;
 

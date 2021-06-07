@@ -218,14 +218,11 @@ package body Are.Generator is
             exit when S'Length = 0;
             Has_Files := True;
             if not Ada.Directories.Exists (S) then
-               Context.Error ("Path {0} does not exist", S);
-            elsif Ada.Directories.Kind (S) = Ada.Directories.Ordinary_File then
-               --  Collect (S, Ada.Directories.Simple_Name (S));
-               Installer.Scan_Directory (S, Context);
+               Context.Error ("path {0} does not exist", S);
             elsif Ada.Directories.Kind (S) = Ada.Directories.Directory then
                Installer.Scan_Directory (S, Context);
             else
-               Context.Error ("Path {0} is not a directory nor a file", S);
+               Context.Error ("path {0} is not a directory", S);
             end if;
          end;
       end loop;
@@ -251,7 +248,7 @@ package body Are.Generator is
             Ada_Generator.Generate (Context.Resources, Context);
 
          else
-            Context.Error ("Language {0} not recognized", Context.Language.all);
+            Context.Error ("language {0} not recognized", Context.Language.all);
          end if;
       end if;
 
