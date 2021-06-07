@@ -29,6 +29,12 @@ resources, you may use:
 are --lang=Ada -o src --resource=config --name-access --fileset='**/*.conf' config
 ```
 
+Complex resource integrations are best described with and XML and are generated with:
+
+```
+are --lang=Ada -o src --rule=package.xml --name-access .
+```
+
 ## Version 1.0.0  - June 2021
 - First version of the resource embedder
 - Add support for C, Ada and Go
