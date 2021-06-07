@@ -21,14 +21,7 @@ with Ada.Directories;
 with Util.Test_Caller;
 package body Are.Tests is
 
-   function Tool return String;
-
    package Caller is new Util.Test_Caller (Test, "Are.Examples");
-
-   function Tool return String is
-   begin
-      return "bin/are";
-   end Tool;
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
@@ -99,7 +92,7 @@ package body Are.Tests is
                                  Result,
                                  "Invalid C show-help: sh");
 
-      T.Execute ("examples/c-help/show-help extract.txt", Result, Status => 0);
+      T.Execute ("examples/c-help/show-help extract", Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*extract files.*",
                                  Result,
                                  "Invalid C show-help: extract");
@@ -123,7 +116,7 @@ package body Are.Tests is
                                  Result,
                                  "Invalid Ada show-help: sh");
 
-      T.Execute ("examples/ada-help/show_help extract.txt", Result, Status => 0);
+      T.Execute ("examples/ada-help/show_help extract", Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*extract files.*",
                                  Result,
                                  "Invalid Ada show-help: extract");
@@ -147,7 +140,7 @@ package body Are.Tests is
                                  Result,
                                  "Invalid Go show-help: sh");
 
-      T.Execute ("examples/go-help/show-help extract.txt", Result, Status => 0);
+      T.Execute ("examples/go-help/show-help extract", Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*extract files.*",
                                  Result,
                                  "Invalid Go show-help: extract");
