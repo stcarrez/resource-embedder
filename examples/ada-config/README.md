@@ -17,23 +17,33 @@ The `--lang=Ada` option selects the Ada generator for the output and the
 `-o src` option indicates the target directory where files are generated.
 
 The `--resource` option indicates the name of the resource and it is
-used for the name of the target header and source file.  Hence, the tool will
+used for the name of the Ada package.  Hence, the tool will
 generate the `config.ads` and the `config.adb` source files.  The `--name-access`
 option tells the code generator to emit an Ada function that allows to retrieve
 the resource by using its name.  To describe the content that is embedded,
-a C structure is declared that gives information about the raw data content,
-the content size, the modification date and data format.
-The header file will declare the following structure and function declaration:
+an Ada record is declared that gives information about the raw data content,
+the modification date and data format.
+The Ada package specification contains:
 
-```C
-struct config_content {
-  const unsigned char *content;
-  size_t size;
-  time_t modtime;
-  int format;
-};
+```Ada
+package Config is
+   type Content_Access is access constant Ada.Streams.Stream_Element_Array;
 
-extern const struct config_content* config_get_content(const char* name);
+   type Name_Access is access constant String;
+
+   type Format_Type is (FILE_RAW, FILE_GZIP);
+
+   type Content_Type is record
+      Name    : Name_Access;
+      Content : Content_Access;
+      Modtime : Interfaces.C.long := 0;
+      Format  : Format_Type := FILE_RAW;
+   end record;
+
+   Null_Content : constant Content_Type;
+
+   function Get_Content (Name : in String) return Content_Type;
+end Config;
 ```
 
 The `--fileset '**/*'` option is here to define the pattern for files that
