@@ -2,7 +2,7 @@
 
   <resource name='help'>
     <!-- Copy files with .txt extension from 'help' directory -->
-    <install mode='copy'>
+    <install mode='copy' strip-extension='yes'>
       <fileset dir="help">
         <include name="**/*.txt"/>
       </fileset>
@@ -16,6 +16,7 @@
       <command output='#{dst}'>man #{name}</command>
       <fileset dir="man">
         <include name="*"/>
+        <exclude name="*.go"/>
       </fileset>
     </install>
   </resource>

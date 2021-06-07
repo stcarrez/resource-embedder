@@ -4047,9 +4047,9 @@ const char* const man_names[] = {
 
 
 static const struct man_content contents[] = {
- { C_0, 7944, 1623008723 },
- { C_1, 1592, 1623008723 },
- { C_2, 70969, 1623008723 }
+ { C_0, 7944, 1623070578 },
+ { C_1, 1592, 1623070579 },
+ { C_2, 70969, 1623070579 }
 };
 // Returns the data stream with the given name or null.
 const struct man_content* man_get_content(const char* name)

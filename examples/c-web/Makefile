@@ -1,12 +1,12 @@
 CC=cc
 CFLAGS=-g -O
-ARE=are
+ARE=../../bin/are
 
-all:  src/help.c
-	$(CC) -o show-help $(CFLAGS) src/show-help.c src/help.c src/man.c
+all:  src/web.c
+	$(CC) -o show-web $(CFLAGS) src/show-web.c src/web.c
 
-src/help.c: Makefile package.xml
+src/web.c: Makefile package.xml
 	$(ARE) --list-access --name-access --lang=c -o src --rule=package.xml .
 
 clean:
-	rm -f src/help.c src/help.h show-help
+	rm -f src/web.c src/web.h show-web

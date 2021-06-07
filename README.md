@@ -80,7 +80,7 @@ you have to consider the license of these resource file.
 
 ## Examples
 
-This first set of example shows how to you can embedd configuration files in a C, Ada or Go program.
+This first set of example shows how to you can embed configuration files in a C, Ada or Go program.
 The Advance Resource Embedder simply puts the configuration files in an array of bytes that can easily
 be retrieved by a generated function.
 
@@ -96,6 +96,11 @@ by running the `man` Unix command on various names to embed the man page of `ls`
 * [Embedding help and documentation in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-help)
 * [Embedding help and documentation in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-help)
 * [Embedding help and documentation in Go](https://github.com/stcarrez/resource-embedder/tree/master/examples/go-help)
+
+More specific examples show how to make specific transformations on the files before integrating them:
+
+* [Embedding web files in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-web)
+* [Embedding merged properties in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-bundles)
 
 
 # Building ARE

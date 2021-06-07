@@ -5,7 +5,7 @@ This example is an adaptation of the C example but in Go.
 Note that Go provides an embed mechanism through the `embed.go`
 package and the `go:embed` directive.
 
-This example shows how to you can embedd help and documentation files
+This example shows how to you can embed help and documentation files
 in a Go program.  This example uses a `package.xml` definition to
 describe the files and the methods to collect and embed the files.
 The Advance Resource Embedder scans the directory, runs the `man`
@@ -24,7 +24,7 @@ The `--lang=go` option selects the Go generator for the output.
 Files are generated in a sub-directory according to the resource name.
 
 The `--rule=package.xml` option indicates to read the `package.xml` file
-which describes the rule to collect the resource and embedd them.
+which describes the rules to collect the resource and embed them.
 
 The `--list-access` option tells the generator to make the list of
 resource names public in the Go generated file.
@@ -62,7 +62,7 @@ The next resource definition will run an external program to get the
 content that must be embedded.  The `man` directory is scanned and it
 will execute the command `man #{name}` on each filename found.
 That directory contains the empty files `ls`, `pwd` and `sh` and this
-will run and embedd the man page for these commands.
+will run and embed the man page for these commands.
 
 ```XML
 <package>
@@ -72,12 +72,16 @@ will run and embedd the man page for these commands.
       <command output='#{dst}'>man #{name}</command>
       <fileset dir="man">
         <include name="*"/>
+        <exclude name="*.go"/>
       </fileset>
     </install>
   </resource>
 </package>
 ```
 
+The Go files are generated in the `help` and `man` directory.
+To avoid launching the `man man.go` command which would result to an incorrect
+man page, the XML definition uses the `exclude` pattern to exclude the Go files.
 
 # Build
 

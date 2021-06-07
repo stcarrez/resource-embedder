@@ -1,6 +1,6 @@
 CC=cc
 CFLAGS=-g -O
-ARE=are
+ARE=../../bin/are
 
 all:  src/help.c
 	$(CC) -o show-help $(CFLAGS) src/show-help.c src/help.c src/man.c

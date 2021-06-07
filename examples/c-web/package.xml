@@ -3,8 +3,9 @@
   <resource name='web'
             type="web_content"
             function-name="web_get_content">
-    <!-- Copy files with .xhtml extension from 'web' directory -->
-    <install mode='copy'>
+    <!-- Run xmllint to verify and remove blanks in XML -->
+    <install mode='exec'>
+      <command output='#{dst}'>xmllint --noblanks #{src}</command>
       <fileset dir="web">
         <include name="**/*.xhtml"/>
         <exclude name="WEB-INF/layouts/**"/>
@@ -21,7 +22,7 @@
     </install>
 
     <!-- Merge Javascript and CSS files from some XHTML file.  -->
-    <install mode='merge' log='info' source-timestamp='yes'
+    <install mode='webmerge' log='info' source-timestamp='yes'
              merge-start='RESOURCE-MERGE-START'
              merge-end='RESOURCE-MERGE-END'>
        <!-- Define transformation variables: the #{name} are replaced by the given value -->

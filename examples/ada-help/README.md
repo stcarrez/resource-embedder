@@ -1,6 +1,6 @@
 # Embedding help and documentation in Ada
 
-This example shows how to you can embedd help and documentation files
+This example shows how to you can embed help and documentation files
 in an Ada program.  This example uses a `package.xml` definition to
 describe the files and the methods to collect and embed the files.
 The Advance Resource Embedder scans the directory, runs the `man`
@@ -20,7 +20,7 @@ The `--lang=Ada` option selects the Ada generator for the output and the
 `-o src` option indicates the target directory where files are generated.
 
 The `--rule=package.xml` option indicates to read the `package.xml` file
-which describes the rule to collect the resource and embedd them.
+which describes the rules to collect the resource and embed them.
 
 The `--list-access` option tells the generator to emit a declaration
 of a sorted Ada array of names allowing to access the resource names.
@@ -64,7 +64,7 @@ The next resource definition will run an external program to get the
 content that must be embedded.  The `man` directory is scanned and it
 will execute the command `man #{name}` on each filename found.
 That directory contains the empty files `ls`, `pwd` and `sh` and this
-will run and embedd the man page for these commands.
+will run and embed the man page for these commands.
 
 ```XML
 <package>

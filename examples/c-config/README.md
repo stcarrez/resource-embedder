@@ -1,6 +1,6 @@
 # Embedding configuration files in C
 
-This example shows how to you can embedd configuration files
+This example shows how to you can embed configuration files
 in a C program.  The Advance Resource Embedder simply puts
 the configuration files in an array of bytes that can easily
 be retrieved by a generated `get_content` function.

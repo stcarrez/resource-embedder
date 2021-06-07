@@ -2,7 +2,7 @@
 
   <resource name='Bundle'>
     <!-- Bundle merge the 'bundle' and 'bunder-override' directories -->
-    <install mode='bundle' source-timestamp='yes'>
+    <install mode='bundle' source-timestamp='yes' strip-extension='yes'>
       <fileset dir="bundles">
         <include name="**/*.properties"/>
       </fileset>

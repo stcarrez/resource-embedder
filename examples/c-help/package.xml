@@ -4,7 +4,7 @@
             type="man_content"
             function-name="man_get_help_content">
     <!-- Copy files with .txt extension from 'help' directory -->
-    <install mode='copy'>
+    <install mode='copy' strip-extension='yes'>
       <fileset dir="help">
         <include name="**/*.txt"/>
       </fileset>

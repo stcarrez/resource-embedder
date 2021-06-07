@@ -1,5 +1,5 @@
 GO=go
-ARE=are
+ARE=../../bin/are
 
 all:  help/help.go
 	$(GO) build show-help.go
