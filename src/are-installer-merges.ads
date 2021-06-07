@@ -53,12 +53,13 @@ with Util.Beans.Objects.Maps;
 --  `chosen.css` and the XHTML will be replaced to include `css/merge.css` only
 --  by using the following XHTML:
 --
---    <link media='screen' type='text/css' rel='stylesheet' href='#{contextPath}/css/merged.css'/>
+--    <link media='screen' type='text/css' rel='stylesheet'
+--          href='#{contextPath}/css/merged.css'/>
 --
 --  To use the `webmerge`, the `package.xml` description file should contain
 --  the following command:
 --
---    <install mode='merge' dir='web' source-timestamp='true'>
+--    <install mode='webmerge' dir='web' source-timestamp='true'>
 --       <property name="contextPath"></property>
 --       <property name="jquery.path">/js/jquery-3.4.1.js</property>
 --       <property name="jquery.uiCssPath">/css/redmond/jquery-ui-1.12.1.css</property>
@@ -68,6 +69,21 @@ with Util.Beans.Objects.Maps;
 --          <include name="WEB-INF/layouts/*.xhtml"/>
 --       </fileset>
 --    </install>
+--
+--  The merging areas are identified by the default tags `ARE-MERGE-START` and `ARE-MERGE-END`.
+--  These tags can be changed by specifying the expected value in the `merge-start` and `merge-end`
+--  attributes in the `install` XML element.  For example, with
+--
+--    <install mode='webmerge' dir='web' source-timestamp='true'
+--             merge-start='RESOURCE-MERGE-START'
+--             merge-end='RESOURCE-MERGE-END'>
+--
+--    </install>
+--
+--  the markers will becomes:
+--
+--    <!-- RESOURCE-MERGE-START link=#{contextPath}/css/target-merge-1.css -->
+--    <!-- RESOURCE-MERGE-END -->
 --
 private package Are.Installer.Merges is
 
@@ -102,7 +118,6 @@ private
       Replace          : Util.Strings.Maps.Map;
       Start_Mark       : UString;
       End_Mark         : UString;
-      Source_Timestamp : Boolean := False;
    end record;
 
 end Are.Installer.Merges;

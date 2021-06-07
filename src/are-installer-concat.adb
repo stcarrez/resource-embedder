@@ -24,7 +24,6 @@ with Util.Log.Loggers;
 with Util.Streams;
 with Util.Streams.Files;
 
-with Are.Utils;
 package body Are.Installer.Concat is
 
    use Util.Log;
@@ -36,9 +35,10 @@ package body Are.Installer.Concat is
    --  Create a distribution rule to copy a set of files or directories.
    --  ------------------------------
    function Create_Rule (Node : in DOM.Core.Node) return Distrib_Rule_Access is
+      pragma Unreferenced (Node);
+
       Result : constant Concat_Rule_Access := new Concat_Rule;
    begin
-      Result.Source_Timestamp := Are.Utils.Get_Attribute (Node, "source-timestamp");
       return Result.all'Access;
    end Create_Rule;
 
@@ -107,11 +107,7 @@ package body Are.Installer.Concat is
       Output.Close;
 
       if Has_Files then
-         if Rule.Source_Timestamp then
-            Are.Add_File (Rule.Resource, Path, Target, Modtime);
-         else
-            Are.Add_File (Rule.Resource, Path, Target);
-         end if;
+         Rule.Add_File (Path, Target, Modtime);
       end if;
    end Install;
 

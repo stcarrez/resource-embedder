@@ -63,7 +63,7 @@ package body Are.Installer is
          return Are.Installer.Concat.Create_Rule (Node);
       elsif Kind = "bundle" then
          return Are.Installer.Bundles.Create_Rule (Node);
-      elsif Kind = "merge" then
+      elsif Kind = "webmerge" then
          return Are.Installer.Merges.Create_Rule (Node);
       else
          return null;
@@ -202,6 +202,8 @@ package body Are.Installer is
          else
             Rule.Level := Util.Log.WARN_LEVEL;
          end if;
+         Rule.Source_Timestamp := Are.Utils.Get_Attribute (Node, "source-timestamp");
+         Rule.Strip_Extension := Are.Utils.Get_Attribute (Node, "strip-extension");
          Installer.Rules.Append (Rule);
          Iterate (Rule, Node, "include", False);
          Iterate_Excludes (Rule, Node, "exclude", False);
@@ -550,6 +552,26 @@ package body Are.Installer is
    end Get_Source_Path;
 
    --  ------------------------------
+   --  Get the path that must be exported by the rule.
+   --  ------------------------------
+   function Get_Export_Path (Rule : in Distrib_Rule;
+                             Path : in String) return String is
+   begin
+      if not Rule.Strip_Extension then
+         return Path;
+      end if;
+      declare
+         Pos : constant Natural := Util.Strings.Rindex (Path, '.');
+      begin
+         if Pos = 0 then
+            return Path;
+         else
+            return Path (Path'First .. Pos - 1);
+         end if;
+      end;
+   end Get_Export_Path;
+
+   --  ------------------------------
    --  Add the file to be processed by the distribution rule.  The file has a relative
    --  path represented by <b>Path</b>.  The path is relative from the base directory
    --  specified in <b>Base_Dir</b>.
@@ -619,6 +641,23 @@ package body Are.Installer is
          end if;
       end if;
    end Remove_Source_File;
+
+   --  ------------------------------
+   --  Load and add the file in the resource library.
+   --  ------------------------------
+   procedure Add_File (Rule : in Distrib_Rule;
+                       Name : in String;
+                       Path : in String;
+                       Modtime  : in Ada.Calendar.Time;
+                       Override : in Boolean := False) is
+      Export_Path : constant String := Rule.Get_Export_Path (Name);
+   begin
+      if Rule.Source_Timestamp then
+         Are.Add_File (Rule.Resource, Export_Path, Path, Modtime, Override);
+      else
+         Are.Add_File (Rule.Resource, Export_Path, Path, Override);
+      end if;
+   end Add_File;
 
    --  ------------------------------
    --  Scan the directory tree whose root is defined by <b>Dir</b> and find the files

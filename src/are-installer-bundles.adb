@@ -23,7 +23,6 @@ with Ada.Text_IO;
 with Util.Log.Loggers;
 with Util.Properties;
 
-with Are.Utils;
 package body Are.Installer.Bundles is
 
    use Util.Log;
@@ -35,9 +34,10 @@ package body Are.Installer.Bundles is
    --  Create a distribution rule to copy a set of files or directories.
    --  ------------------------------
    function Create_Rule (Node : in DOM.Core.Node) return Distrib_Rule_Access is
+      pragma Unreferenced (Node);
+
       Result : constant Bundle_Rule_Access := new Bundle_Rule;
    begin
-      Result.Source_Timestamp := Are.Utils.Get_Attribute (Node, "source-timestamp");
       return Result.all'Access;
    end Create_Rule;
 
@@ -127,11 +127,7 @@ package body Are.Installer.Bundles is
       Ada.Text_IO.Close (File => Output);
 
       if Has_Files then
-         if Rule.Source_Timestamp then
-            Are.Add_File (Rule.Resource, Path, Target, Modtime);
-         else
-            Are.Add_File (Rule.Resource, Path, Target);
-         end if;
+         Rule.Add_File (Path, Target, Modtime);
       end if;
    end Install;
 

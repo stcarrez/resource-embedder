@@ -114,7 +114,6 @@ package body Are.Installer.Merges is
       Result.Context.Set_Variable_Mapper (Result.Variables'Access);
       Result.Start_Mark := Are.Utils.Get_Attribute (Node, "merge-start", DEFAULT_MERGE_START);
       Result.End_Mark := Are.Utils.Get_Attribute (Node, "merge-end", DEFAULT_MERGE_END);
-      Result.Source_Timestamp := Are.Utils.Get_Attribute (Node, "source-timestamp");
       return Result.all'Access;
    end Create_Rule;
 
@@ -400,11 +399,10 @@ package body Are.Installer.Merges is
                   if not Rule.Source_Timestamp then
                      Modtime := Ada.Directories.Modification_Time (To_String (Merge_Path));
                   end if;
-                  Are.Add_File (Resource => Rule.Resource,
-                                Name => To_String (Merge_Name),
-                                Path => To_String (Merge_Path),
-                                Modtime => Modtime,
-                                Override => True);
+                  Rule.Add_File (Name => To_String (Merge_Name),
+                                 Path => To_String (Merge_Path),
+                                 Modtime => Modtime,
+                                 Override => True);
                   Mode := MERGE_NONE;
                   return;
                end if;
@@ -417,11 +415,10 @@ package body Are.Installer.Merges is
                   if not Rule.Source_Timestamp then
                      Modtime := Ada.Directories.Modification_Time (To_String (Merge_Path));
                   end if;
-                  Are.Add_File (Resource => Rule.Resource,
-                                Name => To_String (Merge_Name),
-                                Path => To_String (Merge_Path),
-                                Modtime => Modtime,
-                                Override => True);
+                  Rule.Add_File (Name => To_String (Merge_Name),
+                                 Path => To_String (Merge_Path),
+                                 Modtime => Modtime,
+                                 Override => True);
                   Mode := MERGE_NONE;
                   return;
                end if;
@@ -442,11 +439,7 @@ package body Are.Installer.Merges is
       Text.Flush;
       Output.Close;
 
-      if Rule.Source_Timestamp then
-         Are.Add_File (Rule.Resource, Path, Target, File_Time);
-      else
-         Are.Add_File (Rule.Resource, Path, Target);
-      end if;
+      Rule.Add_File (Path, Target, File_Time);
    end Install;
 
 end Are.Installer.Merges;

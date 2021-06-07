@@ -59,7 +59,6 @@ package body Are.Installer.Exec is
             end if;
          end;
       end if;
-      Result.Source_Timestamp := Are.Utils.Get_Attribute (Node, "source-timestamp");
       Result.Command := EL.Expressions.Create_Expression (Command, Ctx);
       Result.Copy_First := Copy;
       return Result.all'Access;

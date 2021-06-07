@@ -168,6 +168,8 @@ private
       Excludes : Match_Rule_Vector.Vector;
       Files    : File_Tree.Map;
       Level    : Util.Log.Level_Type := Util.Log.DEBUG_LEVEL;
+      Strip_Extension  : Boolean := False;
+      Source_Timestamp : Boolean := False;
    end record;
    type Distrib_Rule_Access is access all Distrib_Rule'Class;
 
@@ -203,6 +205,10 @@ private
    function Get_Source_Path (Rule : in Distrib_Rule;
                              File : in File_Record) return String;
 
+   --  Get the path that must be exported by the rule.
+   function Get_Export_Path (Rule : in Distrib_Rule;
+                             Path : in String) return String;
+
    --  Add the file to be processed by the distribution rule.  The file has a relative
    --  path represented by <b>Path</b>.  The path is relative from the base directory
    --  specified in <b>Base_Dir</b>.
@@ -215,6 +221,13 @@ private
    procedure Remove_Source_File (Rule     : in out Distrib_Rule;
                                  Path     : in String;
                                  File     : in File_Record);
+
+   --  Load and add the file in the resource library.
+   procedure Add_File (Rule : in Distrib_Rule;
+                       Name : in String;
+                       Path : in String;
+                       Modtime  : in Ada.Calendar.Time;
+                       Override : in Boolean := False);
 
    --  Create a resource rule identified by `Kind`.
    --  The resource rule is configured according to the DOM tree whose node is `Node`.

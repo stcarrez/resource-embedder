@@ -69,7 +69,6 @@ private
       Output_Append    : Boolean;
       Copy_First       : Boolean := False;
       Slow_Flag        : Boolean := False;
-      Source_Timestamp : Boolean := False;
    end record;
 
 end Are.Installer.Exec;

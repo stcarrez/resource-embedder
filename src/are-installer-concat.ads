@@ -59,8 +59,6 @@ private package Are.Installer.Concat is
 
 private
 
-   type Concat_Rule is new Distrib_Rule with record
-      Source_Timestamp : Boolean := False;
-   end record;
+   type Concat_Rule is new Distrib_Rule with null record;
 
 end Are.Installer.Concat;

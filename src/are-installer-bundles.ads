@@ -52,8 +52,6 @@ private package Are.Installer.Bundles is
 
 private
 
-   type Bundle_Rule is new Distrib_Rule with record
-      Source_Timestamp : Boolean := False;
-   end record;
+   type Bundle_Rule is new Distrib_Rule with null record;
 
 end Are.Installer.Bundles;

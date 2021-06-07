@@ -68,7 +68,7 @@ package body Are.Installer.Copies is
                                  Target_Name => Target,
                                  Form        => "preserve=all_attributes, mode=overwrite");
 
-      Are.Add_File (Rule.Resource, Path, Target);
+      Rule.Add_File (Path, Target, Ada.Directories.Modification_Time (Source));
    end Install;
 
 end Are.Installer.Copies;
