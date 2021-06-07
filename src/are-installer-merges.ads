@@ -44,9 +44,12 @@ with Util.Beans.Objects.Maps;
 --  XHTML extract:
 --
 --    <!-- ARE-MERGE-START link=#{contextPath}/css/merged.css -->
---    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/awa.css"/>
---    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}"/>
---    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.chosenCssPath}"/>
+--    <link media="screen" type="text/css" rel="stylesheet"
+--          href="#{contextPath}/css/awa.css"/>
+--    <link media="screen" type="text/css" rel="stylesheet"
+--          href="#{jquery.uiCssPath}"/>
+--    <link media="screen" type="text/css" rel="stylesheet"
+--          href="#{jquery.chosenCssPath}"/>
 --    <!-- ARE-MERGE-END -->
 --
 --  The generated file `css/merged.css` will include `awa.css`, `jquery-ui-1.12.1.css`,
@@ -80,7 +83,7 @@ with Util.Beans.Objects.Maps;
 --
 --    </install>
 --
---  the markers will becomes:
+--  the markers becomes:
 --
 --    <!-- RESOURCE-MERGE-START link=#{contextPath}/css/target-merge-1.css -->
 --    <!-- RESOURCE-MERGE-END -->

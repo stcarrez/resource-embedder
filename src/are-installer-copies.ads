@@ -41,6 +41,7 @@
 --
 --  If the file has the name `help.txt`, then it is known internally by the
 --  name `help`.
+--
 private package Are.Installer.Copies is
 
    --  Create a distribution rule to copy a set of files or directories.
