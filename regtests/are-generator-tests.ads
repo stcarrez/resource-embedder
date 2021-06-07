@@ -28,6 +28,8 @@ package Are.Generator.Tests is
 
    procedure Test_Wrong_Directory (T : in out Test);
 
+   procedure Test_Missing_Rule (T : in out Test);
+
    procedure Test_Exec_Error_1 (T : in out Test);
 
    procedure Test_Exec_Error_2 (T : in out Test);
@@ -37,6 +39,8 @@ package Are.Generator.Tests is
    procedure Test_Exec_Error_4 (T : in out Test);
 
    procedure Test_Exec_Error_5 (T : in out Test);
+
+   procedure Test_Exec_Error_6 (T : in out Test);
 
    procedure Test_Verbose (T : in out Test);
 

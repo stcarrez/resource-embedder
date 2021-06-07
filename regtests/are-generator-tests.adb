@@ -41,6 +41,8 @@ package body Are.Generator.Tests is
                        Test_Wrong_Directory'Access);
       Caller.Add_Test (Suite, "Test are (exec wrong command)",
                        Test_Exec_Error_1'Access);
+      Caller.Add_Test (Suite, "Test are (missing rule file)",
+                       Test_Missing_Rule'Access);
       Caller.Add_Test (Suite, "Test are (wrong include)",
                        Test_Exec_Error_2'Access);
       Caller.Add_Test (Suite, "Test are (wrong exclude)",
@@ -49,6 +51,8 @@ package body Are.Generator.Tests is
                        Test_Exec_Error_4'Access);
       Caller.Add_Test (Suite, "Test are (wrong install)",
                        Test_Exec_Error_5'Access);
+      Caller.Add_Test (Suite, "Test are (XML format error)",
+                       Test_Exec_Error_6'Access);
       Caller.Add_Test (Suite, "Test are (verbose mode with error)",
                        Test_Verbose'Access);
       Are.Generator.Ada2012.Tests.Add_Tests (Suite);
@@ -60,18 +64,37 @@ package body Are.Generator.Tests is
       Result : Ada.Strings.Unbounded.Unbounded_String;
    begin
       T.Execute (Tool, Result, Status => 1);
+      T.Execute (Tool & " --zorro", Result, Status => 1);
+      Util.Tests.Assert_Matches (T, "are: unrecognized option '--zorro'", Result,
+                                 "Invalid error message with --zorro");
+
+      T.Execute (Tool & " --lang=plop .", Result, Status => 1);
+      Util.Tests.Assert_Matches (T, "are: error: language plop not recognized", Result,
+                                 "Invalid error message with --lang=plop");
    end Test_Wrong_Usage;
 
    procedure Test_Wrong_Directory (T : in out Test) is
       Result : Ada.Strings.Unbounded.Unbounded_String;
    begin
       T.Execute (Tool & " regtests/toto", Result, Status => 1);
-      Util.Tests.Assert_Matches (T, "are: error: Path regtests/toto does not exist", Result,
+      Util.Tests.Assert_Matches (T, "are: error: path regtests/toto does not exist", Result,
                                  "Invalid error message");
       T.Execute (Tool & " /dev/null", Result, Status => 1);
-      Util.Tests.Assert_Matches (T, "are: error: Path /dev/null is not a directory nor a file", Result,
+      Util.Tests.Assert_Matches (T, "are: error: path /dev/null is not a directory", Result,
                                  "Invalid error message");
    end Test_Wrong_Directory;
+
+   procedure Test_Missing_Rule (T : in out Test) is
+      Dir    : constant String := Util.Tests.Get_Test_Path ("");
+      Web    : constant String := "regtests/files/test-ada-4";
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute (Tool & " -o " & Dir
+                 & " --rule=package-missing-rule.xml " & Web, Result, Status => 1);
+      Util.Tests.Assert_Matches (T, "are: error: package file package-missing-rule.xml does not exist",
+                                 Result,
+                                 "Invalid error message");
+   end Test_Missing_Rule;
 
    procedure Test_Exec_Error_1 (T : in out Test) is
       Dir    : constant String := Util.Tests.Get_Test_Path ("");
@@ -145,6 +168,18 @@ package body Are.Generator.Tests is
                 "Unexpected file error1.ads was created");
    end Test_Exec_Error_5;
 
+   procedure Test_Exec_Error_6 (T : in out Test) is
+      Dir    : constant String := Util.Tests.Get_Test_Path ("");
+      Web    : constant String := "regtests/files/test-ada-4";
+      Rule   : constant String := "regtests/files/package-error-6.xml";
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute (Tool & " -o " & Dir & " --rule=" & Rule & " " & Web, Result, Status => 1);
+      Util.Tests.Assert_Matches (T, "are: error: package-error-6.xml:2:0: Node <package> is not closed",
+                                 Result,
+                                 "Invalid error message");
+   end Test_Exec_Error_6;
+
    procedure Test_Verbose (T : in out Test) is
       Dir    : constant String := Util.Tests.Get_Test_Path ("");
       Web    : constant String := "regtests/files/test-ada-4";
@@ -157,6 +192,11 @@ package body Are.Generator.Tests is
 
       T.Assert (not Ada.Directories.Exists (Ada.Directories.Compose (Dir, "error1.ads")),
                 "Unexpected file error1.ads was created");
+
+      T.Execute (Tool & " -V", Result, Status => 0);
+      Util.Tests.Assert_Matches (T, "Advanced Resource Embedder 1.*",
+                                 Result,
+                                 "Invalid version");
    end Test_Verbose;
 
 end Are.Generator.Tests;
