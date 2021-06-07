@@ -4,17 +4,17 @@ with Interfaces; use Interfaces;
 package body Bundle is
    function Hash (S : String) return Natural;
 
-   P : constant array (0 .. 0) of Natural :=
-     (0 .. 0 => 4);
+   P : constant array (0 .. 1) of Natural :=
+     (1, 4);
 
-   T1 : constant array (0 .. 0) of Unsigned_8 :=
-     (0 .. 0 => 1);
+   T1 : constant array (0 .. 1) of Unsigned_8 :=
+     (0, 4);
 
-   T2 : constant array (0 .. 0) of Unsigned_8 :=
-     (0 .. 0 => 3);
+   T2 : constant array (0 .. 1) of Unsigned_8 :=
+     (1, 3);
 
    G : constant array (0 .. 5) of Unsigned_8 :=
-     (0, 0, 0, 0, 0, 1);
+     (0, 0, 0, 0, 1, 0);
 
    function Hash (S : String) return Natural is
       F : constant Natural := S'First - 1;
@@ -46,8 +46,8 @@ package body Bundle is
    type Name_Array is array (Natural range <>) of Name_Access;
 
 
-   K_0             : aliased constant String := "msg.properties";
-   K_1             : aliased constant String := "msg_fr.properties";
+   K_0             : aliased constant String := "msg";
+   K_1             : aliased constant String := "msg_fr";
 
    Names : constant Name_Array := (
       K_0'Access, K_1'Access);
