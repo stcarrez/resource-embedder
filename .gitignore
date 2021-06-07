@@ -31,3 +31,5 @@ examples/go-config/config/config.go
 examples/ada-config/src/config.*
 examples/c-help/src/man.*
 examples/c-help/src/help.*
+examples/ada-bundles/src/bundle.ads
+examples/ada-bundles/src/bundle.adb
