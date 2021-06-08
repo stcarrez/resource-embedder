@@ -253,6 +253,8 @@ package body Are.Generator.C is
    procedure Generate_Header (Generator   : in out Generator_Type;
                               Resource    : in Are.Resource_Type;
                               Context   : in out Are.Context_Type'Class) is
+      pragma Unreferenced (Generator);
+
       Name        : constant String := To_String (Resource.Name);
       Define      : constant String := To_Define_Name (Name);
       Filename    : constant String := To_File_Name (Name) & ".h";
