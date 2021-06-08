@@ -5,8 +5,8 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/are.ads)
 
 # Current release settings
-ARE_MAJOR_VERSION=0
-ARE_MINOR_VERSION=1
+ARE_MAJOR_VERSION=1
+ARE_MINOR_VERSION=0
 ARE_MICRO_VERSION=0
 ARE_VERSION=$ARE_MAJOR_VERSION.$ARE_MINOR_VERSION.$ARE_MICRO_VERSION
 

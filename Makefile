@@ -68,3 +68,14 @@ HTML_OPTIONS=-f markdown -o are-book.html --listings --number-sections --toc --c
 $(eval $(call pandoc_build,are-book,$(ARE_DOC),\
 	cp docs/Using.md docs/Are_Using.md; \
 	sed -e s/^\\\#\\\#/\\\#\\\#\\\#/ docs/are.md >> docs/Are_Using.md))
+
+DIST_DIRS=ada-util ada-el
+dist::
+	rm -f $(DIST_FILE)
+	git archive -o $(DIST_DIR).tar --prefix=$(DIST_DIR)/ HEAD
+	for i in $(DIST_DIRS); do \
+	   cd $$i && git archive -o ../$$i.tar --prefix=$(DIST_DIR)/$$i/ HEAD ; \
+           cd .. && tar --concatenate --file=$(DIST_DIR).tar $$i.tar ; \
+           rm -f $$i.tar; \
+        done
+	gzip $(DIST_DIR).tar
