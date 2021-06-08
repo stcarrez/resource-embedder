@@ -26,7 +26,7 @@ ADAFLAGS += -gnatafno -gnatVa -gnatwa
 	dh $@
 
 override_dh_auto_build:
-	make GPRFLAGS="-R -m -q" GNAT_SWITCH=HAS_CALLBACK
+	make GPRFLAGS="-R -m -q" all doc
 
 override_dh_auto_test::
 
@@ -41,5 +41,4 @@ override_dh_auto_install:
 .PHONY: override_dh_installdocs-indep
 
 override_dh_installdocs-indep:
-	make doc
 	dh_installdocs -i
