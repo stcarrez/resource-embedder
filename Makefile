@@ -2,6 +2,10 @@ NAME=are
 
 -include Makefile.conf
 
+DIST_DIRS=ada-util ada-el
+DIST_DIR=resource-embedder-$(VERSION)
+DIST_FILE=$(DIST_DIR).tar.gz
+
 ifeq ($(OS),Windows_NT)
 URIL_OS=win64
 else
@@ -69,7 +73,6 @@ $(eval $(call pandoc_build,are-book,$(ARE_DOC),\
 	cp docs/Using.md docs/Are_Using.md; \
 	sed -e s/^\\\#\\\#/\\\#\\\#\\\#/ docs/are.md >> docs/Are_Using.md))
 
-DIST_DIRS=ada-util ada-el
 dist::
 	rm -f $(DIST_FILE)
 	git archive -o $(DIST_DIR).tar --prefix=$(DIST_DIR)/ HEAD
