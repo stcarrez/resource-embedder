@@ -5,7 +5,10 @@ language: generic
 install:
 
   # Install GNAT FSF
-  - sudo apt-get -y install gnat gprbuild libxmlada-sax7-dev libxmlada-dom7-dev
+  - sudo apt-get -y install gnat gprbuild libxmlada-dom7-dev
+
+  # Install xmllint for the tests
+  - sudo apt-get -y install libxml2-utils
 
   # Install lcov for coverage
   - sudo apt-get -y install lcov

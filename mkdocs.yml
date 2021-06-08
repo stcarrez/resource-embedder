@@ -3,7 +3,7 @@ docs_dir: docs
 nav:
   - Introduction: index.md
   - Installation: Installation.md
-  - Using: Are_Using.md
+  - Using ARE: Are_Using.md
   - Rules: Are_Installer.md
   - Generator: Are_Generator.md
 theme: readthedocs

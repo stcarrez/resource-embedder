@@ -49,6 +49,7 @@ possible by setting the `strip-extension` attribute to `yes` as follows:
 
 If the file has the name `help.txt`, then it is known internally by the
 name `help`.
+
 ## Install mode: concat
 The `concat` mode provides a distribution rule that concatenates a list of
 files.  The rule is created by using the following XML definition:
@@ -69,11 +70,11 @@ when the `are` command is executed.  By setting the `source-timestamp`
 attribute to `true`, the generated file is assigned the timestamp of the
 newest file in the source files.
 
-## Install mode: exec
-The `exec` mode is the most powerful installation rule since it allows
-to execute a command on the source file.
-to copy a file or a directory by using an external program.  The rule is
-created by using the following XML definition:
+## Install mode: exec and copy-exec
+The `exec` and `copy-exec` mode are the most powerful installation rules
+since they allow to execute a command on the source file.  The `copy-exec`
+will first copy the source file to the destination area and it will execute
+the command.  The rule is created by using the following XML definition:
 
 ```Ada
 <install mode='exec' dir='target' source-timestamp='true'>
@@ -88,11 +89,12 @@ The command is a string which can contain EL expressions that are
 evaluated before executing the command.  The command is executed for
 each source file.  The following EL variables are defined:
 
-```Ada
-src   defines the absolute source path
-dst   defines the target destination path
-name  defines the relative source name (ie, the name of the resource file)
-```
+| Name  | Description                      |
+|-------|----------------------------------|
+| src   | defines the absolute source path |
+| dst   | defines the target destination path |
+| name  | defines the relative source name (ie, the name of the resource file) |
+
 ## Install mode: bundles
 The `Are.Installer.Bundles` package provides distribution rules
 to merge a list of bundles to the distribution area.  The rule is
@@ -136,9 +138,12 @@ XHTML extract:
 
 ```Ada
 <!-- ARE-MERGE-START link=#{contextPath}/css/merged.css -->
-<link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/awa.css"/>
-<link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}"/>
-<link media="screen" type="text/css" rel="stylesheet" href="#{jquery.chosenCssPath}"/>
+<link media="screen" type="text/css" rel="stylesheet"
+      href="#{contextPath}/css/awa.css"/>
+<link media="screen" type="text/css" rel="stylesheet"
+      href="#{jquery.uiCssPath}"/>
+<link media="screen" type="text/css" rel="stylesheet"
+      href="#{jquery.chosenCssPath}"/>
 <!-- ARE-MERGE-END -->
 ```
 
@@ -179,7 +184,7 @@ attributes in the `install` XML element.  For example, with
 
 ```
 
-the markers will becomes:
+the markers becomes:
 
 ```Ada
 <!-- RESOURCE-MERGE-START link=#{contextPath}/css/target-merge-1.css -->

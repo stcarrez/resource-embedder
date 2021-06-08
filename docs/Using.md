@@ -1,5 +1,63 @@
 # Using Advanced Resource Embedder
 
+To embed files and generate Ada, C or Go source file, the `Advanced Resource Embedder`
+must identify the files, organize them and may be perform some transformation on these
+files before their integration.  To control this process, it is possible to use some
+options passed to the `are (1)` tool but a better control is achieved by using
+an XML configuration file.
+
+## Defining resources
+
+The XML file describes a list of resources that must be generated.  It is introduced
+by the `package` root XML element and each resource is represented by a `resource` XML
+element.  A resource is assigned a name and composed of several installation rules
+that describe how files are integrated and whether some transformations are made
+before their integration.
+
+```XML
+<package>
+  <resource name='Help'>
+    <install mode='xxx'>
+      ...
+    </install>
+  <resource>
+  <resource name='Web'>
+    <install mode='xxx'>
+      ...
+    </install>
+    <install mode='yyy'>
+      ...
+    </install>
+  </resource>
+  ...
+</package>
+```
+
+To help you in the control of the generated code, the resource description can
+also define specific attributes that allow you to tune the code generator.
+The following XML definition:
+
+```XML
+<package>
+  <resource name='Help'
+            type="man_content"
+            function-name="man_get_help_content">
+    <install mode='copy'>
+      <fileset dir="help">
+        <include name="**/*.txt"/>
+      </fileset>
+    </install>
+  </resource>
+  ...
+</package>
+```
+
+creates a resource named `Help` and composed of text files located in the `help`
+directory and with the `.txt` file extension.  The code generator will use
+the name `man_content` for the data type that represents the file description
+and it will use `man_get_help_content` for the generated function name.
+
+
 ## Selecting files
 
 An important step in the configuration of the `Advanced Resource Embedder` is
@@ -21,7 +79,7 @@ special notation `**/` indicates to match any child directory.
 
 The following definition:
 
-```
+```XML
 <fileset>
   <include name="*.html"/>
   <include name="*.css"/>
@@ -38,7 +96,7 @@ A fileset can indicate a directory name by using the `dir` attribute.
 In that case, the file selection will start from the directory with the given
 name.
 
-```
+```XML
 <fileset dir='web'>
   <include name="**/*.html"/>
   <include name="**/*.css"/>
@@ -67,7 +125,7 @@ The installation rule is described by the `install` XML element.
 That rule in fact contains the fileset that indicates the files that
 must be taken into account by the installation rule.
 
-```
+```XML
 <install mode='copy'>
   <fileset>
     <include name='**/*.txt'/>
@@ -75,9 +133,7 @@ must be taken into account by the installation rule.
 </install>
 ```
 
-
-## Defining resources
-
+The installation modes are described more into details in the [Rules](Are_Installer.md) chapter.
 
 
 ## Man page

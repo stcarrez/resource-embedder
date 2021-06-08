@@ -34,9 +34,11 @@ with EL.Expressions;
 --  evaluated before executing the command.  The command is executed for
 --  each source file.  The following EL variables are defined:
 --
---    src   defines the absolute source path
---    dst   defines the target destination path
---    name  defines the relative source name (ie, the name of the resource file)
+--  | Name  | Description                      |
+--  |-------|----------------------------------|
+--  | src   | defines the absolute source path |
+--  | dst   | defines the target destination path |
+--  | name  | defines the relative source name (ie, the name of the resource file) |
 --
 private package Are.Installer.Exec is
 
