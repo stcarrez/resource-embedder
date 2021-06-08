@@ -1,0 +1,31 @@
+Source: are
+Priority: extra
+Section: devel
+Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
+Build-Depends: debhelper (>= 10), autotools-dev,
+ gnat, gnat-9,
+# This line is parsed by debian/rules.
+ gprbuild (>= 2015-2),
+ pkg-config,
+ libxmlada-dom9-dev,
+ libutilada-unit3-dev,
+ libxml2-utils,
+# pandoc requires texlive-fonts-extra for PDF
+ pandoc, texlive-fonts-extra
+Standards-Version: 4.1.4
+Homepage: https://github.com/stcarrez/resource-embedder/
+Vcs-Git: https://github.com/stcarrez/resource-embedder.git -b debian-gnat-9
+Vcs-Browser: https://github.com/stcarrez/resource-embedder/tree/debian-gnat-9
+
+Package: are
+Section: devel
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Advance Resource Embedder for C, Ada, Go binaries
+ ARE is a flexible tool that collects files such as documentation,
+ images, scripts and produces a C, Ada or Go source that contains
+ the original files.  The tool is able to apply some transformations
+ on the collected files:
+ * it can run a Javascript minifier such as `closure`,
+ * it can compress CSS files by running `yui-compressor`,
+ * it can compress files by running `gzip` or another compression tool,

@@ -1,0 +1,45 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+$(foreach line,$(shell sed -n '\
+  s/^ gnat, gnat-\([0-9.]\+\),$$/ \
+    GNAT_VERSION:=\1 \
+  /p;\
+  s/^Package: are\([0-9.]\+\)$$/ \
+    soname:=libkeystoreada.so.\1 \
+  /p;\
+  ' debian/control),$(eval $(line)))
+
+DH_VERBOSE=1
+export DH_OPTIONS=-v
+
+DEB_BUILD_MAINT_OPTIONS := hardening=+all
+include /usr/share/dpkg/buildflags.mk
+ADAFLAGS += -gnatafno -gnatVa -gnatwa
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	make GPRFLAGS="-R -m -q" GNAT_SWITCH=HAS_CALLBACK
+
+override_dh_auto_test::
+
+override_dh_auto_install:
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp prefix=/usr install
+	dh_installdirs usr/bin
+	dh_install debian/tmp/usr/bin/are /usr/bin
+	dh_installman debian/tmp/usr/share/man/man1/are.1
+	dh_strip
+	rm -rf debian/tmp
+
+.PHONY: override_dh_installdocs-indep
+
+override_dh_installdocs-indep:
+	make doc
+	dh_installdocs -i

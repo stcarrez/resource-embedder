@@ -47,5 +47,9 @@ examples/go-config/show-config
 b~*.ad?
 **/are-generator
 regtests/files/test-ada-*/resource*.ad?
-
-
+debian/.debhelper/
+debian/autoreconf.after
+debian/autoreconf.before
+debian/debhelper-build-stamp
+debian/files
+*.substvars

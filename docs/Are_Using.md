@@ -284,10 +284,15 @@ _--resource_ option, this indicates the pattern to match the files for that reso
 
 --name-access
 Generate support to query content with a name.
+The code generator will declare and genrate a function which given a name
+returns the embedded content if that name is known.
 
 
 --list-access
 Generate support to list the content names.
+Most code generator will declare a variable that represents a sorted list of
+names which represents the resource.  It is possible to use a dichotomic
+search on that name array.
 
 
 --var-access
@@ -299,7 +304,7 @@ directly.
 
 --no-type-declaration
 Do not declare any type in the package specification.  It is assumed that the
-types used by the generated code is declared elsewere and is visible during the
+types used by the generated code is declared somewhere else and is visible during the
 compilation.
 
 
@@ -350,13 +355,15 @@ _install_ XML element which describes the installation rule with the patterns
 that identify the files.
 
 ```
- <resource name='help'>
-  <install mode='copy'>
-    <fileset dir='help'>
+ <package>
+  <resource name='help'>
+   <install mode='copy'>
+     <fileset dir='help'>
       <include name='**/*.txt'/>
-    </fileset>
-  </install>
- </resource>
+     </fileset>
+   </install>
+  </resource>
+ </package>
 ```
 
 ### INSTALL MODES

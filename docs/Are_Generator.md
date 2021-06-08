@@ -60,6 +60,7 @@ on the name.  It is declared as follows:
 type Name_Array is array (Natural range <>) of Name_Access;
 Names : constant Name_Array;
 ```
+
 ## C Generator
 The C code generator produces for each resource description a C
 header and a C source file with the name of that resource.  The header
@@ -107,6 +108,7 @@ The generated array gives access to the list of file names embedded in
 the resource.  That list is sorted on the name so that a dichotomic
 search can be used to find an entry.
 
+
 ## Go Generator
 The Go code generator produces for each resource description a Go
 source file with the name of that resource.  The header
@@ -153,5 +155,6 @@ var Names= []string {
 The generated array gives access to the list of file names embedded in
 the resource.  That list is sorted on the name so that a dichotomic
 search can be used to find an entry.
+
 
 
