@@ -8,7 +8,6 @@ Build-Depends: debhelper (>= 10), autotools-dev,
  gprbuild (>= 2015-2),
  pkg-config,
  libxmlada-dom9-dev,
- libutilada-unit3-dev,
  libxml2-utils,
 # pandoc requires texlive-fonts-extra for PDF
  pandoc, texlive-fonts-extra

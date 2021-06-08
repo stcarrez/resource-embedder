@@ -195,6 +195,45 @@ And install it:
 make install
 ```
 
+# Debian Packages for x86_64
+
+You can install ARE by using the Debian 10 and Ubuntu 20.04 or 18.04 packages.
+First, setup to accept the signed packages:
+
+```
+wget -O - https://apt.vacs.fr/apt.vacs.fr.gpg.key | sudo apt-key add -
+```
+
+and choose one of the `echo` command according to your Linux distribution:
+
+Ubuntu 20.04
+```
+echo "deb https://apt.vacs.fr/ubuntu-focal focal main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+```
+
+Ubuntu 18.04
+```
+echo "deb https://apt.vacs.fr/ubuntu-bionic bionic main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+```
+
+Debian 10
+```
+echo "deb https://apt.vacs.fr/debian-buster buster main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+```
+
+Then, launch the apt update command:
+
+```
+sudo apt-get update
+```
+
+and install the tool using:
+
+```
+sudo apt-get install -y are
+```
+
+
 # Documents
 
 * [Resource Embedder Guide](https://resource-embedder.readthedocs.io/en/latest/) [PDF](https://github.com/stcarrez/resource-embedder/blob/master/docs/are-book.pdf)
