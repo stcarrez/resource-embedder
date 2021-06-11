@@ -8,18 +8,18 @@ package body web is
      (1, 5, 7, 8, 10, 21, 22);
 
    T1 : constant array (0 .. 6) of Unsigned_8 :=
-     (84, 69, 100, 110, 27, 95, 95);
+     (47, 30, 67, 39, 72, 7, 43);
 
    T2 : constant array (0 .. 6) of Unsigned_8 :=
-     (30, 0, 17, 7, 70, 78, 3);
+     (54, 17, 80, 33, 47, 33, 105);
 
-   G : constant array (0 .. 118) of Unsigned_8 :=
-     (23, 39, 37, 0, 0, 0, 0, 0, 0, 56, 0, 14, 0, 12, 57, 4, 0, 56, 0, 48,
-      58, 0, 0, 0, 0, 28, 0, 54, 0, 26, 8, 0, 0, 26, 5, 45, 0, 0, 41, 11, 1,
-      0, 0, 0, 2, 0, 0, 0, 0, 21, 55, 56, 0, 36, 0, 0, 0, 36, 0, 0, 51, 0,
-      39, 33, 54, 0, 0, 0, 42, 0, 7, 8, 0, 54, 28, 0, 0, 2, 12, 15, 0, 0, 4,
-      11, 31, 0, 0, 0, 53, 38, 0, 0, 17, 0, 54, 0, 23, 0, 23, 48, 0, 24, 33,
-      0, 0, 6, 0, 0, 0, 51, 0, 8, 0, 0, 44, 0, 49, 0, 0);
+   G : constant array (0 .. 116) of Unsigned_8 :=
+     (0, 0, 0, 53, 38, 0, 0, 4, 23, 0, 0, 37, 9, 0, 1, 0, 28, 36, 51, 0, 0,
+      0, 0, 54, 56, 0, 51, 0, 0, 0, 0, 0, 14, 0, 6, 0, 0, 0, 0, 11, 4, 0,
+      56, 0, 36, 0, 0, 12, 0, 0, 48, 13, 0, 0, 0, 0, 0, 0, 0, 31, 0, 0, 0,
+      25, 39, 13, 17, 0, 8, 0, 42, 21, 0, 37, 33, 1, 31, 15, 0, 34, 0, 0,
+      12, 52, 32, 40, 0, 39, 0, 45, 15, 0, 0, 0, 36, 0, 44, 20, 34, 0, 0,
+      21, 0, 1, 5, 13, 0, 20, 0, 0, 22, 21, 0, 3, 0, 48, 29);
 
    function Hash (S : String) return Natural is
       F : constant Natural := S'First - 1;
@@ -30,10 +30,10 @@ package body web is
       for K in P'Range loop
          exit when L < P (K);
          J  := Character'Pos (S (P (K) + F));
-         F1 := (F1 + Natural (T1 (K)) * J) mod 119;
-         F2 := (F2 + Natural (T2 (K)) * J) mod 119;
+         F1 := (F1 + Natural (T1 (K)) * J) mod 117;
+         F2 := (F2 + Natural (T2 (K)) * J) mod 117;
       end loop;
-      return (Natural (G (F1)) + Natural (G (F2))) mod 59;
+      return (Natural (G (F1)) + Natural (G (F2))) mod 58;
    end Hash;
 
    C_0 : aliased constant Ada.Streams.Stream_Element_Array :=
@@ -622,68 +622,42 @@ package body web is
       118, 62, 10, 60, 47, 100, 105, 118, 62, 10);
 
    C_5 : aliased constant Ada.Streams.Stream_Element_Array :=
-     (46, 98, 111, 111, 116, 115, 116, 114, 97, 112, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10, 98,
-      111, 100, 121, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10, 46, 102, 108, 117, 105, 100, 95,
-      103, 114, 105, 100, 32, 123, 10, 32, 32, 32, 32, 99, 111, 108, 111, 114, 58, 32, 114, 101,
-      100, 59, 10, 32, 32, 32, 32, 98, 97, 99, 107, 103, 114, 111, 117, 110, 100, 45, 105, 109,
-      97, 103, 101, 58, 32, 117, 114, 108, 40, 46, 46, 47, 105, 109, 97, 103, 101, 115, 47, 102,
-      108, 117, 105, 100, 46, 112, 110, 103, 41, 10, 125, 10, 46, 97, 115, 102, 32, 123, 10, 32,
-      32, 32, 32, 98, 97, 99, 107, 103, 114, 111, 117, 110, 100, 45, 105, 109, 97, 103, 101, 58,
-      117, 114, 108, 40, 46, 46, 47, 105, 109, 97, 103, 101, 115, 47, 97, 115, 102, 46, 112, 110,
-      103, 41, 10, 125, 10, 46, 97, 119, 97, 32, 123, 10, 32, 32, 32, 32, 99, 111, 108, 111,
-      114, 58, 32, 98, 108, 117, 101, 59, 10, 125, 10, 46, 117, 115, 101, 114, 115, 32, 123, 10,
-      32, 32, 32, 32, 102, 111, 110, 116, 45, 119, 101, 105, 103, 104, 116, 58, 32, 98, 111, 108,
-      100, 59, 10, 125, 10, 46, 106, 113, 117, 101, 114, 121, 45, 117, 105, 45, 49, 46, 49, 50,
-      32, 123, 10, 32, 32, 32, 32, 98, 97, 99, 107, 103, 114, 111, 117, 110, 100, 58, 117, 114,
-      108, 40, 105, 109, 97, 103, 101, 115, 47, 117, 105, 45, 105, 99, 111, 110, 46, 112, 110, 103,
-      41, 32, 110, 111, 45, 114, 101, 112, 101, 97, 116, 10, 125, 10, 46, 99, 104, 111, 115, 101,
-      110, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10, 46, 99, 111, 109, 109, 101, 110, 116, 115,
-      32, 123, 10, 32, 32, 32, 32, 10, 125, 10, 46, 98, 108, 111, 103, 115, 32, 123, 10, 32,
-      32, 32, 32, 10, 125, 10, 46, 109, 97, 114, 107, 101, 100, 105, 116, 32, 123, 10, 32, 32,
-      32, 32, 10, 125, 10, 46, 115, 116, 111, 114, 97, 103, 101, 115, 32, 123, 10, 32, 32, 32,
-      32, 10, 125, 10, 46, 119, 105, 107, 105, 115, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10,
-      46, 116, 97, 103, 101, 100, 105, 116, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10, 46, 100,
-      97, 116, 101, 116, 105, 109, 101, 112, 105, 99, 107, 101, 114, 32, 123, 10, 32, 32, 32, 32,
-      10, 125, 10, 46, 116, 114, 117, 109, 98, 111, 119, 121, 103, 32, 123, 10, 32, 32, 32, 32,
-      10, 125, 10);
-
-   C_6 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 97, 115, 102, 32, 123, 10, 32, 32, 32, 32, 98, 97, 99, 107, 103, 114, 111, 117, 110, 100,
       45, 105, 109, 97, 103, 101, 58, 117, 114, 108, 40, 46, 46, 47, 105, 109, 97, 103, 101, 115,
       47, 97, 115, 102, 46, 112, 110, 103, 41, 10, 125, 10);
 
-   C_7 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_6 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 97, 119, 97, 32, 123, 10, 32, 32, 32, 32, 99, 111, 108, 111, 114, 58, 32, 98, 108, 117,
       101, 59, 10, 125, 10);
 
-   C_8 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_7 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 98, 108, 111, 103, 115, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_9 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_8 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 98, 111, 111, 116, 115, 116, 114, 97, 112, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10, 98,
       111, 100, 121, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_10 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_9 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 99, 111, 109, 109, 101, 110, 116, 115, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_11 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_10 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 102, 108, 117, 105, 100, 95, 103, 114, 105, 100, 32, 123, 10, 32, 32, 32, 32, 99, 111, 108,
       111, 114, 58, 32, 114, 101, 100, 59, 10, 32, 32, 32, 32, 98, 97, 99, 107, 103, 114, 111,
       117, 110, 100, 45, 105, 109, 97, 103, 101, 58, 32, 117, 114, 108, 40, 46, 46, 47, 46, 46,
       47, 105, 109, 97, 103, 101, 115, 47, 102, 108, 117, 105, 100, 46, 112, 110, 103, 41, 10, 125,
       10);
 
-   C_12 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_11 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 99, 104, 111, 115, 101, 110, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_13 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_12 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 100, 97, 116, 101, 116, 105, 109, 101, 112, 105, 99, 107, 101, 114, 32, 123, 10, 32, 32, 32,
       32, 10, 125, 10);
 
-   C_14 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_13 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 116, 97, 103, 101, 100, 105, 116, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_15 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_14 : aliased constant Ada.Streams.Stream_Element_Array :=
      (98, 111, 100, 121, 32, 123, 10, 32, 32, 32, 32, 98, 97, 99, 107, 103, 114, 111, 117, 110, 100,
       58, 32, 35, 101, 101, 101, 59, 32, 32, 10, 125, 10, 112, 32, 123, 10, 32, 32, 32, 32,
       99, 111, 108, 111, 114, 58, 32, 35, 50, 97, 50, 97, 50, 97, 59, 32, 32, 10, 125, 10,
@@ -693,10 +667,10 @@ package body web is
       118, 32, 123, 10, 32, 32, 32, 32, 99, 111, 108, 111, 114, 58, 32, 35, 50, 48, 50, 48,
       50, 48, 59, 32, 32, 10, 125, 10);
 
-   C_16 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_15 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 109, 97, 114, 107, 101, 100, 105, 116, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_17 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_16 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 98, 111, 111, 116, 115, 116, 114, 97, 112, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10, 98,
       111, 100, 121, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10, 46, 102, 108, 117, 105, 100, 95,
       103, 114, 105, 100, 32, 123, 10, 32, 32, 32, 32, 99, 111, 108, 111, 114, 58, 32, 114, 101,
@@ -722,26 +696,26 @@ package body web is
       10, 125, 10, 46, 116, 114, 117, 109, 98, 111, 119, 121, 103, 32, 123, 10, 32, 32, 32, 32,
       10, 125, 10);
 
-   C_18 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_17 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 106, 113, 117, 101, 114, 121, 45, 117, 105, 45, 49, 46, 49, 50, 32, 123, 10, 32, 32, 32,
       32, 98, 97, 99, 107, 103, 114, 111, 117, 110, 100, 58, 117, 114, 108, 40, 105, 109, 97, 103,
       101, 115, 47, 117, 105, 45, 105, 99, 111, 110, 46, 112, 110, 103, 41, 32, 110, 111, 45, 114,
       101, 112, 101, 97, 116, 10, 125, 10);
 
-   C_19 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_18 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 115, 116, 111, 114, 97, 103, 101, 115, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_20 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_19 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 116, 114, 117, 109, 98, 111, 119, 121, 103, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_21 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_20 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 117, 115, 101, 114, 115, 32, 123, 10, 32, 32, 32, 32, 102, 111, 110, 116, 45, 119, 101, 105,
       103, 104, 116, 58, 32, 98, 111, 108, 100, 59, 10, 125, 10);
 
-   C_22 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_21 : aliased constant Ada.Streams.Stream_Element_Array :=
      (46, 119, 105, 107, 105, 115, 32, 123, 10, 32, 32, 32, 32, 10, 125, 10);
 
-   C_23 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_22 : aliased constant Ada.Streams.Stream_Element_Array :=
      (137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 64, 0,
       0, 0, 64, 8, 6, 0, 0, 0, 170, 105, 113, 222, 0, 0, 0, 4, 115, 66, 73, 84,
       8, 8, 8, 8, 124, 8, 100, 136, 0, 0, 0, 9, 112, 72, 89, 115, 0, 0, 22, 37,
@@ -920,7 +894,7 @@ package body web is
       196, 77, 220, 196, 77, 220, 196, 77, 252, 21, 224, 255, 1, 75, 30, 10, 248, 155, 39, 161,
       90, 0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130);
 
-   C_24 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_23 : aliased constant Ada.Streams.Stream_Element_Array :=
      (60, 63, 120, 109, 108, 32, 118, 101, 114, 115, 105, 111, 110, 61, 34, 49, 46, 48, 34, 63, 62,
       10, 60, 33, 45, 45, 32, 73, 110, 100, 101, 120, 32, 112, 97, 103, 101, 32, 116, 111, 32,
       114, 101, 100, 105, 114, 101, 99, 116, 32, 116, 111, 32, 97, 32, 114, 101, 97, 108, 32, 112,
@@ -977,105 +951,105 @@ package body web is
       60, 47, 99, 58, 111, 116, 104, 101, 114, 119, 105, 115, 101, 62, 60, 47, 99, 58, 99, 104,
       111, 111, 115, 101, 62, 60, 47, 102, 58, 118, 105, 101, 119, 62, 10);
 
-   C_25 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_24 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 115, 102, 95, 101, 100, 105, 116, 97, 98, 108, 101, 32, 61, 32, 123, 125,
       10);
 
-   C_26 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_25 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 115, 102, 95, 108, 105, 115, 116, 32, 61, 32, 123, 125, 10);
 
-   C_27 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_26 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 115, 102, 95, 109, 101, 115, 115, 97, 103, 101, 32, 61, 32, 123, 125, 10);
 
-   C_28 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_27 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 115, 102, 95, 112, 111, 112, 117, 112, 32, 61, 32, 123, 125, 10);
 
-   C_29 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_28 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 115, 102, 95, 119, 105, 100, 103, 101, 116, 115, 32, 61, 32, 123, 125, 10);
 
-   C_30 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_29 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 115, 102, 32, 61, 32, 123, 125, 10);
 
-   C_31 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_30 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 119, 97, 95, 105, 109, 97, 103, 101, 115, 32, 61, 32, 123, 125, 10);
 
-   C_32 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_31 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 119, 97, 95, 115, 116, 111, 114, 97, 103, 101, 115, 32, 61, 32, 123, 125,
       10);
 
-   C_33 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_32 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 119, 97, 32, 61, 32, 123, 125, 10);
 
-   C_34 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_33 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 106, 113, 117, 101, 114, 121, 32, 61, 32, 123, 125, 10);
 
-   C_35 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_34 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 117, 116, 111, 99, 111, 109, 112, 108, 101, 116, 101, 32, 61, 32, 123, 125,
       10);
 
-   C_36 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_35 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 98, 117, 116, 116, 111, 110, 32, 61, 32, 123, 125, 10);
 
-   C_37 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_36 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 99, 111, 114, 101, 32, 61, 32, 123, 125, 10);
 
-   C_38 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_37 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 100, 97, 116, 101, 112, 105, 99, 107, 101, 114, 32, 61, 32, 123, 125, 10);
 
-   C_39 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_38 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 100, 105, 97, 108, 111, 103, 32, 61, 32, 123, 125, 10);
 
-   C_40 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_39 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 100, 114, 97, 103, 103, 97, 98, 108, 101, 32, 61, 32, 123, 125, 10);
 
-   C_41 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_40 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 109, 101, 110, 117, 32, 61, 32, 123, 125, 10);
 
-   C_42 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_41 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 109, 111, 117, 115, 101, 32, 61, 32, 123, 125, 10);
 
-   C_43 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_42 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 112, 111, 115, 105, 116, 105, 111, 110, 32, 61, 32, 123, 125, 10);
 
-   C_44 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_43 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 114, 101, 115, 105, 122, 97, 98, 108, 101, 32, 61, 32, 123, 125, 10);
 
-   C_45 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_44 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 115, 108, 105, 100, 101, 114, 32, 61, 32, 123, 125, 10);
 
-   C_46 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_45 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 115, 111, 114, 116, 97, 98, 108, 101, 32, 61, 32, 123, 125, 10);
 
-   C_47 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_46 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 116, 97, 98, 115, 32, 61, 32, 123, 125, 10);
 
-   C_48 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_47 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 116, 111, 111, 108, 116, 105, 112, 32, 61, 32, 123, 125, 10);
 
-   C_49 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_48 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 119, 105, 100, 103, 101, 116, 32, 61, 32, 123, 125, 10);
 
-   C_50 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_49 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 97, 117, 116, 111, 71, 114, 111, 119, 73, 110, 112, 117, 116, 32, 61, 32, 123,
       125, 10);
 
-   C_51 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_50 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 116, 97, 103, 101, 100, 105, 116, 32, 61, 32, 123, 125, 10);
 
-   C_52 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_51 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 101, 108, 101, 99, 32, 61, 32, 123, 10, 32, 32, 32, 32, 101, 49, 50, 58,
       32, 91, 32, 49, 46, 48, 44, 32, 49, 46, 50, 44, 32, 49, 46, 53, 44, 32, 49, 46,
       56, 44, 32, 50, 46, 50, 44, 32, 50, 46, 55, 44, 32, 51, 46, 51, 44, 32, 51, 46,
       57, 44, 32, 52, 46, 55, 44, 32, 53, 46, 54, 44, 32, 54, 46, 56, 44, 32, 56, 46,
       50, 32, 93, 10, 125, 10);
 
-   C_53 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_52 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 109, 97, 114, 107, 101, 100, 105, 116, 32, 61, 32, 123, 125, 10);
 
-   C_54 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_53 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 115, 104, 111, 119, 100, 111, 119, 110, 32, 61, 32, 123, 125, 10);
 
-   C_55 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_54 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 106, 113, 117, 101, 114, 121, 32, 61, 32, 123, 125, 10, 118, 97, 114, 32, 99,
       111, 114, 101, 32, 61, 32, 123, 125, 10, 118, 97, 114, 32, 119, 105, 100, 103, 101, 116, 32,
       61, 32, 123, 125, 10, 118, 97, 114, 32, 112, 111, 115, 105, 116, 105, 111, 110, 32, 61, 32,
@@ -1084,7 +1058,7 @@ package body web is
       101, 115, 115, 97, 103, 101, 32, 61, 32, 123, 125, 10, 118, 97, 114, 32, 97, 115, 102, 95,
       112, 111, 112, 117, 112, 32, 61, 32, 123, 125, 10);
 
-   C_56 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_55 : aliased constant Ada.Streams.Stream_Element_Array :=
      (118, 97, 114, 32, 100, 114, 97, 103, 103, 97, 98, 108, 101, 32, 61, 32, 123, 125, 10, 118, 97,
       114, 32, 114, 101, 115, 105, 122, 97, 98, 108, 101, 32, 61, 32, 123, 125, 10, 118, 97, 114,
       32, 115, 111, 114, 116, 97, 98, 108, 101, 32, 61, 32, 123, 125, 10, 118, 97, 114, 32, 98,
@@ -1106,7 +1080,7 @@ package body web is
       125, 10, 118, 97, 114, 32, 97, 119, 97, 95, 105, 109, 97, 103, 101, 115, 32, 61, 32, 123,
       125, 10);
 
-   C_57 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_56 : aliased constant Ada.Streams.Stream_Element_Array :=
      (60, 63, 120, 109, 108, 32, 118, 101, 114, 115, 105, 111, 110, 61, 34, 49, 46, 48, 34, 63, 62,
       10, 60, 33, 45, 45, 32, 87, 111, 114, 107, 115, 112, 97, 99, 101, 32, 117, 115, 101, 114,
       32, 112, 97, 103, 101, 10, 32, 32, 45, 32, 32, 67, 111, 112, 121, 114, 105, 103, 104, 116,
@@ -1175,7 +1149,7 @@ package body web is
       100, 105, 118, 62, 60, 47, 117, 105, 58, 100, 101, 102, 105, 110, 101, 62, 60, 47, 117, 105,
       58, 99, 111, 109, 112, 111, 115, 105, 116, 105, 111, 110, 62, 10);
 
-   C_58 : aliased constant Ada.Streams.Stream_Element_Array :=
+   C_57 : aliased constant Ada.Streams.Stream_Element_Array :=
      (60, 63, 120, 109, 108, 32, 118, 101, 114, 115, 105, 111, 110, 61, 34, 49, 46, 48, 34, 63, 62,
       10, 60, 33, 45, 45, 32, 65, 110, 111, 110, 121, 109, 111, 117, 115, 32, 112, 97, 103, 101,
       32, 119, 104, 105, 99, 104, 32, 100, 105, 115, 112, 108, 97, 121, 115, 32, 116, 104, 101, 32,
@@ -1280,60 +1254,59 @@ package body web is
    K_2             : aliased constant String := "WEB-INF/layouts/layout.xhtml";
    K_3             : aliased constant String := "WEB-INF/layouts/mail.xhtml";
    K_4             : aliased constant String := "WEB-INF/layouts/top-bar.xhtml";
-   K_5             : aliased constant String := "css/adafr-1.css";
-   K_6             : aliased constant String := "css/asf.css";
-   K_7             : aliased constant String := "css/awa.css";
-   K_8             : aliased constant String := "css/blogs.css";
-   K_9             : aliased constant String := "css/bootstrap.min.css";
-   K_10            : aliased constant String := "css/comments.css";
-   K_11            : aliased constant String := "css/grids/fluid_grid.css";
-   K_12            : aliased constant String := "css/jquery-chosen-1.8.7/chosen.css";
-   K_13            : aliased constant String := "css/jquery.datetimepicker.css";
-   K_14            : aliased constant String := "css/jquery.tagedit.css";
-   K_15            : aliased constant String := "css/main.css";
-   K_16            : aliased constant String := "css/markedit/jquery.markedit.css";
-   K_17            : aliased constant String := "css/merge-1.css";
-   K_18            : aliased constant String := "css/redmond/jquery-ui-1.12.1.css";
-   K_19            : aliased constant String := "css/storages.css";
-   K_20            : aliased constant String := "css/trumbowyg/trumbowyg.css";
-   K_21            : aliased constant String := "css/users.css";
-   K_22            : aliased constant String := "css/wikis.css";
-   K_23            : aliased constant String := "images/wiki-create.png";
-   K_24            : aliased constant String := "index.xhtml";
-   K_25            : aliased constant String := "js/asf-editable.js";
-   K_26            : aliased constant String := "js/asf-list.js";
-   K_27            : aliased constant String := "js/asf-message.js";
-   K_28            : aliased constant String := "js/asf-popup.js";
-   K_29            : aliased constant String := "js/asf-widgets.js";
-   K_30            : aliased constant String := "js/asf.js";
-   K_31            : aliased constant String := "js/awa-images.js";
-   K_32            : aliased constant String := "js/awa-storages.js";
-   K_33            : aliased constant String := "js/awa.js";
-   K_34            : aliased constant String := "js/jquery-3.4.1.js";
-   K_35            : aliased constant String := "js/jquery-ui-1.12.1/autocomplete.js";
-   K_36            : aliased constant String := "js/jquery-ui-1.12.1/button.js";
-   K_37            : aliased constant String := "js/jquery-ui-1.12.1/core.js";
-   K_38            : aliased constant String := "js/jquery-ui-1.12.1/datepicker.js";
-   K_39            : aliased constant String := "js/jquery-ui-1.12.1/dialog.js";
-   K_40            : aliased constant String := "js/jquery-ui-1.12.1/draggable.js";
-   K_41            : aliased constant String := "js/jquery-ui-1.12.1/menu.js";
-   K_42            : aliased constant String := "js/jquery-ui-1.12.1/mouse.js";
-   K_43            : aliased constant String := "js/jquery-ui-1.12.1/position.js";
-   K_44            : aliased constant String := "js/jquery-ui-1.12.1/resizable.js";
-   K_45            : aliased constant String := "js/jquery-ui-1.12.1/slider.js";
-   K_46            : aliased constant String := "js/jquery-ui-1.12.1/sortable.js";
-   K_47            : aliased constant String := "js/jquery-ui-1.12.1/tabs.js";
-   K_48            : aliased constant String := "js/jquery-ui-1.12.1/tooltip.js";
-   K_49            : aliased constant String := "js/jquery-ui-1.12.1/widget.js";
-   K_50            : aliased constant String := "js/jquery.autoGrowInput.js";
-   K_51            : aliased constant String := "js/jquery.tagedit.js";
-   K_52            : aliased constant String := "js/main.js";
-   K_53            : aliased constant String := "js/markedit/jquery.markedit.js";
-   K_54            : aliased constant String := "js/markedit/showdown.js";
-   K_55            : aliased constant String := "js/merge-1.js";
-   K_56            : aliased constant String := "js/merge-2.js";
-   K_57            : aliased constant String := "main.xhtml";
-   K_58            : aliased constant String := "view.xhtml";
+   K_5             : aliased constant String := "css/asf.css";
+   K_6             : aliased constant String := "css/awa.css";
+   K_7             : aliased constant String := "css/blogs.css";
+   K_8             : aliased constant String := "css/bootstrap.min.css";
+   K_9             : aliased constant String := "css/comments.css";
+   K_10            : aliased constant String := "css/grids/fluid_grid.css";
+   K_11            : aliased constant String := "css/jquery-chosen-1.8.7/chosen.css";
+   K_12            : aliased constant String := "css/jquery.datetimepicker.css";
+   K_13            : aliased constant String := "css/jquery.tagedit.css";
+   K_14            : aliased constant String := "css/main.css";
+   K_15            : aliased constant String := "css/markedit/jquery.markedit.css";
+   K_16            : aliased constant String := "css/merge-1.css";
+   K_17            : aliased constant String := "css/redmond/jquery-ui-1.12.1.css";
+   K_18            : aliased constant String := "css/storages.css";
+   K_19            : aliased constant String := "css/trumbowyg/trumbowyg.css";
+   K_20            : aliased constant String := "css/users.css";
+   K_21            : aliased constant String := "css/wikis.css";
+   K_22            : aliased constant String := "images/wiki-create.png";
+   K_23            : aliased constant String := "index.xhtml";
+   K_24            : aliased constant String := "js/asf-editable.js";
+   K_25            : aliased constant String := "js/asf-list.js";
+   K_26            : aliased constant String := "js/asf-message.js";
+   K_27            : aliased constant String := "js/asf-popup.js";
+   K_28            : aliased constant String := "js/asf-widgets.js";
+   K_29            : aliased constant String := "js/asf.js";
+   K_30            : aliased constant String := "js/awa-images.js";
+   K_31            : aliased constant String := "js/awa-storages.js";
+   K_32            : aliased constant String := "js/awa.js";
+   K_33            : aliased constant String := "js/jquery-3.4.1.js";
+   K_34            : aliased constant String := "js/jquery-ui-1.12.1/autocomplete.js";
+   K_35            : aliased constant String := "js/jquery-ui-1.12.1/button.js";
+   K_36            : aliased constant String := "js/jquery-ui-1.12.1/core.js";
+   K_37            : aliased constant String := "js/jquery-ui-1.12.1/datepicker.js";
+   K_38            : aliased constant String := "js/jquery-ui-1.12.1/dialog.js";
+   K_39            : aliased constant String := "js/jquery-ui-1.12.1/draggable.js";
+   K_40            : aliased constant String := "js/jquery-ui-1.12.1/menu.js";
+   K_41            : aliased constant String := "js/jquery-ui-1.12.1/mouse.js";
+   K_42            : aliased constant String := "js/jquery-ui-1.12.1/position.js";
+   K_43            : aliased constant String := "js/jquery-ui-1.12.1/resizable.js";
+   K_44            : aliased constant String := "js/jquery-ui-1.12.1/slider.js";
+   K_45            : aliased constant String := "js/jquery-ui-1.12.1/sortable.js";
+   K_46            : aliased constant String := "js/jquery-ui-1.12.1/tabs.js";
+   K_47            : aliased constant String := "js/jquery-ui-1.12.1/tooltip.js";
+   K_48            : aliased constant String := "js/jquery-ui-1.12.1/widget.js";
+   K_49            : aliased constant String := "js/jquery.autoGrowInput.js";
+   K_50            : aliased constant String := "js/jquery.tagedit.js";
+   K_51            : aliased constant String := "js/main.js";
+   K_52            : aliased constant String := "js/markedit/jquery.markedit.js";
+   K_53            : aliased constant String := "js/markedit/showdown.js";
+   K_54            : aliased constant String := "js/merge-1.js";
+   K_55            : aliased constant String := "js/merge-2.js";
+   K_56            : aliased constant String := "main.xhtml";
+   K_57            : aliased constant String := "view.xhtml";
 
    Names : constant Name_Array := (
       K_0'Access, K_1'Access, K_2'Access, K_3'Access,
@@ -1350,7 +1323,7 @@ package body web is
       K_44'Access, K_45'Access, K_46'Access, K_47'Access,
       K_48'Access, K_49'Access, K_50'Access, K_51'Access,
       K_52'Access, K_53'Access, K_54'Access, K_55'Access,
-      K_56'Access, K_57'Access, K_58'Access);
+      K_56'Access, K_57'Access);
 
    type Content_Array is array (Natural range <>) of Content_Access;
    Contents : constant Content_Array := (
@@ -1363,7 +1336,7 @@ package body web is
       C_36'Access, C_37'Access, C_38'Access, C_39'Access, C_40'Access, C_41'Access,
       C_42'Access, C_43'Access, C_44'Access, C_45'Access, C_46'Access, C_47'Access,
       C_48'Access, C_49'Access, C_50'Access, C_51'Access, C_52'Access, C_53'Access,
-      C_54'Access, C_55'Access, C_56'Access, C_57'Access, C_58'Access);
+      C_54'Access, C_55'Access, C_56'Access, C_57'Access);
 
    function Get_Content (Name : String) return Content_Access is
       H : constant Natural := Hash (Name);

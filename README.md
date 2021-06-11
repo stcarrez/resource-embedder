@@ -45,8 +45,9 @@ are --lang=Ada -o src --rule=package.xml --name-access .
 
 Incorporating files in a binary program can sometimes be a challenge.
 The `Advance Resource Embedder` is a flexible tool that collects files such as
-documentation, images, scripts and others.  It is able to apply some
-transformation on the collected files:
+documentation, images, scripts, configuration files and generates a source
+code that contains these files.  It is able to apply some
+transformations on the collected files:
 
 * it can run a Javascript minifier such as `closure`,
 * it can compress CSS files by running `yui-compressor`,
@@ -65,7 +66,7 @@ The process to use ARE is simple:
   The XML description gives more flexibility as it allows to define a transformation rule that
   must be executed on the original file before being embedded.  This allows to minify a Javascript
   or CSS file, compress some files and even encrypt a file before its integration.
-* You run the ARE command with the your target language and rule description and you give the tool
+* You run the ARE command with your target language and rule description and you give the tool
   a list of directories that must be scanned to identify the files that must be collected.
   The ARE tool scan the directories according to the patterns that you have given either on
   the command line or in the XML rule description.  After identifying the files, the tool applies
