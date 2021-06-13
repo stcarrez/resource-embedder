@@ -19,7 +19,18 @@ with Ada.Strings.Unbounded;
 with GNAT.Source_Info;
 
 with Util.Tests;
+with Util.Systems.Os;
 package Are.Testsuite is
+
+   pragma Warnings (Off, "*condition is always*");
+
+   function Is_Windows return Boolean is
+     (Util.Systems.Os.Directory_Separator = '\');
+
+   pragma Warnings (On, "*condition is always*");
+
+   EXE   : constant String
+     := (if Is_Windows then ".exe" else "");
 
    function Suite return Util.Tests.Access_Test_Suite;
 

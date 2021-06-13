@@ -30,7 +30,7 @@ package body Are.Generator.Go.Tests is
 
    function Tool return String is
    begin
-      return "bin/are";
+      return "bin/are" & Are.Testsuite.EXE;
    end Tool;
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is

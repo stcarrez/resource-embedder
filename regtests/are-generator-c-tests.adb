@@ -27,7 +27,7 @@ package body Are.Generator.C.Tests is
 
    function Tool return String is
    begin
-      return "bin/are";
+      return "bin/are" & Are.Testsuite.EXE;
    end Tool;
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
@@ -54,10 +54,10 @@ package body Are.Generator.C.Tests is
 
       --  Build the test program.
       T.Execute ("make -C regtests/files/test-c-1", Result);
-      T.Assert (Ada.Directories.Exists ("bin/test-c-1"),
+      T.Assert (Ada.Directories.Exists ("bin/test-c-1" & Are.Testsuite.EXE),
                 "Binary file 'bin/test-c-1' not created");
 
-      T.Execute ("bin/test-c-1", Result);
+      T.Execute ("bin/test-c-1" & Are.Testsuite.EXE, Result);
       Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }", Result,
                                  "Invalid generation");
    end Test_Generate_C1;
@@ -79,10 +79,10 @@ package body Are.Generator.C.Tests is
 
       --  Build the test program.
       T.Execute ("make -C regtests/files/test-c-2", Result);
-      T.Assert (Ada.Directories.Exists ("bin/test-c-2"),
+      T.Assert (Ada.Directories.Exists ("bin/test-c-2" & Are.Testsuite.EXE),
                 "Binary file 'bin/test-c-2' not created");
 
-      T.Execute ("bin/test-c-2", Result);
+      T.Execute ("bin/test-c-2" & Are.Testsuite.EXE, Result);
       Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }", Result,
                                  "Invalid generation");
    end Test_Generate_C2;

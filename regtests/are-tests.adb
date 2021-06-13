@@ -46,7 +46,7 @@ package body Are.Tests is
    begin
       T.Execute ("make -C examples/c-config clean", Result, Status => 0);
       T.Execute ("make -C examples/c-config ARE=../../bin/are", Result, Status => 0);
-      T.Execute ("examples/c-config/show-config", Result, Status => 0);
+      T.Execute ("examples/c-config/show-config" & Are.Testsuite.EXE, Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*Example of embedded configuration.*",
                                  Result,
                                  "Invalid C show-config");
@@ -57,7 +57,7 @@ package body Are.Tests is
    begin
       T.Execute ("make -C examples/ada-config clean", Result, Status => 0);
       T.Execute ("make -C examples/ada-config ARE=../../bin/are", Result, Status => 0);
-      T.Execute ("examples/ada-config/show_config", Result, Status => 0);
+      T.Execute ("examples/ada-config/show_config" & Are.Testsuite.EXE, Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*Example of embedded configuration.*",
                                  Result,
                                  "Invalid Ada show_config");
@@ -79,7 +79,7 @@ package body Are.Tests is
    begin
       T.Execute ("make -C examples/c-help clean", Result, Status => 0);
       T.Execute ("make -C examples/c-help ARE=../../bin/are", Result, Status => 0);
-      T.Execute ("examples/c-help/show-help", Result, Status => 0);
+      T.Execute ("examples/c-help/show-help" & Are.Testsuite.EXE, Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*sh.*",
                                  Result,
                                  "Invalid C show-help: sh missing");
@@ -103,7 +103,7 @@ package body Are.Tests is
    begin
       T.Execute ("make -C examples/ada-help clean", Result, Status => 0);
       T.Execute ("make -C examples/ada-help ARE=../../bin/are", Result, Status => 0);
-      T.Execute ("examples/ada-help/show_help", Result, Status => 0);
+      T.Execute ("examples/ada-help/show_help" & Are.Testsuite.EXE, Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*sh.*",
                                  Result,
                                  "Invalid Ada show-help: sh missing");

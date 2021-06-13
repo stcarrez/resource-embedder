@@ -29,7 +29,7 @@ package body Are.Generator.Ada2012.Tests is
 
    function Tool return String is
    begin
-      return "bin/are";
+      return "bin/are" & Are.Testsuite.EXE;
    end Tool;
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
@@ -71,10 +71,10 @@ package body Are.Generator.Ada2012.Tests is
 
       --  Build the test program.
       T.Execute ("gprbuild -Pregtests/files/test-ada-1/test1.gpr", Result);
-      T.Assert (Ada.Directories.Exists ("bin/test1"),
+      T.Assert (Ada.Directories.Exists ("bin/test1" & Are.Testsuite.EXE),
                 "Binary file 'bin/test1' not created");
 
-      T.Execute ("bin/test1", Result);
+      T.Execute ("bin/test1" & Are.Testsuite.EXE, Result);
       Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }",
                                  Result,
                                  "Invalid generation");
@@ -97,10 +97,10 @@ package body Are.Generator.Ada2012.Tests is
 
       --  Build the test program.
       T.Execute ("gprbuild -Pregtests/files/test-ada-2/test2.gpr", Result);
-      T.Assert (Ada.Directories.Exists ("bin/test2"),
+      T.Assert (Ada.Directories.Exists ("bin/test2" & Are.Testsuite.EXE),
                 "Binary file 'bin/test2' not created");
 
-      T.Execute ("bin/test2", Result);
+      T.Execute ("bin/test2" & Are.Testsuite.EXE, Result);
       Util.Tests.Assert_Matches (T, "PASS", Result,
                                  "Invalid generation");
    end Test_Generate_Ada2;
@@ -127,10 +127,10 @@ package body Are.Generator.Ada2012.Tests is
 
       --  Build the test program.
       T.Execute ("gprbuild -Pregtests/files/test-ada-3/test3.gpr", Result);
-      T.Assert (Ada.Directories.Exists ("bin/test3"),
+      T.Assert (Ada.Directories.Exists ("bin/test3" & Are.Testsuite.EXE),
                 "Binary file 'bin/test3' not created");
 
-      T.Execute ("bin/test3", Result);
+      T.Execute ("bin/test3" & Are.Testsuite.EXE, Result);
       Util.Tests.Assert_Matches (T, "PASS: <config></config>", Result,
                                  "Invalid generation");
    end Test_Generate_Ada3;
@@ -152,10 +152,10 @@ package body Are.Generator.Ada2012.Tests is
 
       --  Build the test program.
       T.Execute ("gprbuild -Pregtests/files/test-ada-4/test4.gpr", Result);
-      T.Assert (Ada.Directories.Exists ("bin/test4"),
+      T.Assert (Ada.Directories.Exists ("bin/test4" & Are.Testsuite.EXE),
                 "Binary file 'bin/test4' not created");
 
-      T.Execute ("bin/test4", Result);
+      T.Execute ("bin/test4" & Are.Testsuite.EXE, Result);
       Util.Tests.Assert_Matches (T, "PASS: <config>test4</config>", Result,
                                  "Invalid generation");
    end Test_Generate_Ada4;
@@ -177,10 +177,10 @@ package body Are.Generator.Ada2012.Tests is
 
       --  Build the test program.
       T.Execute ("gprbuild -Pregtests/files/test-ada-5/test5.gpr", Result);
-      T.Assert (Ada.Directories.Exists ("bin/test5"),
+      T.Assert (Ada.Directories.Exists ("bin/test5" & Are.Testsuite.EXE),
                 "Binary file 'bin/test5' not created");
 
-      T.Execute ("bin/test5", Result);
+      T.Execute ("bin/test5" & Are.Testsuite.EXE, Result);
       Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }",
                                  Result,
                                  "Invalid generation");
@@ -203,10 +203,10 @@ package body Are.Generator.Ada2012.Tests is
 
       --  Build the test program.
       T.Execute ("gprbuild -Pregtests/files/test-ada-6/test6.gpr", Result);
-      T.Assert (Ada.Directories.Exists ("bin/test6"),
+      T.Assert (Ada.Directories.Exists ("bin/test6" & Are.Testsuite.EXE),
                 "Binary file 'bin/test6' not created");
 
-      T.Execute ("bin/test6", Result);
+      T.Execute ("bin/test6" & Are.Testsuite.EXE, Result);
       Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }",
                                  Result,
                                  "Invalid generation");
