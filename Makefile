@@ -6,22 +6,21 @@ DIST_DIRS=ada-util ada-el
 DIST_DIR=resource-embedder-$(VERSION)
 DIST_FILE=$(DIST_DIR).tar.gz
 
-ifeq ($(OS),Windows_NT)
-URIL_OS=win64
+ifeq (${OS},Windows_NT)
+UTIL_OS=win64
 else
 
 ARE_SYSTEM := $(shell uname -sm | sed "s- -_-g")
 
 ifeq ($(ARE_SYSTEM),Linux_x86_64)
 UTIL_OS=linux64
-endif
 
-ifeq ($(ARE_SYSTEM),Linux_i686)
+else ifeq ($(ARE_SYSTEM),Linux_i686)
 UTIL_OS=linux32
-endif
 
-ifeq ($(ARE_SYSTEM),Darwin_x86_64)
+else ifeq ($(ARE_SYSTEM),Darwin_x86_64)
 UTIL_OS=macos64
+
 endif
 
 endif
