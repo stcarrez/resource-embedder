@@ -11,12 +11,7 @@ abstract project Config is
    Processors := External ("PROCESSORS", "1");
 
    package Builder is
-       case Mode is
-          when "debug" => 
-             for Default_Switches ("Ada") use ("-g", "-j" & Processors);
-          when others =>
-             for Default_Switches ("Ada") use ("-g", "-O2", "-j" & Processors);
-       end case;
+       for Default_Switches ("Ada") use ("-j" & Processors);
    end Builder;
 
    package compiler is
@@ -28,11 +23,11 @@ abstract project Config is
 
          when "debug" =>
             for Default_Switches ("Ada") use defaults & warnings
-               & ("-g", "-gnata", "-gnatVaMI", "-gnaty3abcefhiklmnprstxM127");
+               & ("-g", "-gnata", "-gnatVaMI", "-gnaty3abcefhiklmnprstxM99");
 
          when "coverage" =>
             for Default_Switches ("Ada") use defaults & warnings
-               & ("-gnata", "-gnatVaMI", "-gnaty3abcefhiklmnprstxM127",
+               & ("-g", "-O2", "-gnata", "-gnatVaMI", "-gnaty3abcefhiklmnprstxM99",
                   "-fprofile-arcs", "-ftest-coverage");
 
          when "optimize" =>
