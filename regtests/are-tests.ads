@@ -34,6 +34,12 @@ package Are.Tests is
 
    procedure Test_Example_Ada_Help (T : in out Test);
 
+   procedure Test_Example_Ada_Lines (T : in out Test);
+
    procedure Test_Example_Go_Help (T : in out Test);
+
+   --  Test converting some content into a list of lines.
+   procedure Test_Convert_Lines_1 (T : in out Test);
+   procedure Test_Convert_Lines_2 (T : in out Test);
 
 end Are.Tests;

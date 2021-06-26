@@ -53,6 +53,12 @@ package body Are.Generator.Tests is
                        Test_Exec_Error_5'Access);
       Caller.Add_Test (Suite, "Test are (XML format error)",
                        Test_Exec_Error_6'Access);
+      Caller.Add_Test (Suite, "Test are (wrong resource format)",
+                       Test_Exec_Error_7'Access);
+      Caller.Add_Test (Suite, "Test are (missing <line-separator>)",
+                       Test_Exec_Error_8'Access);
+      Caller.Add_Test (Suite, "Test are (invalid <line-filter>)",
+                       Test_Exec_Error_9'Access);
       Caller.Add_Test (Suite, "Test are (verbose mode with error)",
                        Test_Verbose'Access);
       Are.Generator.Ada2012.Tests.Add_Tests (Suite);
@@ -91,7 +97,8 @@ package body Are.Generator.Tests is
    begin
       T.Execute (Tool & " -o " & Dir
                  & " --rule=package-missing-rule.xml " & Web, Result, Status => 1);
-      Util.Tests.Assert_Matches (T, "are: error: package file package-missing-rule.xml does not exist",
+      Util.Tests.Assert_Matches (T, "are: error: package file "
+                                 & "package-missing-rule.xml does not exist",
                                  Result,
                                  "Invalid error message");
    end Test_Missing_Rule;
@@ -175,10 +182,48 @@ package body Are.Generator.Tests is
       Result : Ada.Strings.Unbounded.Unbounded_String;
    begin
       T.Execute (Tool & " -o " & Dir & " --rule=" & Rule & " " & Web, Result, Status => 1);
-      Util.Tests.Assert_Matches (T, "are: error: package-error-6.xml:2:0: Node <package> is not closed",
+      Util.Tests.Assert_Matches (T, "are: error: package-error-6.xml:2:0: "
+                                 & "Node <package> is not closed",
                                  Result,
                                  "Invalid error message");
    end Test_Exec_Error_6;
+
+   procedure Test_Exec_Error_7 (T : in out Test) is
+      Dir    : constant String := Util.Tests.Get_Test_Path ("");
+      Web    : constant String := "regtests/files/test-ada-4";
+      Rule   : constant String := "regtests/files/package-error-7.xml";
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute (Tool & " -o " & Dir & " --rule=" & Rule & " " & Web, Result, Status => 1);
+      Util.Tests.Assert_Matches (T, "are: error: .*: invalid resource format 'bad-format'",
+                                 Result,
+                                 "Invalid error message");
+   end Test_Exec_Error_7;
+
+   procedure Test_Exec_Error_8 (T : in out Test) is
+      Dir    : constant String := Util.Tests.Get_Test_Path ("");
+      Web    : constant String := "regtests/files/test-ada-4";
+      Rule   : constant String := "regtests/files/package-error-8.xml";
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute (Tool & " -o " & Dir & " --rule=" & Rule & " " & Web, Result, Status => 1);
+      Util.Tests.Assert_Matches (T, "are: error: .*: missing 'line-separator'"
+                                 & " for resource 'Error1'",
+                                 Result,
+                                 "Invalid error message");
+   end Test_Exec_Error_8;
+
+   procedure Test_Exec_Error_9 (T : in out Test) is
+      Dir    : constant String := Util.Tests.Get_Test_Path ("");
+      Web    : constant String := "regtests/files/test-ada-4";
+      Rule   : constant String := "regtests/files/package-error-9.xml";
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute (Tool & " -o " & Dir & " --rule=" & Rule & " " & Web, Result, Status => 1);
+      Util.Tests.Assert_Matches (T, "are: error: .*: invalid pattern '",
+                                 Result,
+                                 "Invalid error message");
+   end Test_Exec_Error_9;
 
    procedure Test_Verbose (T : in out Test) is
       Dir    : constant String := Util.Tests.Get_Test_Path ("");
@@ -189,6 +234,15 @@ package body Are.Generator.Tests is
       T.Execute (Tool & " -v -o " & Dir & " --rule=" & Rule & " " & Web, Result, Status => 1);
       Util.Tests.Assert_Matches (T, ".*missing-command", Result,
                                  "Invalid error message");
+
+      T.Assert (not Ada.Directories.Exists (Ada.Directories.Compose (Dir, "error1.ads")),
+                "Unexpected file error1.ads was created");
+
+      T.Execute (Tool & " -vv -o " & Dir & " --rule=" & Rule & " " & Web, Result, Status => 1);
+      Util.Tests.Assert_Matches (T, ".*DEBUG.*Process rule", Result,
+                                 "Invalid debug message");
+      Util.Tests.Assert_Matches (T, ".*INFO  - Util.Processes", Result,
+                                 "Missing debug message");
 
       T.Assert (not Ada.Directories.Exists (Ada.Directories.Compose (Dir, "error1.ads")),
                 "Unexpected file error1.ads was created");

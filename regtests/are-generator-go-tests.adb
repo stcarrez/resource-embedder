@@ -50,16 +50,18 @@ package body Are.Generator.Go.Tests is
       Result : Ada.Strings.Unbounded.Unbounded_String;
    begin
       --  Generate the resources1.go file
-      T.Execute (Tool & " --lang=go -o " & Dir & " --name-access --resource=Resources1 --fileset '**/*' "
+      T.Execute (Tool & " --lang=go -o " & Dir
+                 & " --name-access --resource=Resources1 --fileset '**/*' "
                  & Web, Result);
 
       T.Assert (Ada.Directories.Exists (Target),
                 "Resource file 'resources1/resources1.go' not generated");
 
-      Are.Testsuite.Assert_Equal_Files (T       => T,
-                                        Expect  => Util.Tests.Get_Path (Expect_Dir & "resources1.go"),
-                                        Test    => Target,
-                                        Message => "Invalid Go generation");
+      Are.Testsuite.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "resources1.go"),
+         Test    => Target,
+         Message => "Invalid Go generation");
    end Test_Generate_Go1;
 
    procedure Test_Generate_Go2 (T : in out Test) is
@@ -76,10 +78,11 @@ package body Are.Generator.Go.Tests is
       T.Assert (Ada.Directories.Exists (Target),
                 "Resource file 'resources2/resources2.go' not generated");
 
-      Are.Testsuite.Assert_Equal_Files (T       => T,
-                                        Expect  => Util.Tests.Get_Path (Expect_Dir & "resources2.go"),
-                                        Test    => Target,
-                                        Message => "Invalid Go generation");
+      Are.Testsuite.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "resources2.go"),
+         Test    => Target,
+         Message => "Invalid Go generation");
    end Test_Generate_Go2;
 
    procedure Test_Generate_Go3 (T : in out Test) is
@@ -96,10 +99,11 @@ package body Are.Generator.Go.Tests is
       T.Assert (Ada.Directories.Exists (Target),
                 "Resource file 'resource4/resource4.go' not generated");
 
-      Are.Testsuite.Assert_Equal_Files (T       => T,
-                                        Expect  => Util.Tests.Get_Path (Expect_Dir & "resource4.go"),
-                                        Test    => Target,
-                                        Message => "Invalid Go generation");
+      Are.Testsuite.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "resource4.go"),
+         Test    => Target,
+         Message => "Invalid Go generation");
    end Test_Generate_Go3;
 
 end Are.Generator.Go.Tests;

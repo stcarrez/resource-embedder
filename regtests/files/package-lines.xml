@@ -1,0 +1,15 @@
+<package>
+
+  <resource name='Lines' format='lines'>
+    <line-separator>\r</line-separator>
+    <line-separator>\n</line-separator>
+
+    <install mode='copy'>
+      <fileset dir=".">
+        <include name="**/*.txt"/>
+      </fileset>
+    </install>
+
+  </resource>
+
+</package>

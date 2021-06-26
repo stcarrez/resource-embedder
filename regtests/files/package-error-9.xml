@@ -1,0 +1,16 @@
+<package>
+
+  <resource name='Error1' format='lines'>
+    <line-separator>\n</line-separator>
+    <line-filter>]invalid[
+    </line-filter>
+
+    <install mode='copy' dir='config'>
+      <fileset dir="config">
+        <include name="*.xml"/>
+      </fileset>
+    </install>
+
+  </resource>
+
+</package>

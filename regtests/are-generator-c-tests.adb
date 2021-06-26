@@ -44,7 +44,8 @@ package body Are.Generator.C.Tests is
       Result : Ada.Strings.Unbounded.Unbounded_String;
    begin
       --  Generate the resources.ad[bs] files
-      T.Execute (Tool & " --lang=c -o " & Dir & " --name-access --resource=Resources1 --fileset '**/*' "
+      T.Execute (Tool & " --lang=c -o " & Dir & " --name-access "
+                 & "--resource=Resources1 --fileset '**/*' "
                  & Web, Result);
 
       T.Assert (Ada.Directories.Exists (Ada.Directories.Compose (Dir, "resources1.h")),
@@ -58,7 +59,8 @@ package body Are.Generator.C.Tests is
                 "Binary file 'bin/test-c-1' not created");
 
       T.Execute ("bin/test-c-1" & Are.Testsuite.EXE, Result);
-      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }", Result,
+      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p"
+                                 & " {    color: #2a2a2a;  }", Result,
                                  "Invalid generation");
    end Test_Generate_C1;
 
@@ -83,7 +85,8 @@ package body Are.Generator.C.Tests is
                 "Binary file 'bin/test-c-2' not created");
 
       T.Execute ("bin/test-c-2" & Are.Testsuite.EXE, Result);
-      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }", Result,
+      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p"
+                                 & " {    color: #2a2a2a;  }", Result,
                                  "Invalid generation");
    end Test_Generate_C2;
 

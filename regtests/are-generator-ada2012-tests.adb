@@ -52,6 +52,8 @@ package body Are.Generator.Ada2012.Tests is
                        Test_Generate_Concat'Access);
       Caller.Add_Test (Suite, "Test Are.Generate_Bundle",
                        Test_Generate_Bundle'Access);
+      Caller.Add_Test (Suite, "Test Are.Generate_Lines",
+                       Test_Generate_Lines'Access);
    end Add_Tests;
 
    procedure Test_Generate_Ada1 (T : in out Test) is
@@ -75,7 +77,8 @@ package body Are.Generator.Ada2012.Tests is
                 "Binary file 'bin/test1' not created");
 
       T.Execute ("bin/test1" & Are.Testsuite.EXE, Result);
-      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }",
+      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }"
+                                 & "p {    color: #2a2a2a;  }",
                                  Result,
                                  "Invalid generation");
    end Test_Generate_Ada1;
@@ -167,7 +170,8 @@ package body Are.Generator.Ada2012.Tests is
    begin
       --  Generate the resources.ad[bs] files
       T.Execute (Tool & " -o " & Dir
-                 & " --name-access --content-only --var-access --resource=Resources5 --fileset '**/*' "
+                 & " --name-access --content-only --var-access"
+                 & " --resource=Resources5 --fileset '**/*' "
                  & Web, Result);
 
       T.Assert (Ada.Directories.Exists (Ada.Directories.Compose (Dir, "resources5.ads")),
@@ -181,7 +185,8 @@ package body Are.Generator.Ada2012.Tests is
                 "Binary file 'bin/test5' not created");
 
       T.Execute ("bin/test5" & Are.Testsuite.EXE, Result);
-      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }",
+      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p"
+                                 & " {    color: #2a2a2a;  }",
                                  Result,
                                  "Invalid generation");
    end Test_Generate_Ada5;
@@ -207,15 +212,16 @@ package body Are.Generator.Ada2012.Tests is
                 "Binary file 'bin/test6' not created");
 
       T.Execute ("bin/test6" & Are.Testsuite.EXE, Result);
-      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p {    color: #2a2a2a;  }",
+      Util.Tests.Assert_Matches (T, "PASS: body {    background: #eee;  }p "
+                                 & "{    color: #2a2a2a;  }",
                                  Result,
                                  "Invalid generation");
    end Test_Generate_Ada6;
 
    procedure Test_Generate_Merge (T : in out Test) is
       Dir     : constant String := Util.Tests.Get_Test_Path ("");
-      Web     : constant String := "examples/c-web";
-      Rule    : constant String := "examples/c-web/package.xml";
+      Web     : constant String := "examples/ada-web";
+      Rule    : constant String := "examples/ada-web/package.xml";
       Web_Ads : constant String := Ada.Directories.Compose (Dir, "web.ads");
       Web_Adb : constant String := Ada.Directories.Compose (Dir, "web.adb");
       Result  : Ada.Strings.Unbounded.Unbounded_String;
@@ -256,14 +262,16 @@ package body Are.Generator.Ada2012.Tests is
       T.Assert (Ada.Directories.Exists (Concat_Adb),
                 "Resource file 'concat.adb' not generated");
 
-      Util.Tests.Assert_Equal_Files (T       => T,
-                                     Expect  => Util.Tests.Get_Path (Expect_Dir & "concat.ads"),
-                                     Test    => Concat_Ads,
-                                     Message => "Invalid Ada spec generation");
-      Util.Tests.Assert_Equal_Files (T       => T,
-                                     Expect  => Util.Tests.Get_Path (Expect_Dir & "concat.adb"),
-                                     Test    => Concat_Adb,
-                                     Message => "Invalid Ada body generation");
+      Util.Tests.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "concat.ads"),
+         Test    => Concat_Ads,
+         Message => "Invalid Ada spec generation");
+      Util.Tests.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "concat.adb"),
+         Test    => Concat_Adb,
+         Message => "Invalid Ada body generation");
    end Test_Generate_Concat;
 
    procedure Test_Generate_Bundle (T : in out Test) is
@@ -283,14 +291,63 @@ package body Are.Generator.Ada2012.Tests is
       T.Assert (Ada.Directories.Exists (Bundle_Adb),
                 "Resource file 'bundle.adb' not generated");
 
-      Util.Tests.Assert_Equal_Files (T       => T,
-                                     Expect  => Util.Tests.Get_Path (Expect_Dir & "bundle.ads"),
-                                     Test    => Bundle_Ads,
-                                     Message => "Invalid Ada spec generation");
-      Util.Tests.Assert_Equal_Files (T       => T,
-                                     Expect  => Util.Tests.Get_Path (Expect_Dir & "bundle.adb"),
-                                     Test    => Bundle_Adb,
-                                     Message => "Invalid Ada body generation");
+      Util.Tests.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "bundle.ads"),
+         Test    => Bundle_Ads,
+         Message => "Invalid Ada spec generation");
+      Util.Tests.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "bundle.adb"),
+         Test    => Bundle_Adb,
+         Message => "Invalid Ada body generation");
    end Test_Generate_Bundle;
+
+   procedure Test_Generate_Lines (T : in out Test) is
+      Dir        : constant String := Util.Tests.Get_Test_Path ("");
+      Rule       : constant String := "regtests/files/package-lines.xml";
+      Files      : constant String := "regtests/files";
+      Lines_Ads  : constant String := Ada.Directories.Compose (Dir, "lines.ads");
+      Result     : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      --  Generate the lines.ads files
+      T.Execute (Tool & " -o " & Dir & " --content-only --var-access --rule=" & Rule & " "
+                 & Files & "/lines-empty", Result);
+
+      T.Assert (Ada.Directories.Exists (Lines_Ads),
+                "Resource file 'lines.ads' not generated");
+
+      Util.Tests.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "lines-empty.ads"),
+         Test    => Lines_Ads,
+         Message => "Invalid Ada spec generation");
+
+      Ada.Directories.Delete_File (Lines_Ads);
+      T.Execute (Tool & " -o " & Dir & " --content-only --var-access --rule=" & Rule & " "
+                 & Files & "/lines-single", Result);
+
+      T.Assert (Ada.Directories.Exists (Lines_Ads),
+                "Resource file 'lines.ads' not generated");
+
+      Util.Tests.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "lines-single.ads"),
+         Test    => Lines_Ads,
+         Message => "Invalid Ada spec generation");
+
+      Ada.Directories.Delete_File (Lines_Ads);
+      T.Execute (Tool & " -o " & Dir & " --content-only --var-access --rule=" & Rule & " "
+                 & Files & "/lines-multiple", Result);
+
+      T.Assert (Ada.Directories.Exists (Lines_Ads),
+                "Resource file 'lines.ads' not generated");
+
+      Util.Tests.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "lines-multiple.ads"),
+         Test    => Lines_Ads,
+         Message => "Invalid Ada spec generation");
+   end Test_Generate_Lines;
 
 end Are.Generator.Ada2012.Tests;

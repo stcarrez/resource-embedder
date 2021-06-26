@@ -1,0 +1,20 @@
+-- Advanced Resource Embedder 1.1.0
+package Lines is
+
+   type Content_Array is array (Natural range <>) of access constant String;
+
+   Id_multiple_txt : aliased constant Content_Array;
+
+private
+
+   L_0   : aliased constant String := "line 1";
+   L_1   : aliased constant String := "line 2";
+   L_2   : aliased constant String := "line 3";
+   L_3   : aliased constant String := "line 4";
+   Id_multiple_txt : aliased constant Content_Array :=
+     (L_0'Access,
+      L_1'Access,
+      L_2'Access,
+      L_3'Access);
+
+end Lines;
