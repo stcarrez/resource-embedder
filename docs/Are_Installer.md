@@ -50,7 +50,6 @@ possible by setting the `strip-extension` attribute to `yes` as follows:
 If the file has the name `help.txt`, then it is known internally by the
 name `help`.
 
-
 ## Install mode: concat
 The `concat` mode provides a distribution rule that concatenates a list of
 files.  The rule is created by using the following XML definition:
@@ -70,7 +69,6 @@ By default the generated file has a timestamp which correspond to the time
 when the `are` command is executed.  By setting the `source-timestamp`
 attribute to `true`, the generated file is assigned the timestamp of the
 newest file in the source files.
-
 
 ## Install mode: exec and copy-exec
 The `exec` and `copy-exec` mode are the most powerful installation rules
@@ -97,7 +95,6 @@ each source file.  The following EL variables are defined:
 | dst   | defines the target destination path |
 | name  | defines the relative source name (ie, the name of the resource file) |
 
-
 ## Install mode: bundles
 The `Are.Installer.Bundles` package provides distribution rules
 to merge a list of bundles to the distribution area.  The rule is
@@ -110,7 +107,6 @@ created by using the following XML definition:
   </fileset>
 </install>
 ```
-
 ## Install mode: webmerge
 The `webmerge` distribution rule is intended to merge Javascript or CSS files
 which are used by XHTML presentation files.  It requires some help from the
@@ -194,5 +190,4 @@ the markers becomes:
 <!-- RESOURCE-MERGE-START link=#{contextPath}/css/target-merge-1.css -->
 <!-- RESOURCE-MERGE-END -->
 ```
-
 

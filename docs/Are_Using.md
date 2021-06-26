@@ -16,12 +16,12 @@ before their integration.
 
 ```XML
 <package>
-  <resource name='Help'>
+  <resource name='Help' format='string'>
     <install mode='xxx'>
       ...
     </install>
   <resource>
-  <resource name='Web'>
+  <resource name='Web' format='binary'>
     <install mode='xxx'>
       ...
     </install>
@@ -32,6 +32,15 @@ before their integration.
   ...
 </package>
 ```
+
+The resource content can be available in several formats by the code generator.
+This format is controlled by the `format` attribute.
+The following data formats are supported:
+
+* `binary` format provides the file content as a binary data.
+* `string` format provides the file content as string.
+* `lines` format splits the content in several lines and according to a set
+  of customisable rules.
 
 To help you in the control of the generated code, the resource description can
 also define specific attributes that allow you to tune the code generator.
