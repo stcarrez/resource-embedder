@@ -1,7 +1,7 @@
 with Ada.Streams;
 with Interfaces.C;
 package Resources is
-   type Content_Access is access constant Ada.Streams.Stream_Element_Array;
+   type Content_Access is access constant String;
 
    type Name_Access is access constant String;
    

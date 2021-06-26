@@ -1,6 +1,6 @@
 # Embedding help and documentation in C
 
-This example shows how to you can embed help and documentation files
+This example shows how you can embed help and documentation files
 in a C program.  This example uses a `package.xml` definition to
 describe the files and the methods to collect and embed the files.
 The Advance Resource Embedder scans the directory, runs the `man`
