@@ -220,8 +220,8 @@ package body Are.Generator.Ada2012.Tests is
 
    procedure Test_Generate_Merge (T : in out Test) is
       Dir     : constant String := Util.Tests.Get_Test_Path ("");
-      Web     : constant String := "examples/ada-web";
-      Rule    : constant String := "examples/ada-web/package.xml";
+      Web     : constant String := "examples/c-web";
+      Rule    : constant String := "examples/c-web/package.xml";
       Web_Ads : constant String := Ada.Directories.Compose (Dir, "web.ads");
       Web_Adb : constant String := Ada.Directories.Compose (Dir, "web.adb");
       Result  : Ada.Strings.Unbounded.Unbounded_String;
