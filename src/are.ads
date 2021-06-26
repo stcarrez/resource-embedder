@@ -18,11 +18,15 @@
 private with Ada.Strings.Unbounded;
 private with Ada.Finalization;
 private with Ada.Streams;
+private with Ada.Strings.Maps;
 private with Ada.Containers.Indefinite_Ordered_Maps;
+private with Ada.Containers.Indefinite_Vectors;
 private with Ada.Directories;
 private with Ada.Calendar;
 private with Ada.Command_Line;
 private with GNAT.Strings;
+private with GNAT.Regpat;
+private with Util.Strings.Vectors;
 package Are is
 
    function "-" (Message : in String) return String is (Message);
@@ -38,6 +42,8 @@ package Are is
 private
 
    subtype UString is Ada.Strings.Unbounded.Unbounded_String;
+
+   subtype Character_Set is Ada.Strings.Maps.Character_Set;
 
    type Stream_Element_Access is access all Ada.Streams.Stream_Element_Array;
 
@@ -58,12 +64,29 @@ private
                                                  "<"          => "<",
                                                  "="          => "=");
 
+   type Format_Type is (R_BINARY, R_STRING, R_LINES);
+
+   type Line_Filter_Type (Size : GNAT.Regpat.Program_Size;
+                          Replace_Length : Natural) is
+      record
+         Pattern : GNAT.Regpat.Pattern_Matcher (Size);
+         Replace : String (1 .. Replace_Length);
+      end record;
+
+   package Filter_Vectors is
+     new Ada.Containers.Indefinite_Vectors (Index_Type   => Positive,
+                                            Element_Type => Line_Filter_Type);
+
    --  A resource is composed of a set of files.
    type Resource_Type is limited new Ada.Finalization.Limited_Controlled with record
       Next                : Resource_Access;
       Name                : UString;
+      Format              : Format_Type := R_BINARY;
       Files               : File_Maps.Map;
+      Separators          : Character_Set := Ada.Strings.Maps.Null_Set;
+      Filters             : Filter_Vectors.Vector;
       Type_Name           : UString;
+      Content_Type_Name   : UString;
       Function_Name       : UString;
       Member_Content_Name : UString;
       Member_Length_Name  : UString;
@@ -78,6 +101,9 @@ private
    function Get_Type_Name (Resource : in Resource_Type;
                            Context  : in Context_Type'Class;
                            Default  : in String) return String;
+   function Get_Content_Type_Name (Resource : in Resource_Type;
+                                   Context  : in Context_Type'Class;
+                                   Default  : in String) return String;
    function Get_Function_Name (Resource : in Resource_Type;
                                Context  : in Context_Type'Class;
                                Default  : in String) return String;
@@ -99,21 +125,32 @@ private
    procedure Finalize (Context : in out Resource_Type);
 
    --  Load and add the file in the resource library.
-   procedure Add_File (Resource : in Resource_Access;
+   procedure Add_File (Resource : in out Resource_Type;
                        Name     : in String;
                        Path     : in String;
                        Override : in Boolean := False) with
-     Pre  => Resource /= null and Name'Length > 0 and Path'Length > 0,
+     Pre  => Name'Length > 0 and Path'Length > 0,
      Post => Resource.Files.Contains (Name);
 
    --  Load and add the file in the resource library.
-   procedure Add_File (Resource : in Resource_Access;
+   procedure Add_File (Resource : in out Resource_Type;
                        Name     : in String;
                        Path     : in String;
                        Modtime  : in Ada.Calendar.Time;
                        Override : in Boolean := False) with
-     Pre  => Resource /= null and Name'Length > 0 and Path'Length > 0,
+     Pre  => Name'Length > 0 and Path'Length > 0,
      Post => Resource.Files.Contains (Name);
+
+   --  Add a line filter that will replace contents matching the pattern
+   --  by the replacement string.
+   procedure Add_Line_Filter (Resource    : in out Resource_Type;
+                              Pattern     : in String;
+                              Replacement : in String);
+
+   --  Convert the file content to a list of string lines.
+   procedure Convert_To_Lines (Resource : in Resource_Type;
+                               File     : in File_Info;
+                               Lines    : in out Util.Strings.Vectors.Vector);
 
    --  List of resources.
    type Resource_List is limited record
@@ -136,7 +173,6 @@ private
       Resources   : Resource_List;
       Verbose     : aliased Boolean := False;
       Debug       : aliased Boolean := False;
-      Dump        : aliased Boolean := False;
       Version     : aliased Boolean := False;
       Ignore_Case : aliased Boolean := False;
       Name_Index  : aliased Boolean := False;
@@ -182,7 +218,6 @@ private
 
    --  Configure the logs.
    procedure Configure_Logs (Debug   : in Boolean;
-                             Dump    : in Boolean;
                              Verbose : in Boolean);
 
 end Are;
