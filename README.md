@@ -35,6 +35,11 @@ Complex resource integrations are best described with and XML and are generated 
 are --lang=Ada -o src --rule=package.xml --name-access .
 ```
 
+## Version 1.1.0  - Developemnt
+- Add support to emit Ada String types for embedded content
+- Add support to represent content as an array of lines
+- New example to show the new 'lines' resource format
+
 ## Version 1.0.0  - June 2021
 - First version of the resource embedder
 - Add support for C, Ada and Go
