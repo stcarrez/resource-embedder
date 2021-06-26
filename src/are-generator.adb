@@ -56,7 +56,7 @@ package body Are.Generator is
    --  ------------------------------
    function Get_Title return String is
    begin
-      return "Advanced Resource Embedder 1.0.0";
+      return "Advanced Resource Embedder 1.1.0";
    end Get_Title;
 
    --  ------------------------------
@@ -73,7 +73,8 @@ package body Are.Generator is
    begin
       GC.Set_Usage (Config => Config,
                     Usage  => "[switchs] {file|directory}",
-                    Help   => -("are - resource embedder to include files in your Ada,C/C++,Go binaries"));
+                    Help   => -("are - resource embedder to include files "
+                      & "in your Ada,C/C++,Go binaries"));
       GC.Define_Switch (Config => Config,
                         Output => Context.Verbose'Access,
                         Switch => "-v",
@@ -90,11 +91,6 @@ package body Are.Generator is
                         Long_Switch => "--version",
                         Help   => -("Print the program version"));
       GC.Define_Switch (Config => Config,
-                        Output => Context.Dump'Access,
-                        Switch => "-vvv",
-                        Long_Switch => "--debug-dump",
-                        Help   => -("Enable debug dump execution"));
-      GC.Define_Switch (Config => Config,
                         Output => Context.Tmp_Dir'Access,
                         Long_Switch => "--tmp=",
                         Argument => "DIRECTORY",
@@ -109,7 +105,8 @@ package body Are.Generator is
                         Switch => "-o:",
                         Long_Switch => "--output=",
                         Argument => "DIRECTORY",
-                        Help   => -("Set the output directory path where generators writes the code"));
+                        Help   => -("Set the output directory path where generators "
+                          & "write the code"));
       GC.Define_Switch (Config => Config,
                         Output => Context.Language'Access,
                         Switch => "-l:",
@@ -145,7 +142,8 @@ package body Are.Generator is
       GC.Define_Switch (Config => Config,
                         Output => Context.No_Type_Declaration'Access,
                         Long_Switch => "--no-type-declaration",
-                        Help   => -("Do not declare any type in the package specification (assume they are inherited)"));
+                        Help   => -("Do not declare any type in the package "
+                          & "specification (assume they are inherited)"));
       GC.Define_Switch (Config => Config,
                         Output => Context.Type_Name'Access,
                         Long_Switch => "--type-name=",
@@ -155,27 +153,32 @@ package body Are.Generator is
                         Output => Context.Function_Name'Access,
                         Long_Switch => "--function-name=",
                         Argument => "NAME",
-                        Help   => -("Define the name of the function to get the information from a name"));
+                        Help   => -("Define the name of the function to get the "
+                          & "information from a name"));
       GC.Define_Switch (Config => Config,
                         Output => Context.Member_Content_Name'Access,
                         Long_Switch => "--member-content=",
                         Argument => "NAME",
-                        Help   => -("Define the name data structure member holding the content"));
+                        Help   => -("Define the name data structure member holding "
+                          & "the content"));
       GC.Define_Switch (Config => Config,
                         Output => Context.Member_Length_Name'Access,
                         Long_Switch => "--member-length=",
                         Argument => "NAME",
-                        Help   => -("Define the name data structure member holding the length"));
+                        Help   => -("Define the name data structure member holding "
+                          & "the length"));
       GC.Define_Switch (Config => Config,
                         Output => Context.Member_Modtime_Name'Access,
                         Long_Switch => "--member-modtime=",
                         Argument => "NAME",
-                        Help   => -("Define the name data structure member holding the modification time"));
+                        Help   => -("Define the name data structure member holding "
+                          & "the modification time"));
       GC.Define_Switch (Config => Config,
                         Output => Context.Member_Format_Name'Access,
                         Long_Switch => "--member-format=",
                         Argument => "NAME",
-                        Help   => -("Define the name data structure member holding the content format"));
+                        Help   => -("Define the name data structure member holding "
+                          & "the content format"));
 
       Ada_Generator.Setup (Config);
       GC.Getopt (Config => Config);
@@ -185,10 +188,9 @@ package body Are.Generator is
          return;
       end if;
 
-      if Context.Verbose or Context.Debug or Context.Dump then
+      if Context.Verbose or Context.Debug then
          Are.Configure_Logs (Verbose => Context.Verbose,
-                             Debug   => Context.Debug,
-                             Dump    => Context.Dump);
+                             Debug   => Context.Debug);
       end if;
 
       --  Emulate the Define_Switch with the Callback support
@@ -253,7 +255,13 @@ package body Are.Generator is
       end if;
 
       if not Context.Keep_Temporary then
-         Ada.Directories.Delete_Tree (Context.Get_Generation_Path (""));
+         declare
+            Path : constant String := Context.Get_Generation_Path ("");
+         begin
+            if Ada.Directories.Exists (Path) then
+               Ada.Directories.Delete_Tree (Path);
+            end if;
+         end;
       end if;
 
       Ada.Command_Line.Set_Exit_Status (Context.Status);

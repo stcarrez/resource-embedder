@@ -27,6 +27,14 @@ private with Util.Strings.Vectors;
 --  and retrieve the file content.  The Ada code generator is driven by the
 --  resource description and also by the tool options.
 --
+--  The code generator supports several data format to access the file content.
+--
+--  | Format | Ada type                                         |
+--  |--------|--------------------------------------------------|
+--  | binary | access constant Ada.Streams.Stream_Element_Array |
+--  | string | access constant String                           |
+--  | lines  | array of access constant String                  |
+--
 --  When the `--content-only` option is used, the code generator uses the
 --  following type to describe a file content:
 --

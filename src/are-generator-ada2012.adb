@@ -34,14 +34,16 @@ package body Are.Generator.Ada2012 is
    function To_Ada_Name (Name : in String) return String;
 
    --  Generate the resource declaration list.
-   procedure Generate_Resource_Declarations (Resource    : in Are.Resource_Type;
-                                             Into        : in out Ada.Text_IO.File_Type;
-                                             Declare_Var : in Boolean);
+   procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
+                                             Into         : in out Ada.Text_IO.File_Type;
+                                             Declare_Var  : in Boolean;
+                                             Content_Type : in String);
 
    --  Generate the resource content definition.
-   procedure Generate_Resource_Contents (Resource    : in Are.Resource_Type;
-                                         Into        : in out Ada.Text_IO.File_Type;
-                                         Declare_Var : in Boolean);
+   procedure Generate_Resource_Contents (Resource     : in Are.Resource_Type;
+                                         Into         : in out Ada.Text_IO.File_Type;
+                                         Declare_Var  : in Boolean;
+                                         Content_Type : in String);
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are.Generator.Ada2012");
 
@@ -83,6 +85,31 @@ package body Are.Generator.Ada2012 is
                         Long_Switch => "--content-only",
                         Help   => -("[Ada] Give access only to the file content"));
    end Setup;
+
+   function Get_Function_Type (Generator : in Generator_Type;
+                               Resource  : in Are.Resource_Type;
+                               Context   : in Are.Context_Type'Class) return String is
+      Def_Type    : constant String := (if Generator.Content_Only then
+                                           "Content_Access" else "Content_Type");
+   begin
+      return Resource.Get_Type_Name (Context, Def_Type);
+   end Get_Function_Type;
+
+   function Get_Content_Type (Generator : in Generator_Type;
+                              Resource  : in Are.Resource_Type;
+                              Context   : in Are.Context_Type'Class) return String is
+      Func_Type   : constant String := Get_Function_Type (Generator, Resource, Context);
+   begin
+      if Resource.Format = R_LINES then
+         return Resource.Get_Content_Type_Name (Context, "Content_Array");
+      end if;
+
+      if Func_Type = "access constant String" or Resource.Format = R_STRING then
+         return Resource.Get_Content_Type_Name (Context, "String");
+      end if;
+
+      return Resource.Get_Content_Type_Name (Context, "Ada.Streams.Stream_Element_Array");
+   end Get_Content_Type;
 
    --  ------------------------------
    --  Given a package name, return the file name that correspond.
@@ -214,9 +241,10 @@ package body Are.Generator.Ada2012 is
    --  ------------------------------
    --  Generate the resource declaration list.
    --  ------------------------------
-   procedure Generate_Resource_Declarations (Resource    : in Are.Resource_Type;
-                                             Into        : in out Ada.Text_IO.File_Type;
-                                             Declare_Var : in Boolean) is
+   procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
+                                             Into         : in out Ada.Text_IO.File_Type;
+                                             Declare_Var  : in Boolean;
+                                             Content_Type : in String) is
       Index : Natural := 0;
    begin
       for File in Resource.Files.Iterate loop
@@ -228,7 +256,9 @@ package body Are.Generator.Ada2012 is
             Put (Into, Util.Strings.Image (Index));
             Index := Index + 1;
          end if;
-         Put_Line (Into, " : aliased constant Ada.Streams.Stream_Element_Array;");
+         Put (Into, " : aliased constant ");
+         Put (Into, Content_Type);
+         Put_Line (Into, ";");
       end loop;
       New_Line (Into);
    end Generate_Resource_Declarations;
@@ -236,57 +266,200 @@ package body Are.Generator.Ada2012 is
    --  ------------------------------
    --  Generate the resource content definition.
    --  ------------------------------
-   procedure Generate_Resource_Contents (Resource    : in Are.Resource_Type;
-                                         Into        : in out Ada.Text_IO.File_Type;
-                                         Declare_Var : in Boolean) is
-      Index : Natural := 0;
-   begin
-      for File in Resource.Files.Iterate loop
+   procedure Generate_Resource_Contents (Resource     : in Are.Resource_Type;
+                                         Into         : in out Ada.Text_IO.File_Type;
+                                         Declare_Var  : in Boolean;
+                                         Content_Type : in String) is
+
+      procedure Write_Binary (Name    : in String;
+                              Content : in Are.File_Info) is
+         Need_Sep : Boolean := False;
+         Column   : Natural := 0;
+      begin
          Put (Into, "   ");
-         if Declare_Var then
-            Put (Into, To_Ada_Name (File_Maps.Key (File)));
+         Put (Into, Name);
+         Put (Into, " : aliased constant ");
+         Put (Into, Content_Type);
+         if Content.Content = null or else Content.Content'Length = 0 then
+            Put_Line (Into, "(1 .. 0) := (others => <>);");
+         elsif Content.Content'Length = 1 then
+            Put (Into, " := (0 => ");
+            Put (Into, Util.Strings.Image (Natural (Content.Content (Content.Content'First))));
+            Put_Line (Into, ");");
          else
-            Put (Into, "C_");
-            Put (Into, Util.Strings.Image (Index));
-            Index := Index + 1;
+            Put_Line (Into, " :=");
+            Put (Into, "     (");
+            for C of Content.Content.all loop
+               if Need_Sep then
+                  Put (Into, ",");
+                  Need_Sep := False;
+               end if;
+               if Column > 20 then
+                  New_Line (Into);
+                  Put (Into, "      ");
+                  Column := 1;
+               elsif Column > 0 then
+                  Put (Into, " ");
+               end if;
+               Put (Into, Util.Strings.Image (Natural (C)));
+               Column := Column + 1;
+               Need_Sep := True;
+            end loop;
+            Put_Line (Into, ");");
          end if;
-         declare
-            Content  : constant Are.File_Info := File_Maps.Element (File);
-            Need_Sep : Boolean := False;
-            Column   : Natural := 0;
-         begin
-            Put (Into, " : aliased constant Ada.Streams.Stream_Element_Array");
-            if Content.Content = null or else Content.Content'Length = 0 then
-               Put_Line (Into, "(1 .. 0) := (others => <>);");
-            elsif Content.Content'Length = 1 then
-               Put (Into, " := (0 => ");
-               Put (Into, Util.Strings.Image (Natural (Content.Content (Content.Content'First))));
-               Put_Line (Into, ");");
-            else
-               Put_Line (Into, " :=");
-               Put (Into, "     (");
-               for C of Content.Content.all loop
+      end Write_Binary;
+
+      procedure Write_String (Content : in String) is
+         Need_Sep : Boolean := False;
+         Column   : Natural := 0;
+      begin
+         Column := 40;
+         Put (Into, """");
+         for C of Content loop
+            if Column > 80 then
+               if not Need_Sep then
+                  Put (Into, """");
+               end if;
+               New_Line (Into);
+               Put (Into, "      ");
+               Column := 6;
+               Need_Sep := True;
+            end if;
+            case C is
+               when ASCII.CR =>
+                  if not Need_Sep then
+                     Put (Into, """");
+                     Need_Sep := True;
+                  end if;
+                  Put (Into, " & ASCII.CR");
+                  Column := Column + 11;
+
+               when ASCII.LF =>
+                  if not Need_Sep then
+                     Put (Into, """");
+                     Need_Sep := True;
+                  end if;
+                  Put (Into, " & ASCII.LF");
+                  Column := Column + 11;
+
+               when '"' =>
                   if Need_Sep then
-                     Put (Into, ",");
+                     Put (Into, " & """);
                      Need_Sep := False;
                   end if;
-                  if Column > 20 then
-                     New_Line (Into);
-                     Put (Into, "      ");
-                     Column := 1;
-                  elsif Column > 0 then
-                     Put (Into, " ");
-                  end if;
-                  Put (Into, Util.Strings.Image (Natural (C)));
+                  Put (Into, """""");
                   Column := Column + 1;
-                  Need_Sep := True;
-               end loop;
-               Put_Line (Into, ");");
+
+               when others =>
+                  if Need_Sep then
+                     Put (Into, " & """);
+                     Need_Sep := False;
+                  end if;
+                  Put (Into, C);
+
+            end case;
+            Column := Column + 1;
+         end loop;
+         if not Need_Sep then
+            Put (Into, """");
+         end if;
+      end Write_String;
+
+      procedure Write_String (Name    : in String;
+                              Content : in Are.File_Info) is
+      begin
+         Put (Into, "   ");
+         Put (Into, Name);
+         Put (Into, " : aliased constant ");
+         Put (Into, Content_Type);
+         Put (Into, " := ");
+         if Content.Content /= null and then Content.Content'Length > 0 then
+            declare
+               First   : constant Natural := Natural (Content.Content'First);
+               Last    : constant Natural := Natural (Content.Content'Last);
+
+               File_Content : String (First .. Last);
+               for File_Content'Address use Content.Content.all'Address;
+            begin
+               Write_String (File_Content);
+            end;
+         end if;
+         Put_Line (Into, ";");
+      end Write_String;
+
+      Line_Index : Natural := 0;
+
+      procedure Write_Lines (Name    : in String;
+                             Content : in Are.File_Info) is
+         Lines : Util.Strings.Vectors.Vector;
+         First : Natural := Line_Index;
+      begin
+         Are.Convert_To_Lines (Resource, Content, Lines);
+         for Line of Lines loop
+            Put (Into, "   L_");
+            Put (Into, Util.Strings.Image (Line_Index));
+            Set_Col (Into, 10);
+            Put (Into, ": aliased constant String := ");
+            Write_String (Line);
+            Put_Line (Into, ";");
+            Line_Index := Line_Index + 1;
+         end loop;
+         Put (Into, "   ");
+         Put (Into, Name);
+         Put (Into, " : aliased constant ");
+         Put (Into, Content_Type);
+         if Lines.Is_Empty then
+            Put_Line (Into, "(1 .. 0) := (others => <>);");
+         elsif Lines.Length = 1 then
+            Put (Into, " := (1 => L_");
+            Put (Into, Util.Strings.Image (First));
+            Put_Line (Into, "'Access);");
+         else
+            Put_Line (Into, " :=");
+            Put (Into, "     (");
+            for I in 1 .. Lines.Length loop
+               if I > 1 then
+                  Put_Line (Into, ",");
+                  Set_Col (Into, 7);
+               end if;
+               Put (Into, "L_");
+               Put (Into, Util.Strings.Image (First));
+               Put (Into, "'Access");
+               First := First + 1;
+            end loop;
+            Put_Line (Into, ");");
+         end if;
+      end Write_Lines;
+
+      Index : Natural := 0;
+
+      function Get_Variable_Name (Key : in String) return String is
+      begin
+         if Declare_Var then
+            return To_Ada_Name (Key);
+         else
+            return "C_" & Util.Strings.Image (Index);
+         end if;
+      end Get_Variable_Name;
+
+   begin
+      for File in Resource.Files.Iterate loop
+         declare
+            Name    : constant String := Get_Variable_Name (File_Maps.Key (File));
+            Content : constant Are.File_Info := File_Maps.Element (File);
+         begin
+            Index := Index + 1;
+
+            if Resource.Format = R_LINES then
+               Write_Lines (Name, Content);
+            elsif Resource.Format = R_STRING then
+               Write_String (Name, Content);
+            else
+               Write_Binary (Name, Content);
             end if;
          end;
          New_Line (Into);
       end loop;
-      New_Line (Into);
    end Generate_Resource_Contents;
 
    --  ------------------------------
@@ -360,6 +533,10 @@ package body Are.Generator.Ada2012 is
       Name        : constant String := To_String (Resource.Name);
       Filename    : constant String := To_File_Name (Name) & ".ads";
       Path        : constant String := Context.Get_Output_Path (Filename);
+      Def_Type    : constant String := (if Generator.Content_Only then
+                                           "Content_Access" else "Content_Type");
+      Type_Name   : constant String := Resource.Get_Type_Name (Context, Def_Type);
+      Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
       File        : Ada.Text_IO.File_Type;
       Has_Private : Boolean := False;
    begin
@@ -371,7 +548,9 @@ package body Are.Generator.Ada2012 is
       Put (File, "-- ");
       Put_Line (File, Get_Title);
       if not Context.No_Type_Declaration then
-         Put_Line (File, "with Ada.Streams;");
+         if Resource.Format = R_BINARY then
+            Put_Line (File, "with Ada.Streams;");
+         end if;
          if not Generator.Content_Only then
             Put_Line (File, "with Interfaces.C;");
          end if;
@@ -385,26 +564,39 @@ package body Are.Generator.Ada2012 is
       end if;
       New_Line (File);
       if not Context.No_Type_Declaration then
-         Put_Line (File, "   type Content_Access is access constant Ada.Streams.Stream_Element_Array;");
+         if Resource.Format = R_BINARY then
+            Put_Line (File, "   type Content_Access is access constant"
+                      & " Ada.Streams.Stream_Element_Array;");
+         elsif Resource.Format = R_LINES then
+            Put_Line (File, "   type Content_Array is array (Natural range <>)"
+                      & " of access constant String;");
+            Put_Line (File, "   type Content_Access is access constant Content_Array;");
+         end if;
          New_Line (File);
-         if not Generator.Content_Only then
+         if Context.List_Content or not Generator.Content_Only then
             Put_Line (File, "   type Name_Access is access constant String;");
             New_Line (File);
+         end if;
+         if not Generator.Content_Only then
             Put_Line (File, "   type Format_Type is (FILE_RAW, FILE_GZIP);");
             New_Line (File);
-            Put_Line (File, "   type Content_Type is record");
+            Put (File, "   type ");
+            Put (File, Type_Name);
+            Put_Line (File, " is record");
             Put_Line (File, "      Name    : Name_Access;");
             Put_Line (File, "      Content : Content_Access;");
             Put_Line (File, "      Modtime : Interfaces.C.long := 0;");
             Put_Line (File, "      Format  : Format_Type := FILE_RAW;");
             Put_Line (File, "   end record;");
             New_Line (File);
-            Put_Line (File, "   Null_Content : constant Content_Type;");
+            Put (File, "   Null_Content : constant ");
+            Put (File, Type_Name);
+            Put_Line (File, ";");
             New_Line (File);
          end if;
       end if;
       if Context.Declare_Var then
-         Generate_Resource_Declarations (Resource, File, Context.Declare_Var);
+         Generate_Resource_Declarations (Resource, File, Context.Declare_Var, Content_Type);
       end if;
       if Context.List_Content then
          if not Context.No_Type_Declaration then
@@ -417,18 +609,15 @@ package body Are.Generator.Ada2012 is
       if Context.Name_Index then
          Put_Line (File, "   --  Returns the data stream with the given name or null.");
          Put (File, "   function Get_Content (Name : String) return ");
-         if Generator.Content_Only then
-            Put_Line (File, "Content_Access;");
-         else
-            Put_Line (File, "Content_Type;");
-         end if;
+         Put (File, Type_Name);
+         Put_Line (File, ";");
          New_Line (File);
       end if;
       if Context.Declare_Var then
          Put_Line (File, "private");
          New_Line (File);
          Has_Private := True;
-         Generate_Resource_Contents (Resource, File, Context.Declare_Var);
+         Generate_Resource_Contents (Resource, File, Context.Declare_Var, Content_Type);
       end if;
       if not Context.No_Type_Declaration and not Generator.Content_Only then
          if not Has_Private then
@@ -436,7 +625,9 @@ package body Are.Generator.Ada2012 is
             New_Line (File);
             Has_Private := True;
          end if;
-         Put_Line (File, "   Null_Content : constant Content_Type := (others => <>);");
+         Put (File, "   Null_Content : constant ");
+         Put (File, Type_Name);
+         Put_Line (File, " := (others => <>);");
          New_Line (File);
       end if;
       if Context.List_Content then
@@ -464,12 +655,16 @@ package body Are.Generator.Ada2012 is
       --  Read the generated body file.
       procedure Read_Body (Line : in String);
 
-      Name     : constant String := To_String (Resource.Name);
-      Filename : constant String := To_File_Name (Name) & ".adb";
-      Path     : constant String := Context.Get_Output_Path (Filename);
-      File     : Ada.Text_IO.File_Type;
-      Count    : Natural;
-      Lines    : Util.Strings.Vectors.Vector;
+      Name         : constant String := To_String (Resource.Name);
+      Filename     : constant String := To_File_Name (Name) & ".adb";
+      Path         : constant String := Context.Get_Output_Path (Filename);
+      Def_Type     : constant String := (if Generator.Content_Only then
+                                            "Content_Access" else "Content_Type");
+      Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
+      Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
+      File         : Ada.Text_IO.File_Type;
+      Count        : Natural;
+      Lines        : Util.Strings.Vectors.Vector;
 
       --  ------------------------------
       --  Read the generated body file.
@@ -481,7 +676,7 @@ package body Are.Generator.Ada2012 is
 
    begin
       if not Context.Name_Index or else Generator.Names.Is_Empty then
-         Log.Info ("Skipping body generation for {0}", Filename);
+         Log.Debug ("Skipping body generation for {0}", Filename);
          return;
       end if;
 
@@ -511,25 +706,24 @@ package body Are.Generator.Ada2012 is
             if I = Count - 1 then
 
                if not Context.Declare_Var then
-                  Generate_Resource_Contents (Resource, File, Context.Declare_Var);
+                  Generate_Resource_Contents (Resource, File, Context.Declare_Var, Content_Type);
                end if;
 
                if Context.Name_Index and not Context.List_Content then
                   if Generator.Content_Only then
                      Put_Line (File, "   type Name_Access is access constant String;");
                   end if;
-                  Put_Line (File, "   type Name_Array is array (Natural range <>) of Name_Access;");
+                  Put_Line (File, "   type Name_Array is array "
+                            & "(Natural range <>) of Name_Access;");
                   New_Line (File);
                   Generate_Keyword_Table (Generator, File);
                end if;
 
                New_Line (File);
-               if Generator.Content_Only then
-                  Put_Line (File, "   type Content_Array is array (Natural range <>) of Content_Access;");
-               else
-                  Put_Line (File, "   type Content_Array is array (Natural range <>) of Content_Type;");
-               end if;
-               Put_Line (File, "   Contents : constant Content_Array := (");
+               Put (File, "   type Content_List_Array is array (Natural range <>) of ");
+               Put (File, Type_Name);
+               Put_Line (File, ";");
+               Put_Line (File, "   Contents : constant Content_List_Array := (");
                Put (File, "     ");
                declare
                   Need_Sep : Boolean := False;
@@ -583,11 +777,8 @@ package body Are.Generator.Ada2012 is
 
                New_Line (File);
                Put (File, "   function Get_Content (Name : String) return ");
-               if Generator.Content_Only then
-                  Put_Line (File, "Content_Access is");
-               else
-                  Put_Line (File, "Content_Type is");
-               end if;
+               Put (File, Type_Name);
+               Put_Line (File, " is");
                if Context.Ignore_Case then
                   Put_Line (File, "      K : constant String := "
                             & "Util.Strings.Transforms.To_Upper_Case (Name);");
