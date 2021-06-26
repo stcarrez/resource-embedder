@@ -1,7 +1,7 @@
--- Advanced Resource Embedder 1.0.0
+-- Advanced Resource Embedder 1.1.0
 with Interfaces; use Interfaces;
 
-package body web is
+package body Web is
    function Hash (S : String) return Natural;
 
    P : constant array (0 .. 6) of Natural :=
@@ -1244,7 +1244,6 @@ package body web is
       58, 100, 101, 102, 105, 110, 101, 62, 60, 47, 117, 105, 58, 99, 111, 109, 112, 111, 115, 105,
       116, 105, 111, 110, 62, 10);
 
-
    type Name_Access is access constant String;
    type Name_Array is array (Natural range <>) of Name_Access;
 
@@ -1325,8 +1324,8 @@ package body web is
       K_52'Access, K_53'Access, K_54'Access, K_55'Access,
       K_56'Access, K_57'Access);
 
-   type Content_Array is array (Natural range <>) of Content_Access;
-   Contents : constant Content_Array := (
+   type Content_List_Array is array (Natural range <>) of web_content;
+   Contents : constant Content_List_Array := (
       C_0'Access, C_1'Access, C_2'Access, C_3'Access, C_4'Access, C_5'Access,
       C_6'Access, C_7'Access, C_8'Access, C_9'Access, C_10'Access, C_11'Access,
       C_12'Access, C_13'Access, C_14'Access, C_15'Access, C_16'Access, C_17'Access,
@@ -1338,10 +1337,10 @@ package body web is
       C_48'Access, C_49'Access, C_50'Access, C_51'Access, C_52'Access, C_53'Access,
       C_54'Access, C_55'Access, C_56'Access, C_57'Access);
 
-   function Get_Content (Name : String) return Content_Access is
+   function Get_Content (Name : String) return web_content is
       H : constant Natural := Hash (Name);
    begin
       return (if Names (H).all = Name then Contents (H) else null);
    end Get_Content;
 
-end web;
+end Web;

@@ -41,7 +41,6 @@ package body Bundle is
       105, 112, 116, 105, 111, 110, 32, 112, 114, 111, 100, 117, 105, 116, 10, 109, 115, 103, 95, 116,
       105, 116, 108, 101, 61, 84, 105, 116, 114, 101, 10);
 
-
    type Name_Access is access constant String;
    type Name_Array is array (Natural range <>) of Name_Access;
 
@@ -52,8 +51,8 @@ package body Bundle is
    Names : constant Name_Array := (
       K_0'Access, K_1'Access);
 
-   type Content_Array is array (Natural range <>) of Content_Access;
-   Contents : constant Content_Array := (
+   type Content_List_Array is array (Natural range <>) of Content_Access;
+   Contents : constant Content_List_Array := (
       C_0'Access, C_1'Access);
 
    function Get_Content (Name : String) return Content_Access is
