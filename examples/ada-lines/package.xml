@@ -1,0 +1,25 @@
+<package>
+
+  <resource name='Scripts'
+            format='lines'
+            type='access constant String'>
+    <line-separator>;</line-separator>
+
+    <!-- Remove new lines -->
+    <line-filter>[\r\n]</line-filter>
+
+    <!-- Remove C comments -->
+    <line-filter>/\*[^/]*\*/</line-filter>
+
+    <!-- Remove contiguous spaces after C comments removal -->
+    <line-filter replace=' '>[ \t][ \t]+</line-filter>
+
+    <!-- Copy files with .txt extension from 'help' directory -->
+    <install mode='copy' strip-extension='yes'>
+      <fileset dir="sql">
+        <include name="**/*.sql"/>
+      </fileset>
+    </install>
+  </resource>
+
+</package>
