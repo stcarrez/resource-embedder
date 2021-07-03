@@ -17,11 +17,11 @@
 -----------------------------------------------------------------------
 with Ada.Strings.Fixed;
 with Ada.Calendar.Conversions;
+with Ada.Characters.Handling;
 with Interfaces.C;
 
 with Util.Files;
 with Util.Log.Loggers;
-with Util.Strings.Transforms;
 with GNAT.Perfect_Hash_Generators;
 
 package body Are.Generator.Ada2012 is
@@ -42,7 +42,6 @@ package body Are.Generator.Ada2012 is
    --  Generate the resource declaration list.
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
                                              Into         : in out Ada.Text_IO.File_Type;
-                                             Declare_Var  : in Boolean;
                                              Content_Type : in String);
 
    --  Generate the resource content definition.
@@ -178,7 +177,7 @@ package body Are.Generator.Ada2012 is
       begin
          if Word'Length > 0 then
             if Context.Ignore_Case then
-               Word := Util.Strings.Transforms.To_Upper_Case (Word);
+               Word := Ada.Characters.Handling.To_Upper (Word);
             end if;
             Generator.Names.Append (Word);
             GNAT.Perfect_Hash_Generators.Insert (Word);
@@ -249,19 +248,11 @@ package body Are.Generator.Ada2012 is
    --  ------------------------------
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
                                              Into         : in out Ada.Text_IO.File_Type;
-                                             Declare_Var  : in Boolean;
                                              Content_Type : in String) is
-      Index : Natural := 0;
    begin
       for File in Resource.Files.Iterate loop
          Put (Into, "   ");
-         if Declare_Var then
-            Put (Into, To_Ada_Name (File_Maps.Key (File)));
-         else
-            Put (Into, "C_");
-            Put (Into, Util.Strings.Image (Index));
-            Index := Index + 1;
-         end if;
+         Put (Into, To_Ada_Name (File_Maps.Key (File)));
          Put (Into, " : aliased constant ");
          Put (Into, Content_Type);
          Put_Line (Into, ";");
@@ -544,15 +535,15 @@ package body Are.Generator.Ada2012 is
    procedure Generate_Specs (Generator   : in out Generator_Type;
                              Resource    : in Are.Resource_Type;
                              Context   : in out Are.Context_Type'Class) is
-      Name        : constant String := To_String (Resource.Name);
-      Filename    : constant String := To_File_Name (Name) & ".ads";
-      Path        : constant String := Context.Get_Output_Path (Filename);
-      Def_Type    : constant String := (if Generator.Content_Only then
-                                           "Content_Access" else "Content_Type");
-      Type_Name   : constant String := Resource.Get_Type_Name (Context, Def_Type);
+      Name         : constant String := To_String (Resource.Name);
+      Filename     : constant String := To_File_Name (Name) & ".ads";
+      Path         : constant String := Context.Get_Output_Path (Filename);
+      Def_Type     : constant String := (if Generator.Content_Only then
+                                            "Content_Access" else "Content_Type");
+      Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
-      File        : Ada.Text_IO.File_Type;
-      Has_Private : Boolean := False;
+      File         : Ada.Text_IO.File_Type;
+      Has_Private  : Boolean := False;
    begin
       Log.Info ("Writing {0}", Path);
 
@@ -585,6 +576,8 @@ package body Are.Generator.Ada2012 is
             Put_Line (File, "   type Content_Array is array (Natural range <>)"
                       & " of access constant String;");
             Put_Line (File, "   type Content_Access is access constant Content_Array;");
+         elsif Resource.Format = R_STRING then
+            Put_Line (File, "   type Content_Access is access constant String;");
          end if;
          New_Line (File);
          if Context.List_Content or not Generator.Content_Only then
@@ -610,7 +603,7 @@ package body Are.Generator.Ada2012 is
          end if;
       end if;
       if Context.Declare_Var then
-         Generate_Resource_Declarations (Resource, File, Context.Declare_Var, Content_Type);
+         Generate_Resource_Declarations (Resource, File, Content_Type);
       end if;
       if Context.List_Content then
          if not Context.No_Type_Declaration then
@@ -704,7 +697,7 @@ package body Are.Generator.Ada2012 is
       Put (File, "-- ");
       Put_Line (File, Get_Title);
       if Context.Ignore_Case then
-         Put_Line (File, "with Util.Strings.Transforms;");
+         Put_Line (File, "with Ada.Characters.Handling;");
       end if;
       for I in 1 .. Count loop
          declare
@@ -795,7 +788,7 @@ package body Are.Generator.Ada2012 is
                Put_Line (File, " is");
                if Context.Ignore_Case then
                   Put_Line (File, "      K : constant String := "
-                            & "Util.Strings.Transforms.To_Upper_Case (Name);");
+                            & "Ada.Characters.Handling.To_Upper (Name);");
                   Put_Line (File, "      H : constant Natural := Hash (K);");
                else
                   Put_Line (File, "      H : constant Natural := Hash (Name);");

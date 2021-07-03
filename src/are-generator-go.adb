@@ -17,12 +17,12 @@
 -----------------------------------------------------------------------
 with Ada.Text_IO;
 with Ada.Calendar.Conversions;
+with Ada.Characters.Handling;
 
 with Interfaces.C;
 
 with Util.Log.Loggers;
 with Util.Strings.Transforms;
-
 package body Are.Generator.Go is
 
    use Ada.Text_IO;
@@ -50,7 +50,7 @@ package body Are.Generator.Go is
                   Name : constant String := File_Maps.Key (File);
                begin
                   if Context.Ignore_Case then
-                     Generator.Names.Append (Util.Strings.Transforms.To_Upper_Case (Name));
+                     Generator.Names.Append (Ada.Characters.Handling.To_Upper (Name));
                   else
                      Generator.Names.Append (Name);
                   end if;
