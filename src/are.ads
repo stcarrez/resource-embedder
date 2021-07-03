@@ -153,6 +153,11 @@ private
                                File     : in File_Info;
                                Lines    : in out Util.Strings.Vectors.Vector);
 
+   --  Collect the list of files names for the resource (list is sorted).
+   procedure Collect_Names (Resource    : in Resource_Type;
+                            Ignore_Case : in Boolean;
+                            Names       : in out Util.Strings.Vectors.Vector);
+
    --  List of resources.
    type Resource_List is limited record
       Head   : Resource_Access;

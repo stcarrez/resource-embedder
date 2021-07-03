@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with Ada.Streams.Stream_IO;
+with Ada.Characters.Handling;
 with Util.Log.Loggers;
 with Util.Properties;
 with Util.Files;
@@ -305,6 +306,28 @@ package body Are is
    end Convert_To_Lines;
 
    --  ------------------------------
+   --  Collect the list of files names for the resource (list is sorted).
+   --  ------------------------------
+   procedure Collect_Names (Resource    : in Resource_Type;
+                            Ignore_Case : in Boolean;
+                            Names       : in out Util.Strings.Vectors.Vector) is
+   begin
+      Names.Clear;
+
+      for File in Resource.Files.Iterate loop
+         declare
+            Name : constant String := File_Maps.Key (File);
+         begin
+            if Ignore_Case then
+               Names.Append (Ada.Characters.Handling.To_Upper (Name));
+            else
+               Names.Append (Name);
+            end if;
+         end;
+      end loop;
+   end Collect_Names;
+
+   --  ------------------------------
    --  Create a new resource with the given name.
    --  ------------------------------
    procedure Create_Resource (List     : in out Resource_List;
@@ -337,7 +360,7 @@ package body Are is
    function Get_Output_Path (Context : in Context_Type;
                              Name    : in String) return String is
    begin
-      if Context.Output'Length = 0 then
+      if Context.Output'Length = 0 or Context.Output.all = "." then
          return Name;
       else
          return Ada.Directories.Compose (Context.Output.all, Name);
