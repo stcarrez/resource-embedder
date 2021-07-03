@@ -46,4 +46,6 @@ package Are.Generator.Ada2012.Tests is
 
    procedure Test_Generate_Lines (T : in out Test);
 
+   procedure Test_Ada_Names (T : in out Test);
+
 end Are.Generator.Ada2012.Tests;

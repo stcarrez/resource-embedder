@@ -34,6 +34,8 @@ package body Are.Generator.Ada2012.Tests is
 
    procedure Add_Tests (Suite : in Util.Tests.Access_Test_Suite) is
    begin
+      Caller.Add_Test (Suite, "Test Are.To_Ada_Name",
+                       Test_Ada_Names'Access);
       Caller.Add_Test (Suite, "Test Are.Generate_Ada1",
                        Test_Generate_Ada1'Access);
       Caller.Add_Test (Suite, "Test Are.Generate_Ada2",
@@ -376,5 +378,21 @@ package body Are.Generator.Ada2012.Tests is
          Test    => Lines_Ads,
          Message => "Invalid Ada spec generation");
    end Test_Generate_Lines;
+
+   procedure Test_Ada_Names (T : in out Test) is
+   begin
+      Util.Tests.Assert_Equals (T, "Id_file_c",
+                                To_Ada_Name ("file.c"),
+                                "Bad conversion");
+      Util.Tests.Assert_Equals (T, "Id_file_name_h",
+                                To_Ada_Name ("file-name.h"),
+                                "Bad conversion");
+      Util.Tests.Assert_Equals (T, "Id_File_Dat",
+                                To_Ada_Name ("File.Dat"),
+                                "Bad conversion");
+      Util.Tests.Assert_Equals (T, "Id_File23_Dat",
+                                To_Ada_Name ("File 23 .Dat"),
+                                "Bad conversion");
+   end Test_Ada_Names;
 
 end Are.Generator.Ada2012.Tests;
