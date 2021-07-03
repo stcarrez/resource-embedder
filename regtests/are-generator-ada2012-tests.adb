@@ -46,6 +46,8 @@ package body Are.Generator.Ada2012.Tests is
                        Test_Generate_Ada5'Access);
       Caller.Add_Test (Suite, "Test Are.Generate_Ada6",
                        Test_Generate_Ada6'Access);
+      Caller.Add_Test (Suite, "Test Are.Generate_Ada7",
+                       Test_Generate_Ada7'Access);
       Caller.Add_Test (Suite, "Test Are.Generate_Merge",
                        Test_Generate_Merge'Access);
       Caller.Add_Test (Suite, "Test Are.Generate_Concat",
@@ -217,6 +219,31 @@ package body Are.Generator.Ada2012.Tests is
                                  Result,
                                  "Invalid generation");
    end Test_Generate_Ada6;
+
+   procedure Test_Generate_Ada7 (T : in out Test) is
+      Dir    : constant String := Util.Tests.Get_Test_Path ("");
+      Web    : constant String := "regtests/files/test-ada-7";
+      Rule   : constant String := "regtests/files/test-ada-7/package.xml";
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      --  Generate the resources.ad[bs] files
+      T.Execute (Tool & " -o " & Dir & " --ignore-case --name-access --content-only --rule="
+                 & Rule & " " & Web, Result);
+
+      T.Assert (Ada.Directories.Exists (Ada.Directories.Compose (Dir, "resources7.ads")),
+                "Resource file 'resources7.ads' not generated");
+      T.Assert (Ada.Directories.Exists (Ada.Directories.Compose (Dir, "resources7.adb")),
+                "Resource file 'resources7.adb' not generated");
+
+      --  Build the test program.
+      T.Execute ("gprbuild -Pregtests/files/test-ada-7/test7.gpr", Result);
+      T.Assert (Ada.Directories.Exists ("bin/test7" & Are.Testsuite.EXE),
+                "Binary file 'bin/test7' not created");
+
+      T.Execute ("bin/test7" & Are.Testsuite.EXE, Result);
+      Util.Tests.Assert_Matches (T, "PASS: <config>test7</config>", Result,
+                                 "Invalid generation");
+   end Test_Generate_Ada7;
 
    procedure Test_Generate_Merge (T : in out Test) is
       Dir     : constant String := Util.Tests.Get_Test_Path ("");
