@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 with Ada.Text_IO;
 with Ada.Calendar.Conversions;
-with Ada.Characters.Handling;
 
 with Interfaces.C;
 
@@ -43,19 +42,7 @@ package body Are.Generator.Go is
    begin
       while Resource /= null loop
          if Context.Name_Index then
-            Generator.Names.Clear;
-
-            for File in Resource.Files.Iterate loop
-               declare
-                  Name : constant String := File_Maps.Key (File);
-               begin
-                  if Context.Ignore_Case then
-                     Generator.Names.Append (Ada.Characters.Handling.To_Upper (Name));
-                  else
-                     Generator.Names.Append (Name);
-                  end if;
-               end;
-            end loop;
+            Resource.Collect_Names (Context.Ignore_Case, Generator.Names);
          end if;
 
          Generator.Generate_Source (Resource.all, Context);
