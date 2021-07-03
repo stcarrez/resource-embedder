@@ -38,9 +38,14 @@ int main()
       return 1;
    }
 
+   if (c != &resources2_contents[Id_cssmain_css]) {
+      printf ("FAIL: Invalid variable for Id_cssmain_css and 'css/main.css'\n");
+      return 1;
+   }
+
    printf ("PASS: ");
    for (int i = 0; i < c->size; i++) {
-      if (Id_cssmain_css[i] != '\n') {
+      if (resources2_contents[Id_cssmain_css].content[i] != '\n') {
          putchar(c->content[i]);
       }
    }
