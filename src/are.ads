@@ -51,10 +51,11 @@ private
 
    --  The information about a file being embedded.
    type File_Info is record
-      Content : Stream_Element_Access;
-      Length  : Ada.Directories.File_Size;
-      Modtime : Ada.Calendar.Time;
-      Format  : File_Format := FORMAT_RAW;
+      Content    : Stream_Element_Access;
+      Length     : Ada.Directories.File_Size;
+      Modtime    : Ada.Calendar.Time;
+      Format     : File_Format := FORMAT_RAW;
+      Line_Count : Natural := 0;
    end record;
 
    --  An ordered map of files being embedded.
