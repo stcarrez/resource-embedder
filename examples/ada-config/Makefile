@@ -1,6 +1,6 @@
 GNATMAKE=gnatmake
 CFLAGS=-g -O
-ARE=are
+ARE=../../bin/are
 
 all:  src/config.adb
 	$(GNATMAKE) -O2 -g src/show_config.adb
