@@ -32,6 +32,8 @@ package Are.Tests is
 
    procedure Test_Example_C_Help (T : in out Test);
 
+   procedure Test_Example_C_Lines (T : in out Test);
+
    procedure Test_Example_Ada_Help (T : in out Test);
 
    procedure Test_Example_Ada_Lines (T : in out Test);

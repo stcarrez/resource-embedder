@@ -30,6 +30,8 @@ package body Are.Tests is
                        Test_Example_C_Config'Access);
       Caller.Add_Test (Suite, "Test examples c-help",
                        Test_Example_C_Help'Access);
+      Caller.Add_Test (Suite, "Test examples c-lines",
+                       Test_Example_C_Lines'Access);
       Caller.Add_Test (Suite, "Test examples ada-config",
                        Test_Example_Ada_Config'Access);
       Caller.Add_Test (Suite, "Test examples ada-help",
@@ -104,6 +106,21 @@ package body Are.Tests is
                                  Result,
                                  "Invalid C show-help: extract");
    end Test_Example_C_Help;
+
+   procedure Test_Example_C_Lines (T : in out Test) is
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute ("make -C examples/c-lines clean", Result, Status => 0);
+      T.Execute ("make -C examples/c-lines ARE=../../bin/are", Result, Status => 0);
+      T.Execute ("examples/c-lines/show-script" & Are.Testsuite.EXE, Result, Status => 0);
+      Util.Tests.Assert_Matches (T, "Create SQLite 7 lines.*",
+                                 Result,
+                                 "Invalid C show-script: SQL statement");
+      Util.Tests.Assert_Matches (T, "Drop SQLite 4 lines.*",
+                                 Result,
+                                 "Invalid C show-script: SQL statement");
+
+   end Test_Example_C_Lines;
 
    procedure Test_Example_Ada_Help (T : in out Test) is
       Result : Ada.Strings.Unbounded.Unbounded_String;
