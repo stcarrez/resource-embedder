@@ -30,6 +30,12 @@ package body Are.Generator.Ada2012 is
    use Ada.Strings.Unbounded;
    use type Ada.Containers.Count_Type;
 
+   function Get_Function_Type (Generator : in Generator_Type;
+                               Resource  : in Are.Resource_Type;
+                               Context   : in Are.Context_Type'Class) return String;
+   function Get_Content_Type (Generator : in Generator_Type;
+                              Resource  : in Are.Resource_Type;
+                              Context   : in Are.Context_Type'Class) return String;
    function To_File_Name (Name : in String) return String;
    function To_Ada_Name (Name : in String) return String;
 
@@ -270,6 +276,14 @@ package body Are.Generator.Ada2012 is
                                          Into         : in out Ada.Text_IO.File_Type;
                                          Declare_Var  : in Boolean;
                                          Content_Type : in String) is
+      function Get_Variable_Name (Key : in String) return String;
+      procedure Write_Binary (Name    : in String;
+                              Content : in Are.File_Info);
+      procedure Write_String (Content : in String);
+      procedure Write_String (Name    : in String;
+                              Content : in Are.File_Info);
+      procedure Write_Lines (Name    : in String;
+                             Content : in Are.File_Info);
 
       procedure Write_Binary (Name    : in String;
                               Content : in Are.File_Info) is
