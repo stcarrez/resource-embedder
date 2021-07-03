@@ -35,6 +35,46 @@ Complex resource integrations are best described with and XML and are generated 
 are --lang=Ada -o src --rule=package.xml --name-access .
 ```
 
+For Ada, it generates the following package declaration with the `Get_Content` function
+that gives access to the files.  The Ada body contains the content of each embedded file.
+
+```Ada
+package Config is
+  function Get_Content (Name : in String)
+    return access constant String;
+end Config;
+```
+
+For C, it generates a C structure that describes each file and a function that gives
+access to the file content.  The C source file contains the content of each embedded file.
+
+```C
+struct config_content {
+  const unsigned char *content;
+  size_t size;
+  time_t modtime;
+  int format;
+}
+extern const struct config_content *config_get_content(const char* name);
+```
+
+For Go, it generates a Go package with a `Content` type declaration and a
+`Get_content` function.  The Go package contains the content of each embedded file.
+
+```Go
+package config
+import ("strings")
+
+type Content struct {
+    Content  []byte
+    Size  int64
+    Modtime  int64
+    Format   int
+}
+
+func Get_content(name string) (*Content) {
+```
+
 ## Version 1.1.0  - Developemnt
 - Add support to emit Ada String types for embedded content
 - Add support to represent content as an array of lines
