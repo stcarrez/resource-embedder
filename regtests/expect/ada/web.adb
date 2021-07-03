@@ -1,7 +1,7 @@
 -- Advanced Resource Embedder 1.1.0
 with Interfaces; use Interfaces;
 
-package body Web is
+package body web is
    function Hash (S : String) return Natural;
 
    P : constant array (0 .. 6) of Natural :=
@@ -1343,4 +1343,4 @@ package body Web is
       return (if Names (H).all = Name then Contents (H) else null);
    end Get_Content;
 
-end Web;
+end web;
