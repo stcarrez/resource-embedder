@@ -15,9 +15,7 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Ada.Strings.Fixed;
 with Ada.Calendar.Conversions;
-with Ada.Characters.Handling;
 with Interfaces.C;
 
 with Util.Files;
@@ -63,7 +61,10 @@ package body Are.Generator.Ada2012 is
    begin
       while Resource /= null loop
          if Context.Name_Index then
-            Generator.Generate_Perfect_Hash (Resource.all, Context);
+            Resource.Collect_Names (Context.Ignore_Case, Generator.Names);
+            if Generator.Names.Length > 1 then
+               Generator.Generate_Perfect_Hash (Resource.all, Context);
+            end if;
          end if;
 
          Generator.Generate_Specs (Resource.all, Context);
@@ -165,42 +166,23 @@ package body Are.Generator.Ada2012 is
    procedure Generate_Perfect_Hash (Generator : in out Generator_Type;
                                     Resource  : in Are.Resource_Type;
                                     Context   : in out Are.Context_Type'Class) is
-
-      procedure Read_Keyword (Line : in String);
-
-      --  ------------------------------
-      --  Read a keyword and add it in the keyword list.
-      --  ------------------------------
-      procedure Read_Keyword (Line : in String) is
-         use Ada.Strings;
-         Word : String := Fixed.Trim (Line, Both);
-      begin
-         if Word'Length > 0 then
-            if Context.Ignore_Case then
-               Word := Ada.Characters.Handling.To_Upper (Word);
-            end if;
-            Generator.Names.Append (Word);
-            GNAT.Perfect_Hash_Generators.Insert (Word);
-         end if;
-      end Read_Keyword;
-
-      Count    : constant Natural := Natural (Resource.Files.Length);
+      Count    : constant Positive := Positive (Generator.Names.Length);
       Pkg      : constant String := To_String (Resource.Name);
       Seed     : constant Natural := 4321; --  Needed by the hash algorithm
       K_2_V    : Float;
       V        : Natural;
    begin
-      Generator.Names.Clear;
-
       --  Collect the keywords for the hash.
-      for File in Resource.Files.Iterate loop
-         Read_Keyword (File_Maps.Key (File));
+      for Name of Generator.Names loop
+         declare
+            --  SCz 2021-07-03: s-pehage.adb:1900 index check failed is raised
+            --  if we give a string that has a first index > 1.  Make a copy
+            --  with new bounds.
+            Word : constant String (1 .. Name'Length) := Name;
+         begin
+            GNAT.Perfect_Hash_Generators.Insert (Word);
+         end;
       end loop;
-
-      if Count = 0 then
-         Log.Warn ("Resource {0} has no content", Pkg);
-         return;
-      end if;
 
       --  Generate the perfect hash package.
       V := 2 * Count + 1;
@@ -222,7 +204,7 @@ package body Are.Generator.Ada2012 is
 
       --  The perfect hash generator can only write files in the current directory.
       --  Move them to the target directory.
-      if Context.Output'Length > 0 then
+      if Context.Output'Length > 0 and Context.Output.all /= "." then
          declare
             Filename : String := To_File_Name (Pkg) & ".ads";
             Path     : String := Context.Get_Output_Path (Filename);
@@ -550,7 +532,7 @@ package body Are.Generator.Ada2012 is
       Ada.Text_IO.Create (File => File,
                           Mode => Ada.Text_IO.Out_File,
                           Name => Path);
-      Put (File, "-- ");
+      Put (File, "--  ");
       Put_Line (File, Get_Title);
       if not Context.No_Type_Declaration then
          if Resource.Format = R_BINARY then
@@ -659,8 +641,8 @@ package body Are.Generator.Ada2012 is
                             Resource    : in Are.Resource_Type;
                             Context     : in out Are.Context_Type'Class) is
 
-      --  Read the generated body file.
       procedure Read_Body (Line : in String);
+      procedure Generate_Contents_Array;
 
       Name         : constant String := To_String (Resource.Name);
       Filename     : constant String := To_File_Name (Name) & ".adb";
@@ -669,6 +651,7 @@ package body Are.Generator.Ada2012 is
                                             "Content_Access" else "Content_Type");
       Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
+      Use_Hash     : constant Boolean := Context.Name_Index and Generator.Names.Length > 1;
       File         : Ada.Text_IO.File_Type;
       Count        : Natural;
       Lines        : Util.Strings.Vectors.Vector;
@@ -681,6 +664,58 @@ package body Are.Generator.Ada2012 is
          Lines.Append (Line);
       end Read_Body;
 
+      procedure Generate_Contents_Array is
+         Need_Sep : Boolean := False;
+         Col      : Natural := 0;
+         Index    : Natural := 0;
+      begin
+         Put_Line (File, "   Contents : constant Content_List_Array := (");
+         Put (File, "     ");
+         if Resource.Files.Length = 1 then
+            Put (File, "0 => ");
+         end if;
+         for Content in Resource.Files.Iterate loop
+            if Need_Sep then
+               Put (File, ",");
+            end if;
+            if Col > 5 then
+               New_Line (File);
+               Put (File, "      ");
+               Col := 0;
+            else
+               Put (File, " ");
+            end if;
+            if not Generator.Content_Only then
+               Put (File, "(K_");
+               Put (File, Util.Strings.Image (Index));
+               Put (File, "'Access, ");
+            end if;
+            if Context.Declare_Var then
+               Put (File, To_Ada_Name (File_Maps.Key (Content)));
+            else
+               Put (File, "C_");
+               Put (File, Util.Strings.Image (Index));
+            end if;
+            Index := Index + 1;
+            Put (File, "'Access");
+            if not Generator.Content_Only then
+               declare
+                  use Ada.Calendar.Conversions;
+
+                  Data : constant File_Info := File_Maps.Element (Content);
+               begin
+                  Put (File, ",");
+                  Put (File, Interfaces.C.long'Image (To_Unix_Time (Data.Modtime)));
+                  Put (File, ", FILE_RAW");
+               end;
+               Put (File, ")");
+            end if;
+            Col := Col + 1;
+            Need_Sep := True;
+         end loop;
+         Put_Line (File, ");");
+      end Generate_Contents_Array;
+
    begin
       if not Context.Name_Index or else Generator.Names.Is_Empty then
          Log.Debug ("Skipping body generation for {0}", Filename);
@@ -689,126 +724,106 @@ package body Are.Generator.Ada2012 is
 
       Log.Info ("Writing {0}", Path);
 
-      Util.Files.Read_File (Path => Path, Process => Read_Body'Access);
-      Count := Natural (Lines.Length);
-      Ada.Text_IO.Open (File => File,
-                        Mode => Ada.Text_IO.Out_File,
-                        Name => Path);
-      Put (File, "-- ");
+      if Use_Hash then
+         Util.Files.Read_File (Path => Path, Process => Read_Body'Access);
+      end if;
+
+      Ada.Text_IO.Create (File => File,
+                          Mode => Ada.Text_IO.Out_File,
+                          Name => Path);
+      Put (File, "--  ");
       Put_Line (File, Get_Title);
       if Context.Ignore_Case then
          Put_Line (File, "with Ada.Characters.Handling;");
       end if;
-      for I in 1 .. Count loop
-         declare
-            L : constant String := Lines.Element (I);
-         begin
-            Put_Line (File, L);
+      if Use_Hash then
+         Count := Natural (Lines.Length);
+         for I in 1 .. Count - 1 loop
+            declare
+               L : constant String := Lines.Element (I);
+            begin
+               Put_Line (File, L);
 
-            if Util.Strings.Starts_With (L, "package ") then
-               Put_Line (File, "   function Hash (S : String) return Natural;");
+               if Util.Strings.Starts_With (L, "package ") then
+                  Put_Line (File, "   function Hash (S : String) return Natural;");
+               end if;
+            end;
+         end loop;
+      else
+         Put (File, "package body ");
+         Put (File, Name);
+         Put_Line (File, " is");
+      end if;
+
+      if not Context.Declare_Var then
+         Generate_Resource_Contents (Resource, File, Context.Declare_Var, Content_Type);
+      end if;
+
+      if Context.Name_Index and not Context.List_Content then
+         if Generator.Content_Only then
+            Put_Line (File, "   type Name_Access is access constant String;");
+         end if;
+         Put_Line (File, "   type Name_Array is array "
+                   & "(Natural range <>) of Name_Access;");
+         New_Line (File);
+         Generate_Keyword_Table (Generator, File);
+      end if;
+
+      New_Line (File);
+      Put (File, "   type Content_List_Array is array (Natural range <>) of ");
+      Put (File, Type_Name);
+      Put_Line (File, ";");
+
+      Generate_Contents_Array;
+
+      if Context.Name_Index then
+         New_Line (File);
+         Put (File, "   function Get_Content (Name : String) return ");
+         Put (File, Type_Name);
+         Put_Line (File, " is");
+         if Use_Hash then
+            if Context.Ignore_Case then
+               Put_Line (File, "      K : constant String := "
+                         & "Ada.Characters.Handling.To_Upper (Name);");
+               Put_Line (File, "      H : constant Natural := Hash (K);");
+            else
+               Put_Line (File, "      H : constant Natural := Hash (Name);");
             end if;
-
-            --  Generate the Is_Keyword function before the package end.
-            if I = Count - 1 then
-
-               if not Context.Declare_Var then
-                  Generate_Resource_Contents (Resource, File, Context.Declare_Var, Content_Type);
-               end if;
-
-               if Context.Name_Index and not Context.List_Content then
-                  if Generator.Content_Only then
-                     Put_Line (File, "   type Name_Access is access constant String;");
-                  end if;
-                  Put_Line (File, "   type Name_Array is array "
-                            & "(Natural range <>) of Name_Access;");
-                  New_Line (File);
-                  Generate_Keyword_Table (Generator, File);
-               end if;
-
-               New_Line (File);
-               Put (File, "   type Content_List_Array is array (Natural range <>) of ");
-               Put (File, Type_Name);
-               Put_Line (File, ";");
-               Put_Line (File, "   Contents : constant Content_List_Array := (");
-               Put (File, "     ");
-               declare
-                  Need_Sep : Boolean := False;
-                  Col      : Natural := 0;
-                  Index    : Natural := 0;
-               begin
-                  if Resource.Files.Length = 1 then
-                     Put (File, "0 => ");
-                  end if;
-                  for Content in Resource.Files.Iterate loop
-                     if Need_Sep then
-                        Put (File, ",");
-                     end if;
-                     if Col > 5 then
-                        New_Line (File);
-                        Put (File, "      ");
-                        Col := 0;
-                     else
-                        Put (File, " ");
-                     end if;
-                     if not Generator.Content_Only then
-                        Put (File, "(K_");
-                        Put (File, Util.Strings.Image (Index));
-                        Put (File, "'Access, ");
-                     end if;
-                     if Context.Declare_Var then
-                        Put (File, To_Ada_Name (File_Maps.Key (Content)));
-                     else
-                        Put (File, "C_");
-                        Put (File, Util.Strings.Image (Index));
-                     end if;
-                     Index := Index + 1;
-                     Put (File, "'Access");
-                     if not Generator.Content_Only then
-                        declare
-                           use Ada.Calendar.Conversions;
-
-                           Data : constant File_Info := File_Maps.Element (Content);
-                        begin
-                           Put (File, ",");
-                           Put (File, Interfaces.C.long'Image (To_Unix_Time (Data.Modtime)));
-                           Put (File, ", FILE_RAW");
-                        end;
-                        Put (File, ")");
-                     end if;
-                     Col := Col + 1;
-                     Need_Sep := True;
-                  end loop;
-               end;
-               Put_Line (File, ");");
-
-               New_Line (File);
-               Put (File, "   function Get_Content (Name : String) return ");
-               Put (File, Type_Name);
-               Put_Line (File, " is");
-               if Context.Ignore_Case then
-                  Put_Line (File, "      K : constant String := "
-                            & "Ada.Characters.Handling.To_Upper (Name);");
-                  Put_Line (File, "      H : constant Natural := Hash (K);");
-               else
-                  Put_Line (File, "      H : constant Natural := Hash (Name);");
-               end if;
-               Put_Line (File, "   begin");
-               if Context.Ignore_Case then
-                  Put (File, "      return (if Names (H).all = K then Contents (H) else ");
-               else
-                  Put (File, "      return (if Names (H).all = Name then Contents (H) else ");
-               end if;
-               if Generator.Content_Only then
-                  Put_Line (File, "null);");
-               else
-                  Put_Line (File, "Null_Content);");
-               end if;
-               Put_Line (File, "   end Get_Content;");
-               New_Line (File);
+            Put_Line (File, "   begin");
+            if Context.Ignore_Case then
+               Put (File, "      return (if Names (H).all = K then Contents (H) else ");
+            else
+               Put (File, "      return (if Names (H).all = Name then Contents (H) else ");
             end if;
-         end;
-      end loop;
+            if Generator.Content_Only then
+               Put_Line (File, "null);");
+            else
+               Put_Line (File, "Null_Content);");
+            end if;
+         else
+            if Context.Ignore_Case then
+               Put_Line (File, "      K : constant String := "
+                         & "Ada.Characters.Handling.To_Upper (Name);");
+            end if;
+            Put_Line (File, "   begin");
+            if Context.Ignore_Case then
+               Put (File, "      return (if Names (0).all = K then Contents (0) else ");
+            else
+               Put (File, "      return (if Names (0).all = Name then Contents (0) else ");
+            end if;
+            if Generator.Content_Only then
+               Put_Line (File, "null);");
+            else
+               Put_Line (File, "Null_Content);");
+            end if;
+         end if;
+         Put_Line (File, "   end Get_Content;");
+         New_Line (File);
+      end if;
+
+      Put (File, "end ");
+      Put (File, Name);
+      Put_Line (File, ";");
       Close (File);
    end Generate_Body;
 
