@@ -154,6 +154,7 @@ More specific examples show how to make specific transformations on the files be
 * [Embedding web files in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-web)
 * [Embedding merged properties in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-bundles)
 * [Embedding SQL scripts in Ada and mapping them in array of String](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-lines)
+* [Embedding SQL scripts in C and mapping them in array of String](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-lines)
 
 
 # Building ARE
