@@ -81,12 +81,12 @@ private
 
    --  Generate the header declaration file.
    procedure Generate_Header (Generator : in out Generator_Type;
-                              Resource  : in Are.Resource_Type;
+                              Resource  : in out Are.Resource_Type;
                               Context   : in out Are.Context_Type'Class);
 
    --  Generate the source file.
    procedure Generate_Source (Generator : in out Generator_Type;
-                              Resource  : in Are.Resource_Type;
+                              Resource  : in out Are.Resource_Type;
                               Context   : in out Are.Context_Type'Class);
 
 end Are.Generator.C;
