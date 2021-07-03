@@ -72,16 +72,6 @@ package body Are.Generator.C is
       end loop;
    end Generate;
 
-   --  ------------------------------
-   --  Setup the command line configuration to accept specific generation options.
-   --  ------------------------------
-   overriding
-   procedure Setup (Generator : in out Generator_Type;
-                    Config    : in out GC.Command_Line_Configuration) is
-   begin
-      null;
-   end Setup;
-
    function Get_Content_Type (Resource  : in Are.Resource_Type;
                               Context   : in Are.Context_Type'Class) return String is
    begin

@@ -53,16 +53,6 @@ package body Are.Generator.Go is
    end Generate;
 
    --  ------------------------------
-   --  Setup the command line configuration to accept specific generation options.
-   --  ------------------------------
-   overriding
-   procedure Setup (Generator : in out Generator_Type;
-                    Config    : in out GC.Command_Line_Configuration) is
-   begin
-      null;
-   end Setup;
-
-   --  ------------------------------
    --  Given a package name, return the file name that correspond.
    --  ------------------------------
    function To_File_Name (Name : in String) return String is

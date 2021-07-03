@@ -71,7 +71,7 @@ private package Are.Generator.Go is
    --  Setup the command line configuration to accept specific generation options.
    overriding
    procedure Setup (Generator : in out Generator_Type;
-                    Config    : in out GC.Command_Line_Configuration);
+                    Config    : in out GC.Command_Line_Configuration) is null;
 
 private
 
