@@ -34,8 +34,6 @@ package body Are.Generator.Ada2012 is
    function Get_Content_Type (Generator : in Generator_Type;
                               Resource  : in Are.Resource_Type;
                               Context   : in Are.Context_Type'Class) return String;
-   function To_File_Name (Name : in String) return String;
-   function To_Ada_Name (Name : in String) return String;
 
    --  Generate the resource declaration list.
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;

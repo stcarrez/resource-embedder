@@ -118,4 +118,8 @@ private
    procedure Generate_Keyword_Table (Generator : in out Generator_Type;
                                      Into      : in out Ada.Text_IO.File_Type);
 
+   function To_File_Name (Name : in String) return String;
+
+   function To_Ada_Name (Name : in String) return String;
+
 end Are.Generator.Ada2012;
