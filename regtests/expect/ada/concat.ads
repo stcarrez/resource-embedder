@@ -1,4 +1,4 @@
--- Advanced Resource Embedder 1.1.0
+--  Advanced Resource Embedder 1.1.0
 with Ada.Streams;
 package Concat is
 
