@@ -21,6 +21,11 @@ before their integration.
       ...
     </install>
   <resource>
+  <resource name='Config' format='lines'>
+    <install mode='xxx'>
+      ...
+    </install>
+  </resource>
   <resource name='Web' format='binary'>
     <install mode='xxx'>
       ...
@@ -66,6 +71,59 @@ directory and with the `.txt` file extension.  The code generator will use
 the name `man_content` for the data type that represents the file description
 and it will use `man_get_help_content` for the generated function name.
 
+
+## Controlling the lines format
+
+The `lines` format tells the code generator to represent the content as an
+array of separate lines.  For this integration, some control is available to
+indicate how the content must be split and optionaly apply some filter on
+the input content.  These controls are made within the XML description
+by using the `line-separator` and `line-filter` description:
+The `line-separator` indicates the characters that represent a line separation.
+There can be several `line-separator` definition.  The `line-filter`
+defines a regular expression that when matched must be replaced by an empty
+string or a specified content.  The `line-filter` are applied in the order
+of the XML definition.
+
+The example below is intended to integrate an SQL scripts with:
+
+* a separate line for each SQL statement,
+* remove spurious empty lines and SQL comments.
+
+The SQL statements are separated by `;` (semi-colon) and the `line-separator`
+indicates to split lines on that character.  By splitting on the `;`, we allow to
+have an SQL statement on multiple lines.
+
+```XML
+<package>
+  <resource name='Scripts'
+            format='lines'
+            type='access constant String'>
+    <line-separator>;</line-separator>
+
+    <!-- Remove new lines -->
+    <line-filter>[\r\n]</line-filter>
+
+    <!-- Remove C comments -->
+    <line-filter>/\*[^/]*\*/</line-filter>
+
+    <!-- Remove contiguous spaces after C comments removal -->
+    <line-filter replace=' '>[ \t][ \t]+</line-filter>
+
+    <install mode='copy' strip-extension='yes'>
+      <fileset dir="sql">
+        <include name="**/*.sql"/>
+      </fileset>
+    </install>
+  </resource>
+</package>
+```
+
+Then the first `line-filter` will remove the `\r` and `\n` characters.
+
+The regular expression `/\*[^/]*\*/` matches a C style comment and remove it.
+
+The last `line-filter` replaces multiple tabs and spaces by a single occurence.
 
 ## Selecting files
 
@@ -143,7 +201,6 @@ must be taken into account by the installation rule.
 ```
 
 The installation modes are described more into details in the [Rules](Are_Installer.md) chapter.
-
 
 ## Man page
 

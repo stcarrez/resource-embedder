@@ -58,23 +58,6 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
-For Go, it generates a Go package with a `Content` type declaration and a
-`Get_content` function.  The Go package contains the content of each embedded file.
-
-```Go
-package config
-import ("strings")
-
-type Content struct {
-    Content  []byte
-    Size  int64
-    Modtime  int64
-    Format   int
-}
-
-func Get_content(name string) (*Content) {
-```
-
 ## Version 1.1.0  - Developemnt
 - Add support to emit Ada String types for embedded content
 - Add support to represent content as an array of lines
