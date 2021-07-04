@@ -61,6 +61,8 @@ package body Are.Generator.Tests is
                        Test_Exec_Error_9'Access);
       Caller.Add_Test (Suite, "Test are (verbose mode with error)",
                        Test_Verbose'Access);
+      Caller.Add_Test (Suite, "Test are (webmerge with errors)",
+                       Test_Merge_Error_1'Access);
       Are.Generator.Ada2012.Tests.Add_Tests (Suite);
       Are.Generator.C.Tests.Add_Tests (Suite);
       Are.Generator.Go.Tests.Add_Tests (Suite);
@@ -224,6 +226,24 @@ package body Are.Generator.Tests is
                                  Result,
                                  "Invalid error message");
    end Test_Exec_Error_9;
+
+   procedure Test_Merge_Error_1 (T : in out Test) is
+      Dir    : constant String := Util.Tests.Get_Test_Path ("");
+      Web    : constant String := "regtests/files/web-error-1";
+      Rule   : constant String := "regtests/files/package-webmerge-1.xml";
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute (Tool & " -o " & Dir & " --rule=" & Rule & " " & Web, Result, Status => 1);
+      Util.Tests.Assert_Matches (T, "are: error: .*: cannot read ",
+                                 Result,
+                                 "Invalid error message");
+      Util.Tests.Assert_Matches (T, "are: error: .*: expecting a 'href=' ",
+                                 Result,
+                                 "Invalid error message");
+      Util.Tests.Assert_Matches (T, "are: error: .*: may be the end marker 'RESOURCE-MERGE-END' ",
+                                 Result,
+                                 "Invalid error message");
+   end Test_Merge_Error_1;
 
    procedure Test_Verbose (T : in out Test) is
       Dir    : constant String := Util.Tests.Get_Test_Path ("");

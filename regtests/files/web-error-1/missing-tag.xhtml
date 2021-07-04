@@ -1,0 +1,87 @@
+<f:view contentType="text/html; charset=UTF-8"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:util="http://code.google.com/p/ada-asf/util"
+        xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:u="http://code.google.com/p/ada-asf/util"
+        xmlns:h="http://java.sun.com/jsf/html"><h:doctype rootElement="html"/>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <!-- RESOURCE-MERGE-START link=#{contextPath}/css/merge-1.css -->
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/bootstrap.min.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/grids/fluid_grid.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/asf.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/awa.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/users.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.uiCssPath}"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{jquery.chosenCssPath}"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/comments.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/blogs.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/markedit/jquery.markedit.css" />
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/storages.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/wikis.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/jquery.tagedit.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/jquery.datetimepicker.css"/>
+    <link media="screen" type="text/css" rel="stylesheet" href="#{contextPath}/css/trumbowyg/trumbowyg.css"/>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="#{contextPath}/images/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="#{contextPath}/images/favicon-16x16.png"/>
+    <ui:insert name="pageHeader"/>
+    <title><h:outputText value="#{title}"/></title>
+</head>
+<body class="#{not empty pageStyle ? pageStyle : 'page-news'}">
+
+<!-- Top header with user account -->
+<ui:include src="top-bar.xhtml"/>
+
+<div id='awa-page' class='container_12'>
+    <ui:insert name="pageBody"/>
+    <div id="awa-clfooter"></div>
+</div>
+<ui:include src="footer.xhtml"/>
+
+<!-- RESOURCE-MERGE-START script=#{contextPath}/js/merge-1.js -->
+<script type="text/javascript" src="#{jquery.path}"></script>
+<script type="text/javascript" src="#{jquery.uiPath}core.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}widget.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}position.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}mouse.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/asf.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/asf-message.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/asf-popup.js"></script>
+<!-- RESOURCE-MERGE-END -->
+<c:if test="#{user.isLogged}">
+<!-- RESOURCE-MERGE-START script=#{contextPath}/js/merge-2.js -->
+<script type="text/javascript" src="#{jquery.uiPath}draggable.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}resizable.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}sortable.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}button.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}dialog.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}tabs.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}menu.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}autocomplete.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}tooltip.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}datepicker.js"></script>
+<script type="text/javascript" src="#{jquery.uiPath}slider.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery.autoGrowInput.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/jquery.tagedit.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/asf-widgets.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/asf-list.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/asf-editable.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/awa.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/markedit/showdown.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/markedit/jquery.markedit.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/awa-storages.js"></script>
+<script type="text/javascript" src="#{contextPath}/js/awa-images.js"></script>
+<!-- RESOURCE-MERGE-END -->
+</c:if>
+<ui:insert name="pageScript"/>
+<util:flush/>
+<!--DEV_START-->
+<ui:debug/>
+<!--DEV_END-->
+</body>
+</html>
+</f:view>
