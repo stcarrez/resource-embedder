@@ -71,7 +71,7 @@ private package Are.Generator.C is
    --  Setup the command line configuration to accept specific generation options.
    overriding
    procedure Setup (Generator : in out Generator_Type;
-                    Config    : in out GC.Command_Line_Configuration);
+                    Config    : in out GC.Command_Line_Configuration) is null;
 
 private
 
@@ -81,12 +81,12 @@ private
 
    --  Generate the header declaration file.
    procedure Generate_Header (Generator : in out Generator_Type;
-                              Resource  : in Are.Resource_Type;
+                              Resource  : in out Are.Resource_Type;
                               Context   : in out Are.Context_Type'Class);
 
    --  Generate the source file.
    procedure Generate_Source (Generator : in out Generator_Type;
-                              Resource  : in Are.Resource_Type;
+                              Resource  : in out Are.Resource_Type;
                               Context   : in out Are.Context_Type'Class);
 
 end Are.Generator.C;

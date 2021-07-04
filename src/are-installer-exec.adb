@@ -128,10 +128,10 @@ package body Are.Installer.Exec is
             Context.Error ("Command {0} exited with status {1}", Command,
                            Integer'Image (Util.Processes.Get_Exit_Status (Proc)));
          elsif Rule.Source_Timestamp then
-            Are.Add_File (Rule.Resource, Path, Target,
-                          Ada.Directories.Modification_Time (Source));
+            Rule.Resource.Add_File (Path, Target,
+                                    Ada.Directories.Modification_Time (Source));
          else
-            Are.Add_File (Rule.Resource, Path, Target);
+            Rule.Resource.Add_File (Path, Target);
          end if;
       end;
 

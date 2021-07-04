@@ -15,8 +15,9 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-
+with Ada.Text_IO;
 with Ada.Directories;
+with Ada.Strings.Maps;
 
 with Util.Test_Caller;
 package body Are.Tests is
@@ -29,16 +30,24 @@ package body Are.Tests is
                        Test_Example_C_Config'Access);
       Caller.Add_Test (Suite, "Test examples c-help",
                        Test_Example_C_Help'Access);
+      Caller.Add_Test (Suite, "Test examples c-lines",
+                       Test_Example_C_Lines'Access);
       Caller.Add_Test (Suite, "Test examples ada-config",
                        Test_Example_Ada_Config'Access);
       Caller.Add_Test (Suite, "Test examples ada-help",
                        Test_Example_Ada_Help'Access);
+      Caller.Add_Test (Suite, "Test examples ada-lines",
+                       Test_Example_Ada_Lines'Access);
       if Ada.Directories.Exists ("/usr/bin/go") then
          Caller.Add_Test (Suite, "Test examples go-config",
                           Test_Example_Go_Config'Access);
          Caller.Add_Test (Suite, "Test examples go-help",
                           Test_Example_Go_Help'Access);
       end if;
+      Caller.Add_Test (Suite, "Test Are.Convert_To_Lines_1",
+                       Test_Convert_Lines_1'Access);
+      Caller.Add_Test (Suite, "Test Are.Convert_To_Lines_2",
+                       Test_Convert_Lines_2'Access);
    end Add_Tests;
 
    procedure Test_Example_C_Config (T : in out Test) is
@@ -46,7 +55,7 @@ package body Are.Tests is
    begin
       T.Execute ("make -C examples/c-config clean", Result, Status => 0);
       T.Execute ("make -C examples/c-config ARE=../../bin/are", Result, Status => 0);
-      T.Execute ("examples/c-config/show-config", Result, Status => 0);
+      T.Execute ("examples/c-config/show-config" & Are.Testsuite.EXE, Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*Example of embedded configuration.*",
                                  Result,
                                  "Invalid C show-config");
@@ -57,7 +66,7 @@ package body Are.Tests is
    begin
       T.Execute ("make -C examples/ada-config clean", Result, Status => 0);
       T.Execute ("make -C examples/ada-config ARE=../../bin/are", Result, Status => 0);
-      T.Execute ("examples/ada-config/show_config", Result, Status => 0);
+      T.Execute ("examples/ada-config/show_config" & Are.Testsuite.EXE, Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*Example of embedded configuration.*",
                                  Result,
                                  "Invalid Ada show_config");
@@ -79,7 +88,7 @@ package body Are.Tests is
    begin
       T.Execute ("make -C examples/c-help clean", Result, Status => 0);
       T.Execute ("make -C examples/c-help ARE=../../bin/are", Result, Status => 0);
-      T.Execute ("examples/c-help/show-help", Result, Status => 0);
+      T.Execute ("examples/c-help/show-help" & Are.Testsuite.EXE, Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*sh.*",
                                  Result,
                                  "Invalid C show-help: sh missing");
@@ -98,12 +107,27 @@ package body Are.Tests is
                                  "Invalid C show-help: extract");
    end Test_Example_C_Help;
 
+   procedure Test_Example_C_Lines (T : in out Test) is
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute ("make -C examples/c-lines clean", Result, Status => 0);
+      T.Execute ("make -C examples/c-lines ARE=../../bin/are", Result, Status => 0);
+      T.Execute ("examples/c-lines/show-script" & Are.Testsuite.EXE, Result, Status => 0);
+      Util.Tests.Assert_Matches (T, "Create SQLite 7 lines.*",
+                                 Result,
+                                 "Invalid C show-script: SQL statement");
+      Util.Tests.Assert_Matches (T, "Drop SQLite 4 lines.*",
+                                 Result,
+                                 "Invalid C show-script: SQL statement");
+
+   end Test_Example_C_Lines;
+
    procedure Test_Example_Ada_Help (T : in out Test) is
       Result : Ada.Strings.Unbounded.Unbounded_String;
    begin
       T.Execute ("make -C examples/ada-help clean", Result, Status => 0);
       T.Execute ("make -C examples/ada-help ARE=../../bin/are", Result, Status => 0);
-      T.Execute ("examples/ada-help/show_help", Result, Status => 0);
+      T.Execute ("examples/ada-help/show_help" & Are.Testsuite.EXE, Result, Status => 0);
       Util.Tests.Assert_Matches (T, ".*sh.*",
                                  Result,
                                  "Invalid Ada show-help: sh missing");
@@ -121,6 +145,21 @@ package body Are.Tests is
                                  Result,
                                  "Invalid Ada show-help: extract");
    end Test_Example_Ada_Help;
+
+   procedure Test_Example_Ada_Lines (T : in out Test) is
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute ("make -C examples/ada-lines clean", Result, Status => 0);
+      T.Execute ("make -C examples/ada-lines ARE=../../bin/are", Result, Status => 0);
+      T.Execute ("examples/ada-lines/show_script" & Are.Testsuite.EXE, Result, Status => 0);
+      Util.Tests.Assert_Matches (T, "Create SQLite 7 lines.*",
+                                 Result,
+                                 "Invalid Ada show_script: SQL statement");
+      Util.Tests.Assert_Matches (T, "Drop SQLite 4 lines.*",
+                                 Result,
+                                 "Invalid Ada show_script: SQL statement");
+
+   end Test_Example_Ada_Lines;
 
    procedure Test_Example_Go_Help (T : in out Test) is
       Result : Ada.Strings.Unbounded.Unbounded_String;
@@ -145,5 +184,71 @@ package body Are.Tests is
                                  Result,
                                  "Invalid Go show-help: extract");
    end Test_Example_Go_Help;
+
+   procedure Test_Convert_Lines_1 (T : in out Test) is
+      use Ada.Strings.Maps;
+
+      Resource : Resource_Type;
+      Lines    : Util.Strings.Vectors.Vector;
+      File     : File_Info;
+   begin
+      Resource.Add_File ("lines", "regtests/files/lines-1.txt");
+      Resource.Separators := To_Set (ASCII.CR) or To_Set (ASCII.LF);
+      File := Resource.Files.First_Element;
+      Resource.Convert_To_Lines (File, Lines);
+      Util.Tests.Assert_Equals (T, 9, Natural (Lines.Length),
+                                "Invalid number of lines");
+      for I in 1 .. 9 loop
+         Util.Tests.Assert_Equals (T, "line" & Util.Strings.Image (I),
+                                   Lines.Element (I), "Invalid line");
+      end loop;
+   end Test_Convert_Lines_1;
+
+   procedure Test_Convert_Lines_2 (T : in out Test) is
+      use Ada.Strings.Maps;
+
+      Resource : Resource_Type;
+      Lines    : Util.Strings.Vectors.Vector;
+      File     : File_Info;
+   begin
+      Resource.Add_File ("lines", "regtests/files/lines-2.txt");
+      Resource.Separators := To_Set (";");
+
+      --  Remove newlines and contiguous spaces.
+      Are.Add_Line_Filter (Resource, "[\r\n]", "");
+      Are.Add_Line_Filter (Resource, "[ \t][ \t]+", " ");
+
+      --  Remove C comments.
+      Are.Add_Line_Filter (Resource, "/\*[^/]*\*/", "");
+
+      --  Remove contiguous spaces (can happen after C comment removal).
+      Are.Add_Line_Filter (Resource, "[ \t][ \t]+", " ");
+      File := Resource.Files.First_Element;
+      Resource.Convert_To_Lines (File, Lines);
+      Util.Tests.Assert_Equals (T, 5, Natural (Lines.Length),
+                                "Invalid number of lines");
+
+      for I in 1 .. 5 loop
+         Ada.Text_IO.Put_Line (Lines.Element (I));
+      end loop;
+
+      Util.Tests.Assert_Equals (T, "pragma synchronous=OFF",
+                                Lines.Element (1), "Invalid line 1");
+      Util.Tests.Assert_Equals (T, "CREATE TABLE IF NOT EXISTS entity_type ( `id`"
+                                & " INTEGER PRIMARY KEY AUTOINCREMENT, `name`"
+                                & " VARCHAR(127) UNIQUE )",
+                                Lines.Element (2), "Invalid line 2");
+      Util.Tests.Assert_Equals (T, "CREATE TABLE IF NOT EXISTS sequence ( `name`"
+                                & " VARCHAR(127) UNIQUE NOT NULL, `version` INTEGER NOT NULL,"
+                                & " `value` BIGINT NOT NULL, `block_size` BIGINT NOT NULL,"
+                                & " PRIMARY KEY (`name`))",
+                                Lines.Element (3), "Invalid line 3");
+      Util.Tests.Assert_Equals (T, "INSERT OR IGNORE INTO entity_type (name) VALUES"
+                                & " (""entity_type"")",
+                                Lines.Element (4), "Invalid line 4");
+      Util.Tests.Assert_Equals (T, "INSERT OR IGNORE INTO entity_type (name) VALUES"
+                                & " (""sequence"")",
+                                Lines.Element (5), "Invalid line 5");
+   end Test_Convert_Lines_2;
 
 end Are.Tests;

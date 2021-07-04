@@ -35,9 +35,33 @@ Complex resource integrations are best described with and XML and are generated 
 are --lang=Ada -o src --rule=package.xml --name-access .
 ```
 
-## Version 1.0.0  - June 2021
-- First version of the resource embedder
-- Add support for C, Ada and Go
+For Ada, it generates the following package declaration with the `Get_Content` function
+that gives access to the files.  The Ada body contains the content of each embedded file.
+
+```Ada
+package Config is
+  function Get_Content (Name : in String)
+    return access constant String;
+end Config;
+```
+
+For C, it generates a C structure that describes each file and a function that gives
+access to the file content.  The C source file contains the content of each embedded file.
+
+```C
+struct config_content {
+  const unsigned char *content;
+  size_t size;
+  time_t modtime;
+  int format;
+}
+extern const struct config_content *config_get_content(const char* name);
+```
+
+## Version 1.1.0  - July 2021
+- Add support to emit Ada String types for embedded content
+- Add support to represent content as an array of lines
+- New example to show the new 'lines' resource format
 
 [List all versions](https://github.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 
@@ -45,8 +69,9 @@ are --lang=Ada -o src --rule=package.xml --name-access .
 
 Incorporating files in a binary program can sometimes be a challenge.
 The `Advance Resource Embedder` is a flexible tool that collects files such as
-documentation, images, scripts and others.  It is able to apply some
-transformation on the collected files:
+documentation, images, scripts, configuration files and generates a source
+code that contains these files.  It is able to apply some
+transformations on the collected files:
 
 * it can run a Javascript minifier such as `closure`,
 * it can compress CSS files by running `yui-compressor`,
@@ -65,7 +90,7 @@ The process to use ARE is simple:
   The XML description gives more flexibility as it allows to define a transformation rule that
   must be executed on the original file before being embedded.  This allows to minify a Javascript
   or CSS file, compress some files and even encrypt a file before its integration.
-* You run the ARE command with the your target language and rule description and you give the tool
+* You run the ARE command with your target language and rule description and you give the tool
   a list of directories that must be scanned to identify the files that must be collected.
   The ARE tool scan the directories according to the patterns that you have given either on
   the command line or in the XML rule description.  After identifying the files, the tool applies
@@ -107,6 +132,8 @@ More specific examples show how to make specific transformations on the files be
 
 * [Embedding web files in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-web)
 * [Embedding merged properties in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-bundles)
+* [Embedding SQL scripts in Ada and mapping them in array of String](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-lines)
+* [Embedding SQL scripts in C and mapping them in array of String](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-lines)
 
 
 # Building ARE
@@ -194,6 +221,45 @@ And install it:
 ```
 make install
 ```
+
+# Debian Packages for x86_64
+
+You can install ARE by using the Debian 10 and Ubuntu 20.04 or 18.04 packages.
+First, setup to accept the signed packages:
+
+```
+wget -O - https://apt.vacs.fr/apt.vacs.fr.gpg.key | sudo apt-key add -
+```
+
+and choose one of the `echo` command according to your Linux distribution:
+
+Ubuntu 20.04
+```
+echo "deb https://apt.vacs.fr/ubuntu-focal focal main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+```
+
+Ubuntu 18.04
+```
+echo "deb https://apt.vacs.fr/ubuntu-bionic bionic main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+```
+
+Debian 10
+```
+echo "deb https://apt.vacs.fr/debian-buster buster main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+```
+
+Then, launch the apt update command:
+
+```
+sudo apt-get update
+```
+
+and install the tool using:
+
+```
+sudo apt-get install -y are
+```
+
 
 # Documents
 

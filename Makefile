@@ -2,22 +2,25 @@ NAME=are
 
 -include Makefile.conf
 
-ifeq ($(OS),Windows_NT)
-URIL_OS=win64
+DIST_DIRS=ada-util ada-el
+DIST_DIR=resource-embedder-$(VERSION)
+DIST_FILE=$(DIST_DIR).tar.gz
+
+ifeq (${OS},Windows_NT)
+UTIL_OS=win64
 else
 
 ARE_SYSTEM := $(shell uname -sm | sed "s- -_-g")
 
 ifeq ($(ARE_SYSTEM),Linux_x86_64)
 UTIL_OS=linux64
-endif
 
-ifeq ($(ARE_SYSTEM),Linux_i686)
+else ifeq ($(ARE_SYSTEM),Linux_i686)
 UTIL_OS=linux32
-endif
 
-ifeq ($(ARE_SYSTEM),Darwin_x86_64)
+else ifeq ($(ARE_SYSTEM),Darwin_x86_64)
 UTIL_OS=macos64
+
 endif
 
 endif
@@ -68,3 +71,13 @@ HTML_OPTIONS=-f markdown -o are-book.html --listings --number-sections --toc --c
 $(eval $(call pandoc_build,are-book,$(ARE_DOC),\
 	cp docs/Using.md docs/Are_Using.md; \
 	sed -e s/^\\\#\\\#/\\\#\\\#\\\#/ docs/are.md >> docs/Are_Using.md))
+
+dist::
+	rm -f $(DIST_FILE)
+	git archive -o $(DIST_DIR).tar --prefix=$(DIST_DIR)/ HEAD
+	for i in $(DIST_DIRS); do \
+	   cd $$i && git archive -o ../$$i.tar --prefix=$(DIST_DIR)/$$i/ HEAD ; \
+           cd .. && tar --concatenate --file=$(DIST_DIR).tar $$i.tar ; \
+           rm -f $$i.tar; \
+        done
+	gzip $(DIST_DIR).tar

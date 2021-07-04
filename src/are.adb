@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 with Ada.Unchecked_Deallocation;
 with Ada.Streams.Stream_IO;
+with Ada.Characters.Handling;
 with Util.Log.Loggers;
 with Util.Properties;
 with Util.Files;
@@ -38,6 +39,18 @@ package body Are is
          return Default;
       end if;
    end Get_Type_Name;
+
+   function Get_Content_Type_Name (Resource : in Resource_Type;
+                                   Context  : in Context_Type'Class;
+                                   Default  : in String) return String is
+      pragma Unreferenced (Context);
+   begin
+      if Length (Resource.Content_Type_Name) > 0 then
+         return To_String (Resource.Content_Type_Name);
+      else
+         return Default;
+      end if;
+   end Get_Content_Type_Name;
 
    function Get_Function_Name (Resource : in Resource_Type;
                                Context  : in Context_Type'Class;
@@ -132,18 +145,18 @@ package body Are is
    --  ------------------------------
    --  Load and add the file in the resource library.
    --  ------------------------------
-   procedure Add_File (Resource : in Resource_Access;
+   procedure Add_File (Resource : in out Resource_Type;
                        Name     : in String;
                        Path     : in String;
                        Override : in Boolean := False) is
    begin
-      Add_File (Resource, Name, Path, Ada.Directories.Modification_Time (Path), Override);
+      Resource.Add_File (Name, Path, Ada.Directories.Modification_Time (Path), Override);
    end Add_File;
 
    --  ------------------------------
    --  Load and add the file in the resource library.
    --  ------------------------------
-   procedure Add_File (Resource : in Resource_Access;
+   procedure Add_File (Resource : in out Resource_Type;
                        Name     : in String;
                        Path     : in String;
                        Modtime  : in Ada.Calendar.Time;
@@ -157,7 +170,7 @@ package body Are is
    begin
       Info.Length := Length;
       Info.Modtime := Modtime;
-      Info.Content := new Ada.Streams.Stream_Element_Array (0 .. Stream_Element_Offset (Length) - 1);
+      Info.Content := new Ada.Streams.Stream_Element_Array (1 .. Stream_Element_Offset (Length));
       Ada.Streams.Stream_IO.Open (File, Ada.Streams.Stream_IO.In_File, Path);
       Ada.Streams.Stream_IO.Read (File, Info.Content.all, Last);
       Ada.Streams.Stream_IO.Close (File);
@@ -168,6 +181,152 @@ package body Are is
          Resource.Files.Include (Name, Info);
       end if;
    end Add_File;
+
+   --  ------------------------------
+   --  Add a line filter that will replace contents matching the pattern
+   --  by the replacement string.
+   --  ------------------------------
+   procedure Add_Line_Filter (Resource    : in out Resource_Type;
+                              Pattern     : in String;
+                              Replacement : in String) is
+      Matcher : constant GNAT.Regpat.Pattern_Matcher
+        := GNAT.Regpat.Compile (Pattern, GNAT.Regpat.Single_Line);
+   begin
+      Resource.Filters.Append ((Size => Matcher.Size,
+                                Replace_Length => Replacement'Length,
+                                Pattern => Matcher,
+                                Replace => Replacement));
+   end Add_Line_Filter;
+
+   procedure Convert_To_Lines (Resource : in Resource_Type;
+                               File     : in File_Info;
+                               Lines    : in out Util.Strings.Vectors.Vector) is
+      use Ada.Strings.Maps;
+      function Find_End (Content : in String;
+                         Start   : in Natural) return Natural;
+      function Skip_End (Content : in String;
+                         Start   : in Natural) return Natural;
+      procedure Apply_Filter (Filter  : in Line_Filter_Type;
+                              Content : in String;
+                              Result  : in out UString);
+      procedure Apply_Filters (Content : in String);
+
+      function Find_End (Content : in String;
+                         Start   : in Natural) return Natural is
+         Pos : Natural := Start;
+      begin
+         while Pos <= Content'Last loop
+            if Is_In (Content (Pos), Resource.Separators) then
+               return Pos - 1;
+            end if;
+            Pos := Pos + 1;
+         end loop;
+         return Content'Last;
+      end Find_End;
+
+      function Skip_End (Content : in String;
+                         Start   : in Natural) return Natural is
+         Pos : Natural := Start;
+      begin
+         while Pos <= Content'Last loop
+            if not Is_In (Content (Pos), Resource.Separators) then
+               return Pos;
+            end if;
+            Pos := Pos + 1;
+         end loop;
+         return Pos;
+      end Skip_End;
+
+      procedure Apply_Filter (Filter  : in Line_Filter_Type;
+                              Content : in String;
+                              Result  : in out UString) is
+         use type GNAT.Regpat.Match_Location;
+
+         Last    : constant Positive := Content'Last;
+         Matches : GNAT.Regpat.Match_Array (0 .. 10);
+         Pos     : Positive := Content'First;
+      begin
+         Result := To_Unbounded_String ("");
+         while Pos <= Last loop
+            GNAT.Regpat.Match (Filter.Pattern, Content, Matches, Pos, Last);
+            exit when Matches (0) = GNAT.Regpat.No_Match;
+            if Matches (0).First > Pos then
+               Append (Result, Content (Pos .. Matches (0).First - 1));
+            end if;
+            if Filter.Replace_Length > 0 then
+               Append (Result, Filter.Replace);
+            end if;
+            Pos := Matches (0).Last + 1;
+         end loop;
+         if Pos <= Last then
+            Append (Result, Content (Pos .. Last));
+         end if;
+      end Apply_Filter;
+
+      procedure Apply_Filters (Content : in String) is
+         Result : UString := To_Unbounded_String (Content);
+      begin
+         for Filter of Resource.Filters loop
+            declare
+               Content : constant String := To_String (Result);
+            begin
+               Apply_Filter (Filter, Content, Result);
+            end;
+         end loop;
+         if Length (Result) > 0 then
+            Lines.Append (To_String (Result));
+         end if;
+      end Apply_Filters;
+
+   begin
+      Lines.Clear;
+      if File.Content = null or else File.Content'Length = 0 then
+         return;
+      end if;
+      declare
+         First   : constant Natural := Natural (File.Content'First);
+         Last    : constant Natural := Natural (File.Content'Last);
+         Content : String (First .. Last);
+         for Content'Address use File.Content.all'Address;
+
+         Pos     : Natural;
+         Start   : Natural;
+         End_Pos : Natural;
+      begin
+         Pos := First;
+         Start := Pos;
+         while Pos <= Last loop
+            End_Pos := Find_End (Content, Pos);
+            if Start < End_Pos then
+               Apply_Filters (Content (Start .. End_Pos));
+            end if;
+            Pos := Skip_End (Content, End_Pos + 1);
+            Start := Pos;
+         end loop;
+      end;
+   end Convert_To_Lines;
+
+   --  ------------------------------
+   --  Collect the list of files names for the resource (list is sorted).
+   --  ------------------------------
+   procedure Collect_Names (Resource    : in Resource_Type;
+                            Ignore_Case : in Boolean;
+                            Names       : in out Util.Strings.Vectors.Vector) is
+   begin
+      Names.Clear;
+
+      for File in Resource.Files.Iterate loop
+         declare
+            Name : constant String := File_Maps.Key (File);
+         begin
+            if Ignore_Case then
+               Names.Append (Ada.Characters.Handling.To_Upper (Name));
+            else
+               Names.Append (Name);
+            end if;
+         end;
+      end loop;
+   end Collect_Names;
 
    --  ------------------------------
    --  Create a new resource with the given name.
@@ -202,7 +361,7 @@ package body Are is
    function Get_Output_Path (Context : in Context_Type;
                              Name    : in String) return String is
    begin
-      if Context.Output'Length = 0 then
+      if Context.Output'Length = 0 or Context.Output.all = "." then
          return Name;
       else
          return Ada.Directories.Compose (Context.Output.all, Name);
@@ -263,7 +422,6 @@ package body Are is
    --  Configure the logs.
    --  ------------------------------
    procedure Configure_Logs (Debug   : in Boolean;
-                             Dump    : in Boolean;
                              Verbose : in Boolean) is
       Log_Config  : Util.Properties.Manager;
    begin
@@ -276,7 +434,7 @@ package body Are is
       Log_Config.Set ("log4j.logger.Util", "FATAL");
       Log_Config.Set ("log4j.logger.Util.Events", "ERROR");
       Log_Config.Set ("log4j.logger.Are", "ERROR");
-      if Verbose or Debug or Dump then
+      if Verbose or Debug then
          Log_Config.Set ("log4j.logger.Util", "WARN");
          Log_Config.Set ("log4j.logger.Are", "INFO");
          Log_Config.Set ("log4j.rootCategory", "INFO,errorConsole,verbose");
@@ -284,16 +442,13 @@ package body Are is
          Log_Config.Set ("log4j.appender.verbose.level", "INFO");
          Log_Config.Set ("log4j.appender.verbose.layout", "level-message");
       end if;
-      if Debug or Dump then
+      if Debug then
          Log_Config.Set ("log4j.logger.Util.Processes", "INFO");
          Log_Config.Set ("log4j.logger.Are", "DEBUG");
          Log_Config.Set ("log4j.rootCategory", "DEBUG,errorConsole,debug");
          Log_Config.Set ("log4j.appender.debug", "Console");
          Log_Config.Set ("log4j.appender.debug.level", "DEBUG");
          Log_Config.Set ("log4j.appender.debug.layout", "full");
-      end if;
-      if Dump then
-         Log_Config.Set ("log4j.logger.Keystore.IO", "DEBUG");
       end if;
 
       Util.Log.Loggers.Initialize (Log_Config);

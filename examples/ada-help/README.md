@@ -1,6 +1,6 @@
 # Embedding help and documentation in Ada
 
-This example shows how to you can embed help and documentation files
+This example shows how you can embed help and documentation files
 in an Ada program.  This example uses a `package.xml` definition to
 describe the files and the methods to collect and embed the files.
 The Advance Resource Embedder scans the directory, runs the `man`
@@ -13,7 +13,7 @@ command:
 
 ```
 are --lang=Ada -o src --rule=package.xml \
-    --list-access --name-access --no-type-declaration .
+    --list-access --content-only --name-access --no-type-declaration .
 ```
 
 The `--lang=Ada` option selects the Ada generator for the output and the
@@ -45,11 +45,15 @@ package of the `Resources` package.  This is why we use the
 The following resource definition declares the `Help` resource.  It contains
 an installation rule that will copy the files under the `help` directory
 in the resource set.  Only files matching the `*.txt` pattern will be taken
-into account.
+into account.  The `format` attribute indicates that the content is assumed
+to be a string (the default being a binary) and it will be available
+as an access to a constant string.
 
 ```XML
 <package>
-  <resource name='Resources.Help'>
+  <resource name='Resources.Help'
+            format='string'
+            type='access constant String'>
     <install mode='copy'>
       <fileset dir="help">
         <include name="**/*.txt"/>
@@ -58,6 +62,19 @@ into account.
   </resource>
   ...
 </package>
+```
+
+With the above description, the Ada code generator produces the
+following package specification:
+
+```Ada
+package Resources.Help is
+   Names : constant Name_Array;
+   function Get_Content (Name : String)
+      return access constant String;
+private
+   ...
+end Resources.Help;
 ```
 
 The next resource definition will run an external program to get the
@@ -69,7 +86,8 @@ will run and embed the man page for these commands.
 ```XML
 <package>
    ...
-  <resource name='Resources.Man'>
+  <resource name='Resources.Man'
+            format='string'>
     <install mode='exec'>
       <command output='#{dst}'>man #{name}</command>
       <fileset dir="man">
@@ -80,18 +98,33 @@ will run and embed the man page for these commands.
 </package>
 ```
 
+With the above description, the Ada code generator produces the
+following package specification:
+
+```Ada
+package Resources.Man is
+   Names : constant Name_Array;
+   function Get_Content (Name : String)
+      return Content_Access;
+private
+   ...
+end Resources.Help;
+```
+
+Note that the resource description does not specify the type of
+the function and the Ada generator will use the default type
+which is `Content_Access`.  Because the Ada code generator is
+called with `--no-type-declaration`, it is assumed that this
+type is already declared and visible: indeed, it is declared
+in the `Resources` package that is not generated but
+provided by the example.
+
 # Build
 
 Run the command
 
 ```
 make
-```
-
-or
-
-```
-make ARE=../../bin/are
 ```
 
 and this generates:

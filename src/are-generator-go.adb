@@ -22,7 +22,6 @@ with Interfaces.C;
 
 with Util.Log.Loggers;
 with Util.Strings.Transforms;
-
 package body Are.Generator.Go is
 
    use Ada.Text_IO;
@@ -43,19 +42,7 @@ package body Are.Generator.Go is
    begin
       while Resource /= null loop
          if Context.Name_Index then
-            Generator.Names.Clear;
-
-            for File in Resource.Files.Iterate loop
-               declare
-                  Name : constant String := File_Maps.Key (File);
-               begin
-                  if Context.Ignore_Case then
-                     Generator.Names.Append (Util.Strings.Transforms.To_Upper_Case (Name));
-                  else
-                     Generator.Names.Append (Name);
-                  end if;
-               end;
-            end loop;
+            Resource.Collect_Names (Context.Ignore_Case, Generator.Names);
          end if;
 
          Generator.Generate_Source (Resource.all, Context);
@@ -64,16 +51,6 @@ package body Are.Generator.Go is
          Resource := Resource.Next;
       end loop;
    end Generate;
-
-   --  ------------------------------
-   --  Setup the command line configuration to accept specific generation options.
-   --  ------------------------------
-   overriding
-   procedure Setup (Generator : in out Generator_Type;
-                    Config    : in out GC.Command_Line_Configuration) is
-   begin
-      null;
-   end Setup;
 
    --  ------------------------------
    --  Given a package name, return the file name that correspond.

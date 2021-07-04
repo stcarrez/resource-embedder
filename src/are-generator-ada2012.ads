@@ -27,16 +27,34 @@ private with Util.Strings.Vectors;
 --  and retrieve the file content.  The Ada code generator is driven by the
 --  resource description and also by the tool options.
 --
+--  The code generator supports several data format to access the file content.
+--
+--  | Format | Ada type                                         |
+--  |--------|--------------------------------------------------|
+--  | binary | access constant Ada.Streams.Stream_Element_Array |
+--  | string | access constant String                           |
+--  | lines  | array of access constant String                  |
+--
 --  When the `--content-only` option is used, the code generator uses the
---  following type to describe a file content:
+--  following type to describe a file content in the `binary` format:
 --
 --    type Content_Access is
 --       access constant Ada.Streams.Stream_Element_Array;
 --
---  This type definition gives access to a readonly binary content and provides
---  enough information to also indicate the size of that content.  Then when
---  the `--name-access` option is passed, the code generator declares and
---  implements the following function:
+--  for the `string` format it defines:
+--
+--    type Content_Access is access constant String;
+--
+--  and for the `lines` format it defines:
+--
+--    type Content_Array is
+--       array (Natural range <>) of access constant String;
+--    type Content_Access is access constant Content_Array;
+--
+--  These type definitions give access to a readonly binary or string content
+--  and provides enough information to also indicate the size of that content.
+--  Then when the `--name-access` option is passed, the code generator declares
+--  and implements the following function:
 --
 --    function Get_Content (Name : String) return Content_Access;
 --
@@ -109,5 +127,10 @@ private
    --  Generate the keyword table.
    procedure Generate_Keyword_Table (Generator : in out Generator_Type;
                                      Into      : in out Ada.Text_IO.File_Type);
+
+   function To_File_Name (Name : in String) return String;
+
+   function To_Ada_Name (Prefix : in String;
+                         Name   : in String) return String;
 
 end Are.Generator.Ada2012;

@@ -1,6 +1,6 @@
 <package>
 
-  <resource name='Resources.Help'>
+  <resource name='Resources.Help' format='string' type='access constant String'>
     <!-- Copy files with .txt extension from 'help' directory -->
     <install mode='copy' strip-extension='yes'>
       <fileset dir="help">
@@ -9,7 +9,7 @@
     </install>
   </resource>
 
-  <resource name='Resources.Man'>
+  <resource name='Resources.Man' format='string'>
     <!-- Run the 'man X' command for each name found in the 'man' directory.
          We then include the full formatted man page of the given name. -->
     <install mode='exec'>

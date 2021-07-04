@@ -36,10 +36,16 @@ package Are.Generator.Ada2012.Tests is
 
    procedure Test_Generate_Ada6 (T : in out Test);
 
+   procedure Test_Generate_Ada7 (T : in out Test);
+
    procedure Test_Generate_Merge (T : in out Test);
 
    procedure Test_Generate_Concat (T : in out Test);
 
    procedure Test_Generate_Bundle (T : in out Test);
+
+   procedure Test_Generate_Lines (T : in out Test);
+
+   procedure Test_Ada_Names (T : in out Test);
 
 end Are.Generator.Ada2012.Tests;

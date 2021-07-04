@@ -12,18 +12,40 @@ and it contains the generated files with a function that allows to query
 and retrieve the file content.  The Ada code generator is driven by the
 resource description and also by the tool options.
 
+The code generator supports several data format to access the file content.
+
+| Format | Ada type                                         |
+|--------|--------------------------------------------------|
+| binary | access constant Ada.Streams.Stream_Element_Array |
+| string | access constant String                           |
+| lines  | array of access constant String                  |
+
 When the `--content-only` option is used, the code generator uses the
-following type to describe a file content:
+following type to describe a file content in the `binary` format:
 
 ```Ada
 type Content_Access is
    access constant Ada.Streams.Stream_Element_Array;
 ```
 
-This type definition gives access to a readonly binary content and provides
-enough information to also indicate the size of that content.  Then when
-the `--name-access` option is passed, the code generator declares and
-implements the following function:
+for the `string` format it defines:
+
+```Ada
+type Content_Access is access constant String;
+```
+
+and for the `lines` format it defines:
+
+```Ada
+type Content_Array is
+   array (Natural range <>) of access constant String;
+type Content_Access is access constant Content_Array;
+```
+
+These type definitions give access to a readonly binary or string content
+and provides enough information to also indicate the size of that content.
+Then when the `--name-access` option is passed, the code generator declares
+and implements the following function:
 
 ```Ada
 function Get_Content (Name : String) return Content_Access;
@@ -60,7 +82,6 @@ on the name.  It is declared as follows:
 type Name_Array is array (Natural range <>) of Name_Access;
 Names : constant Name_Array;
 ```
-
 ## C Generator
 The C code generator produces for each resource description a C
 header and a C source file with the name of that resource.  The header
@@ -108,7 +129,6 @@ The generated array gives access to the list of file names embedded in
 the resource.  That list is sorted on the name so that a dichotomic
 search can be used to find an entry.
 
-
 ## Go Generator
 The Go code generator produces for each resource description a Go
 source file with the name of that resource.  The header
@@ -155,6 +175,5 @@ var Names= []string {
 The generated array gives access to the list of file names embedded in
 the resource.  That list is sorted on the name so that a dichotomic
 search can be used to find an entry.
-
 
 

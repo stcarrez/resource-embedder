@@ -1,0 +1,13 @@
+<package>
+
+  <resource name='Error1' format='bad-format'>
+
+    <install mode='copy' dir='config'>
+      <fileset dir="config">
+        <include name="*.xml"/>
+      </fileset>
+    </install>
+
+  </resource>
+
+</package>

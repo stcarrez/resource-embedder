@@ -29,7 +29,7 @@ procedure Are.Main is
    Log     : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are.Main");
 
 begin
-   Are.Configure_Logs (Debug => False, Dump => False, Verbose => False);
+   Are.Configure_Logs (Debug => False, Verbose => False);
 
    Are.Generator.Main;
 

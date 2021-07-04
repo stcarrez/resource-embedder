@@ -1,0 +1,35 @@
+<package>
+
+  <resource name='web'
+            type="web_content"
+            function-name="web_get_content">
+    <!-- Merge Javascript and CSS files from some XHTML file.  -->
+    <install mode='webmerge' log='info' source-timestamp='yes'
+             merge-start='RESOURCE-MERGE-START'
+             merge-end='RESOURCE-MERGE-END'>
+       <!-- Define transformation variables: the #{name} are replaced by the given value -->
+       <property name="contextPath"></property>
+       <property name="jquery.path">/js/jquery-3.4.1.js</property>
+       <property name="jquery.uiCssPath">/css/redmond/jquery-ui-1.12.1.css</property>
+       <property name="jquery.chosenCssPath">/css/jquery-chosen-1.8.7/chosen.css</property>
+       <property name="jquery.uiPath">/js/jquery-ui-1.12.1/</property>
+
+       <!-- When CSS is merged, the relative path can change: do some URL transformation
+            so that the relative path remains valid -->
+       <replace>
+         <from>url("images/</from>
+         <to>url("redmond/images/</to>
+       </replace>
+       <replace>
+         <from>url(../../images/</from>
+         <to>url(../images/</to>
+       </replace>
+
+       <fileset>
+          <include name="*.xhtml"/>
+       </fileset>
+    </install>
+
+  </resource>
+
+</package>

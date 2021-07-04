@@ -137,7 +137,8 @@ package body Are.Installer.Merges is
 
       type Mode_Type is (MERGE_NONE, MERGE_LINK, MERGE_SCRIPT);
 
-      procedure Error (Message : in String);
+      procedure Error (Message : in String;
+                       Arg1    : in String := "");
       function Get_Target_Name (Link : in String) return String;
       function Get_Target_Path (Link : in String) return String;
       function Get_Filename (Line : in String) return String;
@@ -167,10 +168,11 @@ package body Are.Installer.Merges is
       Line_Num   : Natural := 0;
       Inc_Error  : Natural := 0;
 
-      procedure Error (Message : in String) is
+      procedure Error (Message : in String;
+                       Arg1    : in String := "") is
          Line : constant String := Util.Strings.Image (Line_Num);
       begin
-         Context.Error (Source & ":" & Line & ": {0}", Message);
+         Context.Error (Source & ":" & Line & ": " & Message, Arg1);
       end Error;
 
       function Get_Target_Name (Link : in String) return String is
@@ -244,9 +246,10 @@ package body Are.Installer.Merges is
          Link        : constant String := Get_Filename (Line);
          Path        : constant String := Get_Target_Name (Link);
          Target_Path : constant String := Util.Files.Compose (Root_Dir, Path);
+         Parent_Dir  : constant String := Ada.Directories.Containing_Directory (Target_Path);
       begin
          if Link'Length = 0 then
-            Error ("invalid file name");
+            Error ("invalid empty file name");
             return;
          end if;
          case Mode is
@@ -271,6 +274,9 @@ package body Are.Installer.Merges is
          end case;
          if Rule.Level >= Util.Log.INFO_LEVEL then
             Log.Info ("  create {0}", Path);
+         end if;
+         if not Ada.Directories.Exists (Parent_Dir) then
+            Ada.Directories.Create_Path (Parent_Dir);
          end if;
          Modtime := File_Time;
          Merge_Path := To_Unbounded_String (Target_Path);
@@ -330,10 +336,9 @@ package body Are.Installer.Merges is
             if Inc_Error > 5 then
                return;
             end if;
-            Error ("Expecting a '" & Pattern & "' in the line to identify the file to include");
+            Error ("expecting a '{0}' in the line to identify the file to include", Pattern);
             if Inc_Error = 5 then
-               Error ("May be the end marker '" & To_String (Rule.End_Mark)
-                      & "' was not correct?");
+               Error ("may be the end marker '{0}' was not correct?", To_String (Rule.End_Mark));
             end if;
             return;
          end if;
@@ -374,7 +379,7 @@ package body Are.Installer.Merges is
 
       exception
          when Ex : Ada.IO_Exceptions.Name_Error =>
-            Error ("Cannot read: " & Ada.Exceptions.Exception_Message (Ex));
+            Error ("cannot read {0}", Ada.Exceptions.Exception_Message (Ex));
       end Include;
 
       procedure Process (Line : in String) is

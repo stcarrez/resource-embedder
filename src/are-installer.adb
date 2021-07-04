@@ -92,6 +92,7 @@ package body Are.Installer is
    procedure Read_Package (Installer : in out Installer_Type;
                            File      : in String;
                            Context   : in out Context_Type'Class) is
+      use Ada.Strings.Maps;
 
       procedure Register_Rule (Resource : in out Are.Resource_Access;
                                Node     : in DOM.Core.Node);
@@ -99,6 +100,10 @@ package body Are.Installer is
                                    Node   : in DOM.Core.Node);
       procedure Register_Resources (List  : in out Are.Resource_List;
                                     Node  : in DOM.Core.Node);
+      procedure Register_Line_Separator (Resource : in out Are.Resource_Access;
+                                         Node     : in DOM.Core.Node);
+      procedure Register_Line_Filter (Resource : in out Are.Resource_Access;
+                                      Node     : in DOM.Core.Node);
 
       --  ------------------------------
       --  Register a new type mapping.
@@ -170,11 +175,9 @@ package body Are.Installer is
                                      Node  : in DOM.Core.Node) is
             Dir : constant UString := Are.Utils.Get_Attribute (Node, "dir");
          begin
-            if Dir = "" then
-               Context.Error ("{0}: empty fileset directory in '<fileset>'", File);
-               return;
+            if Dir /= "." then
+               Match.Base_Dir := Dir;
             end if;
-            Match.Base_Dir := Dir;
             Iterate (Rule, Node, "include");
             Iterate_Excludes (Rule, Node, "exclude", False);
          end Collect_Filesets;
@@ -208,28 +211,101 @@ package body Are.Installer is
          Iterate (Rule, Node, "include", False);
          Iterate_Excludes (Rule, Node, "exclude", False);
          Iterate_Filesets (Rule, Node, "fileset");
+         if Rule.Matches.Is_Empty then
+            Context.Error ("{0}: empty fileset definition", File);
+         end if;
       end Register_Rule;
+
+      --  ------------------------------
+      --  Register a new line separator.
+      --  ------------------------------
+      procedure Register_Line_Separator (Resource : in out Are.Resource_Access;
+                                         Node     : in DOM.Core.Node) is
+         Separator : constant String := Are.Utils.Get_Data_Content (Node);
+      begin
+         if Separator'Length = 0 then
+            return;
+         end if;
+         if Separator'Length = 1 then
+            Resource.Separators := Resource.Separators or To_Set (Separator);
+
+         elsif Separator = "\n" then
+            Resource.Separators := Resource.Separators or To_Set (ASCII.LF);
+
+         elsif Separator = "\r" then
+            Resource.Separators := Resource.Separators or To_Set (ASCII.CR);
+
+         elsif Separator = "\t" then
+            Resource.Separators := Resource.Separators or To_Set (ASCII.HT);
+
+         else
+            Resource.Separators := Resource.Separators or To_Set (Separator);
+         end if;
+      end Register_Line_Separator;
+
+      --  ------------------------------
+      --  Register a new line filter.
+      --  ------------------------------
+      procedure Register_Line_Filter (Resource : in out Are.Resource_Access;
+                                      Node     : in DOM.Core.Node) is
+         Pattern : constant String := Are.Utils.Get_Data_Content (Node);
+         Replace : constant String := Are.Utils.Get_Attribute (Node, "replace");
+      begin
+         Resource.Add_Line_Filter (Pattern, Replace);
+
+      exception
+         when GNAT.Regpat.Expression_Error =>
+            Context.Error ("{0}: invalid pattern '{1}'", File, Pattern);
+      end Register_Line_Filter;
 
       --  ------------------------------
       --  Register the resource definition.
       --  ------------------------------
       procedure Register_Resource (List  : in out Are.Resource_List;
                                    Node  : in DOM.Core.Node) is
+         function Get_Format (Name : in String) return Are.Format_Type;
          procedure Iterate is
            new Are.Utils.Iterate_Nodes (T => Are.Resource_Access,
                                         Process => Register_Rule);
+         procedure Iterate_Line_Separator is
+           new Are.Utils.Iterate_Nodes (T => Are.Resource_Access,
+                                        Process => Register_Line_Separator);
+         procedure Iterate_Line_Filter is
+           new Are.Utils.Iterate_Nodes (T => Are.Resource_Access,
+                                        Process => Register_Line_Filter);
+
+         function Get_Format (Name : in String) return Are.Format_Type is
+         begin
+            if Name = "binary" then
+               return R_BINARY;
+            elsif Name = "string" then
+               return R_STRING;
+            elsif Name = "lines" then
+               return R_LINES;
+            else
+               Context.Error ("{0}: invalid resource format '{1}'", File, Name);
+               return R_BINARY;
+            end if;
+         end Get_Format;
 
          Name     : constant String := Are.Utils.Get_Attribute (Node, "name");
          Resource : Are.Resource_Access;
       begin
          Are.Create_Resource (List, Name, Resource);
          Resource.Type_Name := Are.Utils.Get_Attribute (Node, "type", "");
+         Resource.Format := Get_Format (Are.Utils.Get_Attribute (Node, "format", "binary"));
          Resource.Function_Name := Are.Utils.Get_Attribute (Node, "function-name", "");
          Resource.Member_Content_Name := Are.Utils.Get_Attribute (Node, "member-content", "");
          Resource.Member_Modtime_Name := Are.Utils.Get_Attribute (Node, "member-time", "");
          Resource.Member_Length_Name := Are.Utils.Get_Attribute (Node, "member-length", "");
          Resource.Member_Format_Name := Are.Utils.Get_Attribute (Node, "member-format", "");
+         Iterate_Line_Separator (Resource, Node, "line-separator");
+         Iterate_Line_Filter (Resource, Node, "line-filter");
          Iterate (Resource, Node, "install");
+         if Resource.Format = R_LINES and then Resource.Separators = Null_Set then
+            Context.Error ("{0}: missing 'line-separator' for resource '{1}'",
+                           File, Name);
+         end if;
       end Register_Resource;
 
       --  ------------------------------
@@ -298,6 +374,8 @@ package body Are.Installer is
    procedure Scan_Directory (Installer : in out Installer_Type;
                              Path      : in String;
                              Context   : in out Context_Type'Class) is
+      pragma Unreferenced (Context);
+
       Tree : constant Directory_List_Access :=
         new Directory_List '(Length => 1, Name => ".", Rel_Pos => Path'Length + 2,
                              Path_Length => Path'Length, Path => Path, others => <>);
@@ -494,7 +572,7 @@ package body Are.Installer is
 
       exception
          when Ex : others =>
-            Context.Error ("Install of {0} failed: {1}",
+            Context.Error ("install of {0} failed: {1}",
                            Key, Ada.Exceptions.Exception_Message (Ex));
       end Process;
 
@@ -657,9 +735,9 @@ package body Are.Installer is
       Export_Path : constant String := Rule.Get_Export_Path (Name);
    begin
       if Rule.Source_Timestamp then
-         Are.Add_File (Rule.Resource, Export_Path, Path, Modtime, Override);
+         Rule.Resource.Add_File (Export_Path, Path, Modtime, Override);
       else
-         Are.Add_File (Rule.Resource, Export_Path, Path, Override);
+         Rule.Resource.Add_File (Export_Path, Path, Override);
       end if;
    end Add_File;
 

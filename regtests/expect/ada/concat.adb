@@ -1,4 +1,4 @@
--- Advanced Resource Embedder 1.0.0
+--  Advanced Resource Embedder 1.1.0
 with Interfaces; use Interfaces;
 
 package body Concat is
@@ -74,7 +74,6 @@ package body Concat is
       46, 57, 44, 32, 52, 46, 55, 44, 32, 53, 46, 54, 44, 32, 54, 46, 56, 44, 32, 56,
       46, 50, 32, 93, 10, 125, 10);
 
-
    type Name_Access is access constant String;
    type Name_Array is array (Natural range <>) of Name_Access;
 
@@ -85,8 +84,8 @@ package body Concat is
    Names : constant Name_Array := (
       K_0'Access, K_1'Access);
 
-   type Content_Array is array (Natural range <>) of Content_Access;
-   Contents : constant Content_Array := (
+   type Content_List_Array is array (Natural range <>) of Content_Access;
+   Contents : constant Content_List_Array := (
       C_0'Access, C_1'Access);
 
    function Get_Content (Name : String) return Content_Access is

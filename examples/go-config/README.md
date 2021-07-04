@@ -9,7 +9,7 @@ The configuration files are embedded by using the following
 command:
 
 ```
-are --lang=go -o config --resource=config --name-access --fileset '**/*.conf' config
+are --lang=go -o config --resource=config --name-access --fileset '*.conf' config
 ```
 
 The `--lang=go` option selects the Go generator for the output and the
@@ -23,7 +23,7 @@ the resource by using its name.  To describe the content that is embedded,
 a Go structure is declared that gives information about the raw data content,
 the content size, the modification date and data format.
 
-The `--fileset '**/*.conf'` option is here to define the pattern for files that
+The `--fileset '*.conf'` option is here to define the pattern for files that
 must be taken into account and embedded.  Then, the `config` directory is
 scanned for files matching the given pattern.   Multiple `--fileset` patterns
 can be specified.

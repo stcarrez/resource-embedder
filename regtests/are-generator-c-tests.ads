@@ -28,4 +28,6 @@ package Are.Generator.C.Tests is
 
    procedure Test_Generate_C2 (T : in out Test);
 
+   procedure Test_Generate_Lines (T : in out Test);
+
 end Are.Generator.C.Tests;

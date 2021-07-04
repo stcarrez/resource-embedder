@@ -42,6 +42,14 @@ package Are.Generator.Tests is
 
    procedure Test_Exec_Error_6 (T : in out Test);
 
+   procedure Test_Exec_Error_7 (T : in out Test);
+
+   procedure Test_Exec_Error_8 (T : in out Test);
+
+   procedure Test_Exec_Error_9 (T : in out Test);
+
+   procedure Test_Merge_Error_1 (T : in out Test);
+
    procedure Test_Verbose (T : in out Test);
 
 end Are.Generator.Tests;
