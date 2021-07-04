@@ -10,7 +10,7 @@ The configuration files are embedded by using the following
 command:
 
 ```
-are --lang=Ada -o src --resource=config --name-access --fileset '**/*' config
+are --lang=Ada -o src --resource=config --name-access --fileset '*.conf' config
 ```
 
 The `--lang=Ada` option selects the Ada generator for the output and the
@@ -46,7 +46,7 @@ package Config is
 end Config;
 ```
 
-The `--fileset '**/*'` option is here to define the pattern for files that
+The `--fileset '*.conf'` option is here to define the pattern for files that
 must be taken into account and embedded.  Then, the `config` directory is
 scanned for files matching the given pattern.   Multiple `--fileset` patterns
 can be specified.

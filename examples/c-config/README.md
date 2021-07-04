@@ -9,7 +9,7 @@ The configuration files are embedded by using the following
 command:
 
 ```
-are --lang=c -o src --resource=config --name-access --fileset '**/*' config
+are --lang=c -o src --resource=config --name-access --fileset '*.conf' config
 ```
 
 The `--lang=c` option selects the C generator for the output and the
@@ -36,7 +36,7 @@ struct config_content {
 extern const struct config_content* config_get_content(const char* name);
 ```
 
-The `--fileset '**/*'` option is here to define the pattern for files that
+The `--fileset '*.conf'` option is here to define the pattern for files that
 must be taken into account and embedded.  Then, the `config` directory is
 scanned for files matching the given pattern.   Multiple `--fileset` patterns
 can be specified.
