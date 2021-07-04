@@ -140,6 +140,11 @@ package body Are.Generator is
                         Long_Switch => "--var-access",
                         Help   => -("Declare a variable to give access to each content"));
       GC.Define_Switch (Config => Config,
+                        Output => Context.Var_Prefix'Access,
+                        Long_Switch => "--var-prefix=",
+                        Argument => "PREFIX",
+                        Help   => -("Defines the prefix to be used for variable names"));
+      GC.Define_Switch (Config => Config,
                         Output => Context.No_Type_Declaration'Access,
                         Long_Switch => "--no-type-declaration",
                         Help   => -("Do not declare any type in the package "
@@ -199,6 +204,10 @@ package body Are.Generator is
       end if;
       if Context.Fileset_Pattern /= null and then Context.Fileset_Pattern'Length > 0 then
          Add_Option ("--fileset", Context.Fileset_Pattern.all);
+      end if;
+
+      if Context.Var_Prefix'Length > 0 then
+         Context.Declare_Var := True;
       end if;
 
       --  Read the rule definitions.

@@ -38,13 +38,15 @@ package body Are.Generator.Ada2012 is
    --  Generate the resource declaration list.
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
                                              Into         : in out Ada.Text_IO.File_Type;
-                                             Content_Type : in String);
+                                             Content_Type : in String;
+                                             Var_Prefix   : in String);
 
    --  Generate the resource content definition.
    procedure Generate_Resource_Contents (Resource     : in Are.Resource_Type;
                                          Into         : in out Ada.Text_IO.File_Type;
                                          Declare_Var  : in Boolean;
-                                         Content_Type : in String);
+                                         Content_Type : in String;
+                                         Var_Prefix   : in String);
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are.Generator.Ada2012");
 
@@ -137,10 +139,11 @@ package body Are.Generator.Ada2012 is
       return Result;
    end To_File_Name;
 
-   function To_Ada_Name (Name : in String) return String is
+   function To_Ada_Name (Prefix : in String;
+                         Name   : in String) return String is
       Result : Unbounded_String;
    begin
-      Append (Result, "Id_");
+      Append (Result, Prefix);
       for C of Name loop
          if C = '-' or C = '.' then
             Append (Result, '_');
@@ -228,11 +231,12 @@ package body Are.Generator.Ada2012 is
    --  ------------------------------
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
                                              Into         : in out Ada.Text_IO.File_Type;
-                                             Content_Type : in String) is
+                                             Content_Type : in String;
+                                             Var_Prefix   : in String) is
    begin
       for File in Resource.Files.Iterate loop
          Put (Into, "   ");
-         Put (Into, To_Ada_Name (File_Maps.Key (File)));
+         Put (Into, To_Ada_Name (Var_Prefix, File_Maps.Key (File)));
          Put (Into, " : aliased constant ");
          Put (Into, Content_Type);
          Put_Line (Into, ";");
@@ -246,7 +250,8 @@ package body Are.Generator.Ada2012 is
    procedure Generate_Resource_Contents (Resource     : in Are.Resource_Type;
                                          Into         : in out Ada.Text_IO.File_Type;
                                          Declare_Var  : in Boolean;
-                                         Content_Type : in String) is
+                                         Content_Type : in String;
+                                         Var_Prefix   : in String) is
       function Get_Variable_Name (Key : in String) return String;
       procedure Write_Binary (Name    : in String;
                               Content : in Are.File_Info);
@@ -372,6 +377,7 @@ package body Are.Generator.Ada2012 is
          Put_Line (Into, ";");
       end Write_String;
 
+      --  Line index is global for the resource.
       Line_Index : Natural := 0;
 
       procedure Write_Lines (Name    : in String;
@@ -381,13 +387,13 @@ package body Are.Generator.Ada2012 is
       begin
          Are.Convert_To_Lines (Resource, Content, Lines);
          for Line of Lines loop
+            Line_Index := Line_Index + 1;
             Put (Into, "   L_");
             Put (Into, Util.Strings.Image (Line_Index));
             Set_Col (Into, 10);
             Put (Into, ": aliased constant String := ");
             Write_String (Line);
             Put_Line (Into, ";");
-            Line_Index := Line_Index + 1;
          end loop;
          Put (Into, "   ");
          Put (Into, Name);
@@ -407,10 +413,10 @@ package body Are.Generator.Ada2012 is
                   Put_Line (Into, ",");
                   Set_Col (Into, 7);
                end if;
+               First := First + 1;
                Put (Into, "L_");
                Put (Into, Util.Strings.Image (First));
                Put (Into, "'Access");
-               First := First + 1;
             end loop;
             Put_Line (Into, ");");
          end if;
@@ -421,7 +427,7 @@ package body Are.Generator.Ada2012 is
       function Get_Variable_Name (Key : in String) return String is
       begin
          if Declare_Var then
-            return To_Ada_Name (Key);
+            return To_Ada_Name (Var_Prefix, Key);
          else
             return "C_" & Util.Strings.Image (Index);
          end if;
@@ -553,7 +559,7 @@ package body Are.Generator.Ada2012 is
             Put_Line (File, "   type Content_Access is access constant"
                       & " Ada.Streams.Stream_Element_Array;");
          elsif Resource.Format = R_LINES then
-            Put_Line (File, "   type Content_Array is array (Natural range <>)"
+            Put_Line (File, "   type Content_Array is array (Positive range <>)"
                       & " of access constant String;");
             Put_Line (File, "   type Content_Access is access constant Content_Array;");
          elsif Resource.Format = R_STRING then
@@ -583,7 +589,7 @@ package body Are.Generator.Ada2012 is
          end if;
       end if;
       if Context.Declare_Var then
-         Generate_Resource_Declarations (Resource, File, Content_Type);
+         Generate_Resource_Declarations (Resource, File, Content_Type, Context.Var_Prefix.all);
       end if;
       if Context.List_Content then
          if not Context.No_Type_Declaration then
@@ -604,7 +610,8 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, "private");
          New_Line (File);
          Has_Private := True;
-         Generate_Resource_Contents (Resource, File, Context.Declare_Var, Content_Type);
+         Generate_Resource_Contents (Resource, File, Context.Declare_Var,
+                                     Content_Type, Context.Var_Prefix.all);
       end if;
       if not Context.No_Type_Declaration and not Generator.Content_Only then
          if not Has_Private then
@@ -689,7 +696,7 @@ package body Are.Generator.Ada2012 is
                Put (File, "'Access, ");
             end if;
             if Context.Declare_Var then
-               Put (File, To_Ada_Name (File_Maps.Key (Content)));
+               Put (File, To_Ada_Name (Context.Var_Prefix.all, File_Maps.Key (Content)));
             else
                Put (File, "C_");
                Put (File, Util.Strings.Image (Index));
@@ -754,7 +761,8 @@ package body Are.Generator.Ada2012 is
       end if;
 
       if not Context.Declare_Var then
-         Generate_Resource_Contents (Resource, File, Context.Declare_Var, Content_Type);
+         Generate_Resource_Contents (Resource, File, Context.Declare_Var,
+                                     Content_Type, Context.Var_Prefix.all);
       end if;
 
       if Context.Name_Index and not Context.List_Content then

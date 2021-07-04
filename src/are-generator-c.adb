@@ -33,16 +33,18 @@ package body Are.Generator.C is
                            Resource : in Are.Resource_Type;
                            Context  : in Are.Context_Type'Class) return String;
    function To_File_Name (Name : in String) return String;
-   function To_C_Name (Name : in String) return String;
+   function To_C_Name (Prefix : in String;
+                       Name   : in String) return String;
    function To_Define_Name (Name    : in String;
                             Postfix : in String := "_H_") return String;
    function To_Prefix_Name (Name : in String) return String;
 
    --  Generate the resource declaration list.
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
+                                             Into         : in out Ada.Text_IO.File_Type;
                                              Content_Name : in String;
                                              Content_Type : in String;
-                                             Into         : in out Ada.Text_IO.File_Type);
+                                             Var_Prefix   : in String);
 
    --  Generate the resource content definition.
    procedure Generate_Resource_Contents (Resource     : in out Are.Resource_Type;
@@ -165,10 +167,11 @@ package body Are.Generator.C is
       return Result;
    end To_Prefix_Name;
 
-   function To_C_Name (Name : in String) return String is
+   function To_C_Name (Prefix : in String;
+                       Name   : in String) return String is
       Result : Unbounded_String;
    begin
-      Append (Result, "Id_");
+      Append (Result, Prefix);
       for C of Name loop
          if C = '-' or C = '.' then
             Append (Result, '_');
@@ -190,16 +193,17 @@ package body Are.Generator.C is
    --  Generate the resource declaration list.
    --  ------------------------------
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
+                                             Into         : in out Ada.Text_IO.File_Type;
                                              Content_Name : in String;
                                              Content_Type : in String;
-                                             Into         : in out Ada.Text_IO.File_Type) is
+                                             Var_Prefix   : in String) is
       Remain : Natural := Natural (Resource.Files.Length);
    begin
       Put (Into, "enum");
       Put_Line (Into, " {");
       for File in Resource.Files.Iterate loop
          Put (Into, "   ");
-         Put (Into, To_C_Name (File_Maps.Key (File)));
+         Put (Into, To_C_Name (Var_Prefix, File_Maps.Key (File)));
          Remain := Remain - 1;
          if Remain /= 0 then
             Put_Line (Into, ",");
@@ -485,7 +489,8 @@ package body Are.Generator.C is
       end if;
 
       if Context.Declare_Var then
-         Generate_Resource_Declarations (Resource, Content_Name, Type_Name, File);
+         Generate_Resource_Declarations (Resource, File, Content_Name,
+                                         Type_Name, Context.Var_Prefix.all);
       end if;
       if Context.Name_Index then
          Log.Debug ("Writing {0} declaration", Func_Name);

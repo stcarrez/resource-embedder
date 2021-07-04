@@ -130,6 +130,7 @@ private
 
    function To_File_Name (Name : in String) return String;
 
-   function To_Ada_Name (Name : in String) return String;
+   function To_Ada_Name (Prefix : in String;
+                         Name   : in String) return String;
 
 end Are.Generator.Ada2012;

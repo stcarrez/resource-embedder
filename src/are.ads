@@ -198,6 +198,7 @@ private
       Member_Format_Name  : aliased GNAT.Strings.String_Access;
       Resource_Name       : aliased GNAT.Strings.String_Access;
       Fileset_Pattern     : aliased GNAT.Strings.String_Access;
+      Var_Prefix          : aliased GNAT.Strings.String_Access;
    end record;
 
    --  Release the context information.
