@@ -20,22 +20,25 @@ are - Resource embedder to include files in Ada, C/C++, Go binaries
     [--fileset
 .I pattern
 ] [--ignore-case] [--list-access] [--var-access]
-    [--no-type-declaration] [--type-name
-.I name
-] [--function-name
-.I name
-]
-    [--member-content
-.I name
-] [--member-length
+    [--var-prefix
+.I prefix
+] [--no-type-declaration] [--type-name
 .I name
 ]
-    [--member-modtime
+    [--function-name
 .I name
-] [--member-format
+] [--member-content
 .I name
 ]
-    [--preelaborate] [--content-only] directory...
+    [--member-length
+.I name
+] [--member-modtime
+.I name
+]
+    [--member-format
+.I name
+] [--preelaborate]
+    [--content-only] directory...
 .br
 .SH DESCRIPTION
 \fIare\fR is a tool to generate C, Ada or Go source allowing to embed files
@@ -182,6 +185,13 @@ Declare a variable to give access to each content.  When this option is given,
 the code generator will emit a global variable declaration with the name of the
 file.  By using the global variable, the program can access the resource
 directly.
+.\"
+.TP 5
+--var-prefix \fIprefix\fR
+Defines the prefix to be used for the variable declarations that give
+access access to each content.  This option implies the
+.I --var-access
+option.
 .\"
 .TP 5
 --no-type-declaration

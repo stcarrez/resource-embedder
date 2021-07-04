@@ -14,16 +14,18 @@ _path_ ] [--resource
 _name_ ]
     [--fileset
 _pattern_ ] [--ignore-case] [--list-access] [--var-access]
-    [--no-type-declaration] [--type-name
-_name_ ] [--function-name
+    [--var-prefix
+_prefix_ ] [--no-type-declaration] [--type-name
 _name_ ]
-    [--member-content
-_name_ ] [--member-length
+    [--function-name
+_name_ ] [--member-content
 _name_ ]
-    [--member-modtime
-_name_ ] [--member-format
+    [--member-length
+_name_ ] [--member-modtime
 _name_ ]
-    [--preelaborate] [--content-only] directory...
+    [--member-format
+_name_ ] [--preelaborate]
+    [--content-only] directory...
 
 
 ## DESCRIPTION
@@ -162,6 +164,12 @@ file.  By using the global variable, the program can access the resource
 directly.
 
 
+--var-prefix _prefix_
+Defines the prefix to be used for the variable declarations that give
+access access to each content.  This option implies the
+_--var-access_ option.
+
+
 --no-type-declaration
 Do not declare any type in the package specification.  It is assumed that the
 types used by the generated code is declared somewhere else and is visible during the
@@ -216,7 +224,7 @@ that identify the files.
 
 ```
  <package>
-  <resource name='help'>
+  <resource name='help' format='string'>
    <install mode='copy'>
      <fileset dir='help'>
       <include name='**/*.txt'/>
