@@ -374,6 +374,8 @@ package body Are.Installer is
    procedure Scan_Directory (Installer : in out Installer_Type;
                              Path      : in String;
                              Context   : in out Context_Type'Class) is
+      pragma Unreferenced (Context);
+
       Tree : constant Directory_List_Access :=
         new Directory_List '(Length => 1, Name => ".", Rel_Pos => Path'Length + 2,
                              Path_Length => Path'Length, Path => Path, others => <>);
