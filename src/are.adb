@@ -43,6 +43,7 @@ package body Are is
    function Get_Content_Type_Name (Resource : in Resource_Type;
                                    Context  : in Context_Type'Class;
                                    Default  : in String) return String is
+      pragma Unreferenced (Context);
    begin
       if Length (Resource.Content_Type_Name) > 0 then
          return To_String (Resource.Content_Type_Name);
