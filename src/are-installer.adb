@@ -570,7 +570,7 @@ package body Are.Installer is
 
       exception
          when Ex : others =>
-            Context.Error ("Install of {0} failed: {1}",
+            Context.Error ("install of {0} failed: {1}",
                            Key, Ada.Exceptions.Exception_Message (Ex));
       end Process;
 

@@ -110,7 +110,7 @@ package body Are.Installer.Bundles is
          Props.Iterate (Process => Merge_Property'Access);
       exception
          when Ex : Ada.IO_Exceptions.Name_Error =>
-            Context.Error ("Cannot read {0}: ", File_Path, Ada.Exceptions.Exception_Message (Ex));
+            Context.Error ("cannot read {0}: ", File_Path, Ada.Exceptions.Exception_Message (Ex));
 
       end Load_File;
 
