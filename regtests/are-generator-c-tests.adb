@@ -75,7 +75,7 @@ package body Are.Generator.C.Tests is
    begin
       --  Generate the resources.ad[bs] files
       T.Execute (Tool & " --lang=c -o " & Dir
-                 & " --name-access --var-access --resource=Resources2 --fileset '**/*' "
+                 & " --name-access --var-prefix Id_ --resource=Resources2 --fileset '**/*' "
                  & Web, Result);
 
       T.Assert (Ada.Directories.Exists (Ada.Directories.Compose (Dir, "resources2.h")),
@@ -103,7 +103,7 @@ package body Are.Generator.C.Tests is
       Result     : Ada.Strings.Unbounded.Unbounded_String;
    begin
       --  Generate the lines.ads files
-      T.Execute (Tool & " -o " & Dir & " --lang=c --content-only --var-access --rule="
+      T.Execute (Tool & " -o " & Dir & " --lang=c --content-only --var-prefix Id_ --rule="
                  & Rule & " " & Files & "/lines-empty", Result);
 
       T.Assert (Ada.Directories.Exists (Lines_H),
@@ -126,7 +126,7 @@ package body Are.Generator.C.Tests is
 
       Ada.Directories.Delete_File (Lines_H);
       Ada.Directories.Delete_File (Lines_C);
-      T.Execute (Tool & " -o " & Dir & " --lang=c --content-only --var-access --rule="
+      T.Execute (Tool & " -o " & Dir & " --lang=c --content-only --var-prefix Id_ --rule="
                  & Rule & " " & Files & "/lines-single", Result);
 
       T.Assert (Ada.Directories.Exists (Lines_H),
@@ -149,7 +149,7 @@ package body Are.Generator.C.Tests is
 
       Ada.Directories.Delete_File (Lines_H);
       Ada.Directories.Delete_File (Lines_C);
-      T.Execute (Tool & " -o " & Dir & " --lang=c --content-only --var-access --rule="
+      T.Execute (Tool & " -o " & Dir & " --lang=c --content-only --var-prefix Id_ --rule="
                  & Rule & " " & Files & "/lines-multiple", Result);
 
       T.Assert (Ada.Directories.Exists (Lines_H),

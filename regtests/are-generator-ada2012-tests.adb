@@ -174,7 +174,7 @@ package body Are.Generator.Ada2012.Tests is
    begin
       --  Generate the resources.ad[bs] files
       T.Execute (Tool & " -o " & Dir
-                 & " --name-access --content-only --var-access"
+                 & " --name-access --content-only --var-prefix Id_"
                  & " --resource=Resources5 --fileset '**/*' "
                  & Web, Result);
 
@@ -202,7 +202,7 @@ package body Are.Generator.Ada2012.Tests is
    begin
       --  Generate the resources.ad[bs] files
       T.Execute (Tool & " -o " & Dir
-                 & " --content-only --var-access --resource=Resources6 --fileset '**/*' "
+                 & " --content-only --var-prefix Id_ --resource=Resources6 --fileset '**/*' "
                  & Web, Result);
 
       T.Assert (Ada.Directories.Exists (Ada.Directories.Compose (Dir, "resources6.ads")),
@@ -340,8 +340,8 @@ package body Are.Generator.Ada2012.Tests is
       Result     : Ada.Strings.Unbounded.Unbounded_String;
    begin
       --  Generate the lines.ads files
-      T.Execute (Tool & " -o " & Dir & " --content-only --var-access --rule=" & Rule & " "
-                 & Files & "/lines-empty", Result);
+      T.Execute (Tool & " -o " & Dir & " --content-only --var-prefix Id_ --rule="
+                 & Rule & " " & Files & "/lines-empty", Result);
 
       T.Assert (Ada.Directories.Exists (Lines_Ads),
                 "Resource file 'lines.ads' not generated");
@@ -353,8 +353,8 @@ package body Are.Generator.Ada2012.Tests is
          Message => "Invalid Ada spec generation");
 
       Ada.Directories.Delete_File (Lines_Ads);
-      T.Execute (Tool & " -o " & Dir & " --content-only --var-access --rule=" & Rule & " "
-                 & Files & "/lines-single", Result);
+      T.Execute (Tool & " -o " & Dir & " --content-only --var-prefix Id_ --rule="
+                 & Rule & " " & Files & "/lines-single", Result);
 
       T.Assert (Ada.Directories.Exists (Lines_Ads),
                 "Resource file 'lines.ads' not generated");
@@ -366,8 +366,8 @@ package body Are.Generator.Ada2012.Tests is
          Message => "Invalid Ada spec generation");
 
       Ada.Directories.Delete_File (Lines_Ads);
-      T.Execute (Tool & " -o " & Dir & " --content-only --var-access --rule=" & Rule & " "
-                 & Files & "/lines-multiple", Result);
+      T.Execute (Tool & " -o " & Dir & " --content-only --var-prefix Id_ --rule="
+                 & Rule & " " & Files & "/lines-multiple", Result);
 
       T.Assert (Ada.Directories.Exists (Lines_Ads),
                 "Resource file 'lines.ads' not generated");
@@ -382,16 +382,16 @@ package body Are.Generator.Ada2012.Tests is
    procedure Test_Ada_Names (T : in out Test) is
    begin
       Util.Tests.Assert_Equals (T, "Id_file_c",
-                                To_Ada_Name ("file.c"),
+                                To_Ada_Name ("Id_", "file.c"),
                                 "Bad conversion");
       Util.Tests.Assert_Equals (T, "Id_file_name_h",
-                                To_Ada_Name ("file-name.h"),
+                                To_Ada_Name ("Id_", "file-name.h"),
                                 "Bad conversion");
-      Util.Tests.Assert_Equals (T, "Id_File_Dat",
-                                To_Ada_Name ("File.Dat"),
+      Util.Tests.Assert_Equals (T, "Plop_File_Dat",
+                                To_Ada_Name ("Plop_", "File.Dat"),
                                 "Bad conversion");
       Util.Tests.Assert_Equals (T, "Id_File23_Dat",
-                                To_Ada_Name ("File 23 .Dat"),
+                                To_Ada_Name ("Id_", "File 23 .Dat"),
                                 "Bad conversion");
    end Test_Ada_Names;
 
