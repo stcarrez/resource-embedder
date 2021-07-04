@@ -6,7 +6,7 @@ licenses = "Apache-2.0"
 maintainers = ["Stephane.Carrez@gmail.com"]
 maintainers-logins = ["stcarrez"]
 project-files = ["are.gpr"]
-tags = ["resource", "embedder", "generator", "C", "Ada", "Go"]
+tags = ["resource", "embedder", "generator"]
 website = "https://gitlab.com/stcarrez/resource-embedder"
 long-description = """
 
