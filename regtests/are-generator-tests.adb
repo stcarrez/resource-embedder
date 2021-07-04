@@ -87,9 +87,11 @@ package body Are.Generator.Tests is
       T.Execute (Tool & " regtests/toto", Result, Status => 1);
       Util.Tests.Assert_Matches (T, "are: error: path regtests/toto does not exist", Result,
                                  "Invalid error message");
-      T.Execute (Tool & " /dev/null", Result, Status => 1);
-      Util.Tests.Assert_Matches (T, "are: error: path /dev/null is not a directory", Result,
-                                 "Invalid error message");
+      if Ada.Directories.Exists ("/dev/null") then
+         T.Execute (Tool & " /dev/null", Result, Status => 1);
+         Util.Tests.Assert_Matches (T, "are: error: path /dev/null is not a directory", Result,
+                                    "Invalid error message");
+      end if;
    end Test_Wrong_Directory;
 
    procedure Test_Missing_Rule (T : in out Test) is
