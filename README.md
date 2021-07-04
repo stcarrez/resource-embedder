@@ -58,14 +58,10 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
-## Version 1.1.0  - Developemnt
+## Version 1.1.0  - July 2021
 - Add support to emit Ada String types for embedded content
 - Add support to represent content as an array of lines
 - New example to show the new 'lines' resource format
-
-## Version 1.0.0  - June 2021
-- First version of the resource embedder
-- Add support for C, Ada and Go
 
 [List all versions](https://github.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 

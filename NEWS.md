@@ -1,4 +1,4 @@
-## Version 1.1.0  -
+## Version 1.1.0  - July 2021
 - Add support to emit Ada String types for embedded content
 - Add support to represent content as an array of lines
 - New example to show the new 'lines' resource format
