@@ -36,15 +36,25 @@ private with Util.Strings.Vectors;
 --  | lines  | array of access constant String                  |
 --
 --  When the `--content-only` option is used, the code generator uses the
---  following type to describe a file content:
+--  following type to describe a file content in the `binary` format:
 --
 --    type Content_Access is
 --       access constant Ada.Streams.Stream_Element_Array;
 --
---  This type definition gives access to a readonly binary content and provides
---  enough information to also indicate the size of that content.  Then when
---  the `--name-access` option is passed, the code generator declares and
---  implements the following function:
+--  for the `string` format it defines:
+--
+--    type Content_Access is access constant String;
+--
+--  and for the `lines` format it defines:
+--
+--    type Content_Array is
+--       array (Natural range <>) of access constant String;
+--    type Content_Access is access constant Content_Array;
+--
+--  These type definitions give access to a readonly binary or string content
+--  and provides enough information to also indicate the size of that content.
+--  Then when the `--name-access` option is passed, the code generator declares
+--  and implements the following function:
 --
 --    function Get_Content (Name : String) return Content_Access;
 --
