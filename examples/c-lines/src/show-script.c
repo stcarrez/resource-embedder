@@ -7,13 +7,13 @@
 
 int main() 
 {
-  printf("Create SQLite %d lines\n", scripts_contents[Id_create_database].length);
-  for (int i = 0; i < scripts_contents[Id_create_database].length; i++) {
-    puts(scripts_contents[Id_create_database].content[i]);
+  printf("Create SQLite %ld lines\n", scripts_contents[create_database].length);
+  for (int i = 0; i < scripts_contents[create_database].length; i++) {
+    puts(scripts_contents[create_database].content[i]);
   }
-  printf("Drop SQLite %d lines\n", scripts_contents[Id_drop_database].length);
-  for (int i = 0; i < scripts_contents[Id_drop_database].length; i++) {
-    puts(scripts_contents[Id_drop_database].content[i]);
+  printf("Drop SQLite %ld lines\n", scripts_contents[drop_database].length);
+  for (int i = 0; i < scripts_contents[drop_database].length; i++) {
+    puts(scripts_contents[drop_database].content[i]);
   }
 
   return 0;
