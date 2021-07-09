@@ -42,6 +42,9 @@ end Config;
 
 """
 
+[[depends-on]]
+xmlada = "~21.0.0"
+
 [gpr-externals]
 BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
 ARE_SWITCH = ["NO_CALLBACK", "HAS_CALLBACK"]
