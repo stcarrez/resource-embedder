@@ -42,6 +42,12 @@ end Config;
 
 """
 
+[available.'case(os)']
+linux = true
+windows = true
+macos = false
+'...' = false
+
 [[depends-on]]
 xmlada = "~21.0.0"
 
