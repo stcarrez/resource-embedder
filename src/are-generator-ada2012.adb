@@ -34,6 +34,8 @@ package body Are.Generator.Ada2012 is
    function Get_Content_Type (Generator : in Generator_Type;
                               Resource  : in Are.Resource_Type;
                               Context   : in Are.Context_Type'Class) return String;
+   function Get_Import_Type (Cur_Pkg   : in String;
+                             Type_Name : in String) return String;
 
    --  Generate the resource declaration list.
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
@@ -110,12 +112,38 @@ package body Are.Generator.Ada2012 is
          return Resource.Get_Content_Type_Name (Context, "Content_Array");
       end if;
 
-      if Func_Type = "access constant String" or Resource.Format = R_STRING then
+      if Util.Strings.Starts_With (Func_Type, "access constant ") then
+         return Resource.Get_Content_Type_Name
+           (Context, Func_Type (Func_Type'First + 16 .. Func_Type'Last));
+      end if;
+
+      if Resource.Format = R_STRING then
          return Resource.Get_Content_Type_Name (Context, "String");
       end if;
 
       return Resource.Get_Content_Type_Name (Context, "Ada.Streams.Stream_Element_Array");
    end Get_Content_Type;
+
+   --  ------------------------------
+   --  Get the import package name for the given type.  We try to guess if
+   --  `Type_Name` is declared in a parent package of the current unit.
+   --  ------------------------------
+   function Get_Import_Type (Cur_Pkg   : in String;
+                             Type_Name : in String) return String is
+      Pos : constant Natural := Util.Strings.Rindex (Type_Name, '.');
+   begin
+      if Pos = 0 then
+         return "";
+      end if;
+      declare
+         Pkg_Name : constant String := Type_Name (Type_Name'First .. Pos - 1);
+      begin
+         if Util.Strings.Starts_With (Cur_Pkg, Pkg_Name) then
+            return "";
+         end if;
+         return Pkg_Name;
+      end;
+   end Get_Import_Type;
 
    --  ------------------------------
    --  Given a package name, return the file name that correspond.
@@ -540,7 +568,15 @@ package body Are.Generator.Ada2012 is
       Put_Line (File, Get_Title);
       if not Context.No_Type_Declaration then
          if Resource.Format = R_BINARY then
-            Put_Line (File, "with Ada.Streams;");
+            declare
+               Pkg_Import : constant String := Get_Import_Type (Name, Content_Type);
+            begin
+               if Pkg_Import'Length > 0 then
+                  Put (File, "with ");
+                  Put (File, Pkg_Import);
+                  Put_Line (File, ";");
+               end if;
+            end;
          end if;
          if not Generator.Content_Only then
             Put_Line (File, "with Interfaces.C;");
@@ -556,8 +592,9 @@ package body Are.Generator.Ada2012 is
       New_Line (File);
       if not Context.No_Type_Declaration then
          if Resource.Format = R_BINARY then
-            Put_Line (File, "   type Content_Access is access constant"
-                      & " Ada.Streams.Stream_Element_Array;");
+            Put (File, "   type Content_Access is access constant ");
+            Put (File, Content_Type);
+            Put_Line (File, ";");
          elsif Resource.Format = R_LINES then
             Put_Line (File, "   type Content_Array is array (Positive range <>)"
                       & " of access constant String;");
@@ -601,7 +638,8 @@ package body Are.Generator.Ada2012 is
       end if;
       if Context.Name_Index then
          Put_Line (File, "   --  Returns the data stream with the given name or null.");
-         Put (File, "   function Get_Content (Name : String) return ");
+         Put_Line (File, "   function Get_Content (Name : String) return");
+         Put (File, "      ");
          Put (File, Type_Name);
          Put_Line (File, ";");
          New_Line (File);
