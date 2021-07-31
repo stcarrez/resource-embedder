@@ -58,6 +58,10 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
+## Version 1.2.0  - Under Development
+- Fix Ada generator to be able to use other binary content types
+  such as `System.Storage_Elements.Storage_Array`
+
 ## Version 1.1.0  - July 2021
 - Add support to emit Ada String types for embedded content
 - Add support to represent content as an array of lines
@@ -126,6 +130,7 @@ by running the `man` Unix command on various names to embed the man page of `ls`
 
 * [Embedding help and documentation in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-help)
 * [Embedding help and documentation in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-help)
+ [Embedding help and documentation in Ada (binary)](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-help-binary)
 * [Embedding help and documentation in Go](https://github.com/stcarrez/resource-embedder/tree/master/examples/go-help)
 
 More specific examples show how to make specific transformations on the files before integrating them:

@@ -1,0 +1,12 @@
+akt store: store files, directories or read standard input in the keystore
+
+Usage: akt store <keystore>.akt <files|directories>
+       akt store <keystore>.akt -- <name>
+
+  This command can store files or directories recursively in the
+  keystore.  It is possible to store several files and directories
+  at the same time.
+
+  When the -- option is passed, the command accepts only one
+  argument.  It reads the standard input and stores it under the
+  specified name.  It can be used as a target for a pipe command.

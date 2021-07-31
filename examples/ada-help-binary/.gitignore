@@ -1,0 +1,5 @@
+show_help
+src/resources-help.adb
+src/resources-help.ads
+src/resources-man.adb
+src/resources-man.ads

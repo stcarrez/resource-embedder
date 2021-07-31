@@ -1,3 +1,7 @@
+## Version 1.2.0  -
+- Fix Ada generator to be able to use other binary content types
+  such as System.Storage_Elements.Storage_Array
+
 ## Version 1.1.0  - July 2021
 - Add support to emit Ada String types for embedded content
 - Add support to represent content as an array of lines
