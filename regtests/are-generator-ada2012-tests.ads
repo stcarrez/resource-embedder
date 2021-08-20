@@ -38,6 +38,8 @@ package Are.Generator.Ada2012.Tests is
 
    procedure Test_Generate_Ada7 (T : in out Test);
 
+   procedure Test_Generate_Ada8 (T : in out Test);
+
    procedure Test_Generate_Merge (T : in out Test);
 
    procedure Test_Generate_Concat (T : in out Test);

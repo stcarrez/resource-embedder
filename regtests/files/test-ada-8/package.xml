@@ -1,0 +1,11 @@
+<package>
+
+  <resource name='Resources8' format='string'>
+    <install mode='copy' dir='config'>
+      <fileset dir="config">
+        <include name="*.xml"/>
+      </fileset>
+    </install>
+  </resource>
+
+</package>
