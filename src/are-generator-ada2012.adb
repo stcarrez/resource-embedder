@@ -330,10 +330,13 @@ package body Are.Generator.Ada2012 is
       procedure Write_String (Content : in String) is
          Need_Sep : Boolean := False;
          Column   : Natural := 0;
+         C        : Character;
+         Pos      : Natural := Content'First;
       begin
          Column := 40;
          Put (Into, """");
-         for C of Content loop
+         while Pos <= Content'Last loop
+            C := Content (Pos);
             if Column > 80 then
                if not Need_Sep then
                   Put (Into, """");
@@ -348,6 +351,7 @@ package body Are.Generator.Ada2012 is
                   if not Need_Sep then
                      Put (Into, """");
                      Need_Sep := True;
+                     Column := Column + 1;
                   end if;
                   Put (Into, " & ASCII.CR");
                   Column := Column + 11;
@@ -356,27 +360,66 @@ package body Are.Generator.Ada2012 is
                   if not Need_Sep then
                      Put (Into, """");
                      Need_Sep := True;
+                     Column := Column + 1;
                   end if;
                   Put (Into, " & ASCII.LF");
+                  Column := Column + 11;
+
+               when ASCII.HT =>
+                  if not Need_Sep then
+                     Put (Into, """");
+                     Need_Sep := True;
+                     Column := Column + 1;
+                  end if;
+                  Put (Into, " & ASCII.HT");
                   Column := Column + 11;
 
                when '"' =>
                   if Need_Sep then
                      Put (Into, " & """);
                      Need_Sep := False;
+                     Column := Column + 3;
                   end if;
                   Put (Into, """""");
                   Column := Column + 1;
 
-               when others =>
+               when ' ' | '!' | '#' .. '~' =>
                   if Need_Sep then
                      Put (Into, " & """);
                      Need_Sep := False;
+                     Column := Column + 3;
                   end if;
                   Put (Into, C);
 
+               when Character'Val (192) .. Character'Val (255) =>
+                  if Need_Sep then
+                     Put (Into, " & """);
+                     Need_Sep := False;
+                     Column := Column + 3;
+                  end if;
+                  Put (Into, C);
+                  while Pos + 1 <= Content'Last loop
+                     C := Content (Pos + 1);
+                     exit when Character'Pos (C) < 128;
+                     exit when Character'Pos (C) >= 192;
+                     Pos := Pos + 1;
+                     Put (Into, C);
+                  end loop;
+
+               when others =>
+                  if not Need_Sep then
+                     Put (Into, """");
+                     Need_Sep := True;
+                     Column := Column + 1;
+                  end if;
+                  Put (Into, " & Character'Val (");
+                  Put (Into, Util.Strings.Image (Integer (Character'Pos (C))));
+                  Put (Into, ")");
+                  Column := Column + 22;
+
             end case;
             Column := Column + 1;
+            Pos := Pos + 1;
          end loop;
          if not Need_Sep then
             Put (Into, """");
