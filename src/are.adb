@@ -242,7 +242,7 @@ package body Are is
                               Result  : in out UString) is
          use type GNAT.Regpat.Match_Location;
 
-         Last    : constant Positive := Content'Last;
+         Last    : constant Natural := Content'Last;
          Matches : GNAT.Regpat.Match_Array (0 .. 10);
          Pos     : Positive := Content'First;
       begin
