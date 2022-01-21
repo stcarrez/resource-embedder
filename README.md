@@ -1,8 +1,9 @@
 # Advanced Resource Embedder
 
-[![Build Status](https://img.shields.io/jenkins/s/https/jenkins.vacs.fr/Bionic-Resource-Embedder.svg)](http://jenkins.vacs.fr/job/Bionic-Resource-Embedder/)
-[![Test Status](https://img.shields.io/jenkins/t/https/jenkins.vacs.fr/Bionic-Resource-Embedder.svg)](http://jenkins.vacs.fr/job/Bionic-Resource-Embedder/)
-[![codecov](https://codecov.io/gh/stcarrez/resource-embedder/branch/master/graph/badge.svg)](https://codecov.io/gh/stcarrez/resource-embedder)
+[![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/are.json)](https://alire.ada.dev/crates/are)
+[![Build Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/build.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder)
+[![Test Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/tests.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder)
+[![Coverage](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/coverage.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder)
 [![Documentation Status](https://readthedocs.org/projects/resource-embedder/badge/?version=latest)](https://resource-embedder.readthedocs.io/en/latest/?badge=latest)
 [![Download](https://img.shields.io/badge/download-1.1.0-brightgreen.svg)](http://download.vacs.fr/resource-embedder/resource-embedder-1.1.0.tar.gz)
 [![License](http://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
@@ -58,7 +59,7 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
-## Version 1.2.0  - Under Development
+## Version 1.2.0  - Jan 2022
 - Fix Ada generator to be able to use other binary content types
   such as `System.Storage_Elements.Storage_Array`
 - Fix Ada generator to escape special characters in strings

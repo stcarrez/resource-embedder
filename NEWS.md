@@ -1,4 +1,4 @@
-## Version 1.2.0  -
+## Version 1.2.0  - Jan 2022
 - Fix Ada generator to be able to use other binary content types
   such as System.Storage_Elements.Storage_Array
 - Fix Ada generator to escape special characters in strings
