@@ -1,13 +1,13 @@
 Format: http://dep.debian.net/deps/dep5
 Upstream-Name: resource-embedder
-Source: https://github.com/stcarrez/resource-embedder/
+Source: https://gitlab.com/stcarrez/resource-embedder/
 
 Files: *
-Copyright: 2021 Stephane Carrez <Stephane.Carrez@gmail.com>
+Copyright: 2021-2022 Stephane Carrez <Stephane.Carrez@gmail.com>
 License: Apache-2.0
 
 Files: debian/*
-Copyright: 2021 Stephane Carrez <Stephane.Carrez@gmail.com>
+Copyright: 2021-2022 Stephane Carrez <Stephane.Carrez@gmail.com>
 License: GPL-3.0+
 
 License: Apache-2.0
