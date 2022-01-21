@@ -68,7 +68,7 @@ extern const struct config_content *config_get_content(const char* name);
 - Add support to represent content as an array of lines
 - New example to show the new 'lines' resource format
 
-[List all versions](https://github.com/stcarrez/resource-embedder/blob/master/NEWS.md)
+[List all versions](https://gitlab.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 
 # Overview
 
@@ -106,7 +106,7 @@ The process to use ARE is simple:
   as they are now part of your sources.  After building your program, it now embeds the
   resource files that were collected and optionally transformed.
 
-![Resource Embedder Overview](https://github.com/stcarrez/resource-embedder/raw/master/docs/images/resource-embedder.png)
+![Resource Embedder Overview](https://gitlab.com/stcarrez/resource-embedder/raw/master/docs/images/resource-embedder.png)
 
 Note:
 
@@ -120,26 +120,26 @@ This first set of example shows how to you can embed configuration files in a C,
 The Advance Resource Embedder simply puts the configuration files in an array of bytes that can easily
 be retrieved by a generated function.
 
-* [Embedding configuration files in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-config)
-* [Embedding configuration files in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-config)
-* [Embedding configuration files in Go](https://github.com/stcarrez/resource-embedder/tree/master/examples/go-config)
+* [Embedding configuration files in C](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/c-config)
+* [Embedding configuration files in Ada](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/ada-config)
+* [Embedding configuration files in Go](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/go-config)
 
 A second set of example is more advanced by the use of an XML file that describes what must be embedded with
 the transformations that must be made.  It creates two distinct resource sets `help` and `man`.  The `help` resource
 set is composed of a set of fixed documentation files provided in the example.  The `man` resource set is created
 by running the `man` Unix command on various names to embed the man page of `ls`, `pwd` and `sh`.
 
-* [Embedding help and documentation in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-help)
-* [Embedding help and documentation in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-help)
- [Embedding help and documentation in Ada (binary)](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-help-binary)
-* [Embedding help and documentation in Go](https://github.com/stcarrez/resource-embedder/tree/master/examples/go-help)
+* [Embedding help and documentation in C](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/c-help)
+* [Embedding help and documentation in Ada](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/ada-help)
+ [Embedding help and documentation in Ada (binary)](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/ada-help-binary)
+* [Embedding help and documentation in Go](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/go-help)
 
 More specific examples show how to make specific transformations on the files before integrating them:
 
-* [Embedding web files in C](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-web)
-* [Embedding merged properties in Ada](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-bundles)
-* [Embedding SQL scripts in Ada and mapping them in array of String](https://github.com/stcarrez/resource-embedder/tree/master/examples/ada-lines)
-* [Embedding SQL scripts in C and mapping them in array of String](https://github.com/stcarrez/resource-embedder/tree/master/examples/c-lines)
+* [Embedding web files in C](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/c-web)
+* [Embedding merged properties in Ada](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/ada-bundles)
+* [Embedding SQL scripts in Ada and mapping them in array of String](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/ada-lines)
+* [Embedding SQL scripts in C and mapping them in array of String](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/c-lines)
 
 
 # Building ARE
@@ -195,7 +195,7 @@ The project uses a sub-module to help you in the integration and build
 process.  You should checkout the project with the following commands:
 
 ```
-git clone --recursive https://github.com/stcarrez/resource-embedder.git
+git clone --recursive https://gitlab.com/stcarrez/resource-embedder.git
 cd resource-embedder
 ```
 
@@ -269,6 +269,6 @@ sudo apt-get install -y are
 
 # Documents
 
-* [Resource Embedder Guide](https://resource-embedder.readthedocs.io/en/latest/) [PDF](https://github.com/stcarrez/resource-embedder/blob/master/docs/are-book.pdf)
-* Man page: [are (1)](https://github.com/stcarrez/resource-embedder/blob/master/docs/are.md)
+* [Resource Embedder Guide](https://resource-embedder.readthedocs.io/en/latest/) [PDF](https://gitlab.com/stcarrez/resource-embedder/blob/master/docs/are-book.pdf)
+* Man page: [are (1)](https://gitlab.com/stcarrez/resource-embedder/blob/master/docs/are.md)
 
