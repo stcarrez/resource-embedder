@@ -53,7 +53,7 @@ The project uses a sub-module to help you in the integration and build
 process.  You should checkout the project with the following commands:
 
 ```
-git clone --recursive https://github.com/stcarrez/resource-embedder.git
+git clone --recursive https://gitlab.com/stcarrez/resource-embedder.git
 cd resource-embedder
 ```
 
