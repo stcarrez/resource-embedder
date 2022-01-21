@@ -7,8 +7,8 @@
 [![Documentation Status](https://readthedocs.org/projects/resource-embedder/badge/?version=latest)](https://resource-embedder.readthedocs.io/en/latest/?badge=latest)
 [![Download](https://img.shields.io/badge/download-1.1.0-brightgreen.svg)](http://download.vacs.fr/resource-embedder/resource-embedder-1.1.0.tar.gz)
 [![License](http://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
-![Commits](https://img.shields.io/github/commits-since/stcarrez/resource-embedder/1.1.0.svg)
-![semver](https://img.shields.io/badge/semver-2.0.0-blue.svg?cacheSeconds=2592000)
+[![Commits](https://img.shields.io/github/commits-since/stcarrez/resource-embedder/1.1.0.svg)]()
+[![semver](https://img.shields.io/badge/semver-2.0.0-blue.svg?cacheSeconds=2592000)]()
 
 # TL;DR
 
