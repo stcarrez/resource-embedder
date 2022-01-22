@@ -26,7 +26,7 @@ ADAFLAGS += -gnatafno -gnatVa -gnatwa
 	dh $@
 
 override_dh_auto_build:
-	make GPRFLAGS="-R -m -q" GNAT_SWITCH=HAS_CALLBACK
+	make GPRFLAGS="-R -m -q" GNAT_SWITCH=HAS_CALLBACK build doc
 
 override_dh_auto_test::
 
@@ -37,9 +37,3 @@ override_dh_auto_install:
 	dh_installman debian/tmp/usr/share/man/man1/are.1
 	dh_strip
 	rm -rf debian/tmp
-
-.PHONY: override_dh_installdocs-indep
-
-override_dh_installdocs-indep:
-	make doc
-	dh_installdocs -i
