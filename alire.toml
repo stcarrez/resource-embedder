@@ -46,7 +46,7 @@ end Config;
 [available.'case(os)']
 linux = true
 windows = true
-macos = false
+macos = true
 '...' = false
 
 [[depends-on]]
