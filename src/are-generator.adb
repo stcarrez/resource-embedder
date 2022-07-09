@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator -- Advanced Resource Embedder Generator
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2022 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -56,7 +56,7 @@ package body Are.Generator is
    --  ------------------------------
    function Get_Title return String is
    begin
-      return "Advanced Resource Embedder 1.2.0";
+      return "Advanced Resource Embedder 1.2.1";
    end Get_Title;
 
    --  ------------------------------
