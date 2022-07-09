@@ -7,7 +7,7 @@ AC_INIT(src/are.ads)
 # Current release settings
 ARE_MAJOR_VERSION=1
 ARE_MINOR_VERSION=2
-ARE_MICRO_VERSION=0
+ARE_MICRO_VERSION=1
 ARE_VERSION=$ARE_MAJOR_VERSION.$ARE_MINOR_VERSION.$ARE_MICRO_VERSION
 
 # Set the version number of the project
