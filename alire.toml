@@ -52,6 +52,7 @@ macos = true
 [[depends-on]]
 xmlada = "~21.0.0"
 utilada = "^2.5.0"
+elada = "^1.8.4"
 
 [gpr-externals]
 BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
