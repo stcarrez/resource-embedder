@@ -1,4 +1,4 @@
-// Advanced Resource Embedder 1.2.0
+// Advanced Resource Embedder 1.2.1
 #ifndef _LINES_H_
 #define _LINES_H_
 

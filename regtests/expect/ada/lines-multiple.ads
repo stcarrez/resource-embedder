@@ -1,4 +1,4 @@
---  Advanced Resource Embedder 1.2.0
+--  Advanced Resource Embedder 1.2.1
 package Lines is
 
    type Content_Array is array (Positive range <>) of access constant String;
