@@ -58,6 +58,9 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
+## Version 1.2.1  - Jul 2022
+- Fix alire package to allow running are from any alire project
+
 ## Version 1.2.0  - Jan 2022
 - Fix Ada generator to be able to use other binary content types
   such as `System.Storage_Elements.Storage_Array`
