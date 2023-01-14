@@ -82,6 +82,7 @@ on the name.  It is declared as follows:
 type Name_Array is array (Natural range <>) of Name_Access;
 Names : constant Name_Array;
 ```
+
 ## C Generator
 The C code generator produces for each resource description a C
 header and a C source file with the name of that resource.  The header

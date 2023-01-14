@@ -107,6 +107,7 @@ created by using the following XML definition:
   </fileset>
 </install>
 ```
+
 ## Install mode: webmerge
 The `webmerge` distribution rule is intended to merge Javascript or CSS files
 which are used by XHTML presentation files.  It requires some help from the
