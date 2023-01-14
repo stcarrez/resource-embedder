@@ -45,7 +45,7 @@ install-data::
 	mkdir -p $(DESTDIR)$(prefix)/bin
 	$(INSTALL) bin/are $(DESTDIR)$(prefix)/bin/are
 	mkdir -p $(DESTDIR)$(prefix)/share/man/man1
-	$(INSTALL) docs/are.1 $(DESTDIR)$(prefix)/share/man/man1/are.1
+	$(INSTALL) man/man1/are.1 $(DESTDIR)$(prefix)/share/man/man1/are.1
 
 uninstall::
 	rm -rf $(DESTDIR)${prefix}/bin/are
