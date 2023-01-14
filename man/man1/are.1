@@ -1,6 +1,6 @@
 .\"
 .\"
-.TH ARE 1 "Jan 21, 2022" "Advanced Resource Embedder"
+.TH ARE 1 "Jan 14, 2023" "Advanced Resource Embedder"
 .SH NAME
 are - Resource embedder to include files in Ada, C/C++, Go binaries
 .SH SYNOPSIS
@@ -265,6 +265,33 @@ that identify the files.
  </package>
 .RE
 .\"
+.PP
+A resource can be represented as an array of strings by using the
+.B lines
+format.  In that case, a
+.B line-separator
+XML element indicates the character on which lines are split.
+The
+.B keep-empty-lines
+attribute controls whether an empty line is kept or must be
+discarded.  The default will discard empty lines.  With the
+.B lines
+format, the final content will be represented as an array of strings.
+.\"
+.PP
+.RS 0
+ <package>
+  <resource name='help' format='lines' keep-empty-lines='true'>
+   <line-separator>\\r</line-separator>
+   <line-separator>\\n</line-separator>
+   <install mode='copy'>
+     <fileset dir='help'>
+      <include name='**/*.txt'/>
+     </fileset>
+   </install>
+  </resource>
+ </package>
+.RE
 .SH INSTALL MODES
 The \fIare\fR tool provides several installation modes:
 .TP 5

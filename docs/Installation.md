@@ -10,20 +10,20 @@ AdaCore GNAT Community 2021 edition.  Because there exists different versions of
 the compiler, you may have to adapt some of the commands proposed below for
 the installation.
 
-### Ubuntu 18.04
-
-Install the following packages:
-```
-sudo apt install -y make git
-sudo apt install -y gnat-7 gprbuild libxmlada-dom7-dev
-```
-
 ### Ubuntu 20.04
 
 Install the following packages:
 ```
 sudo apt install -y make git
 sudo apt install -y gnat-9 gprbuild libxmlada-dom9-dev
+```
+
+### Ubuntu 22.04
+
+Install the following packages:
+```
+sudo apt install -y make git
+sudo apt install -y gnat-10 gprbuild libxmlada-dom10-dev
 ```
 
 ### FreeBSD 12

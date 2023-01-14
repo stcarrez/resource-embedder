@@ -97,7 +97,7 @@ have an SQL statement on multiple lines.
 ```XML
 <package>
   <resource name='Scripts'
-            format='lines'
+            format='lines' keep-empty-lines="no"
             type='access constant String'>
     <line-separator>;</line-separator>
 
@@ -124,6 +124,9 @@ Then the first `line-filter` will remove the `\r` and `\n` characters.
 The regular expression `/\*[^/]*\*/` matches a C style comment and remove it.
 
 The last `line-filter` replaces multiple tabs and spaces by a single occurence.
+
+By default an empty line is discarded.  This behavior can be changed by
+using the `keep-empty-lines` attribute and setting the value to `true`.
 
 ## Selecting files
 
