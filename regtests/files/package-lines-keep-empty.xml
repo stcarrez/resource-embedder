@@ -1,0 +1,15 @@
+<package>
+
+  <resource name='Lines_With_Empty' format='lines' keep-empty-lines='true'>
+    <line-separator>\r</line-separator>
+    <line-separator>\n</line-separator>
+
+    <install mode='copy'>
+      <fileset dir=".">
+        <include name="**/*.txt"/>
+      </fileset>
+    </install>
+
+  </resource>
+
+</package>

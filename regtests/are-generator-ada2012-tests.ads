@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator-ada2012-tests -- Tests for Ada generator
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,6 +47,8 @@ package Are.Generator.Ada2012.Tests is
    procedure Test_Generate_Bundle (T : in out Test);
 
    procedure Test_Generate_Lines (T : in out Test);
+
+   procedure Test_Generate_Lines_Keep_Empty (T : in out Test);
 
    procedure Test_Ada_Names (T : in out Test);
 

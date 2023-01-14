@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator-ada2012-tests -- Tests for Ada generator
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,6 +60,8 @@ package body Are.Generator.Ada2012.Tests is
                        Test_Generate_Bundle'Access);
       Caller.Add_Test (Suite, "Test Are.Generate_Lines",
                        Test_Generate_Lines'Access);
+      Caller.Add_Test (Suite, "Test Are.Generate_Lines_Keep_Empty",
+                       Test_Generate_Lines_Keep_Empty'Access);
    end Add_Tests;
 
    procedure Test_Generate_Ada1 (T : in out Test) is
@@ -407,6 +409,27 @@ package body Are.Generator.Ada2012.Tests is
          Test    => Lines_Ads,
          Message => "Invalid Ada spec generation");
    end Test_Generate_Lines;
+
+   procedure Test_Generate_Lines_Keep_Empty (T : in out Test) is
+      Dir        : constant String := Util.Tests.Get_Test_Path ("");
+      Rule       : constant String := "regtests/files/package-lines-keep-empty.xml";
+      Files      : constant String := "regtests/files";
+      Lines_Ads  : constant String := Ada.Directories.Compose (Dir, "lines_with_empty.ads");
+      Result     : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      --  Generate the lines-with-empty.ads files
+      T.Execute (Tool & " -o " & Dir & " --content-only --var-prefix Id_ --rule="
+                 & Rule & " " & Files & "/lines-multiple", Result);
+
+      T.Assert (Ada.Directories.Exists (Lines_Ads),
+                "Resource file 'lines_with_empty.ads' not generated");
+
+      Util.Tests.Assert_Equal_Files
+        (T       => T,
+         Expect  => Util.Tests.Get_Path (Expect_Dir & "lines_with_empty.ads"),
+         Test    => Lines_Ads,
+         Message => "Invalid Ada spec generation");
+   end Test_Generate_Lines_Keep_Empty;
 
    procedure Test_Ada_Names (T : in out Test) is
    begin
