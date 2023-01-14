@@ -1,3 +1,6 @@
+## Version 1.3    - Under development
+- Fix #3: Allow to keep empty lines when content is split
+
 ## Version 1.2.1  - Jul 2022
 - Fix alire package to allow running are from any alire project
 

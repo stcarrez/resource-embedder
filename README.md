@@ -58,18 +58,11 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
+## Version 1.3    - Under development
+- Fix #3: Allow to keep empty lines when content is split
+
 ## Version 1.2.1  - Jul 2022
 - Fix alire package to allow running are from any alire project
-
-## Version 1.2.0  - Jan 2022
-- Fix Ada generator to be able to use other binary content types
-  such as `System.Storage_Elements.Storage_Array`
-- Fix Ada generator to escape special characters in strings
-
-## Version 1.1.0  - July 2021
-- Add support to emit Ada String types for embedded content
-- Add support to represent content as an array of lines
-- New example to show the new 'lines' resource format
 
 [List all versions](https://gitlab.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 
