@@ -55,12 +55,12 @@ utilada = "^2.5.0"
 elada = "^1.8.4"
 
 [gpr-externals]
-BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
+ARE_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
 ARE_SWITCH = ["NO_CALLBACK", "HAS_CALLBACK"]
 UTIL_OS = ["win32", "win64", "linux32", "linux64", "macos64", "netbsd32", "netbsd64", "freebsd32", "freebsd64"]
 
 [gpr-set-externals]
-BUILD = "distrib"
+ARE_BUILD = "distrib"
 ARE_SWITCH = "NO_CALLBACK"
 
 [gpr-set-externals."case(os)".linux."case(word-size)".bits-32]
@@ -83,3 +83,4 @@ disabled = true
 
 [environment]
 PATH.prepend = "${CRATE_ROOT}/bin"
+MANPATH.prepend = "${CRATE_ROOT}/man"

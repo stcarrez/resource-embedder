@@ -1,4 +1,4 @@
-with "config";
+with "are_config";
 with "utilada_sys";
 with "utilada_unit";
 with "elada";
@@ -9,12 +9,12 @@ project are_Tests is
    Mains := ("are_harness.adb");
    for Main use Mains;
    for Source_Dirs use ("regtests");
-   for Object_Dir use "./" & Config'Object_Dir & "/obj";
-   for Exec_Dir use "./" & Config'Exec_Dir & "/bin";
+   for Object_Dir use "./" & Are_Config'Object_Dir & "/obj";
+   for Exec_Dir use "./" & Are_Config'Exec_Dir & "/bin";
 
-   package Binder renames Config.Binder;
-   package Builder renames Config.Builder;
-   package Compiler renames Config.Compiler;
-   package Linker renames Config.Linker;
+   package Binder renames Are_Config.Binder;
+   package Builder renames Are_Config.Builder;
+   package Compiler renames Are_Config.Compiler;
+   package Linker renames Are_Config.Linker;
 
 end are_Tests;
