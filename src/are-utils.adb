@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-utils -- Utilities for model generator
---  Copyright (C) 2010, 2011, 2012, 2015, 2021 Stephane Carrez
+--  Copyright (C) 2010, 2011, 2012, 2015, 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -125,9 +125,9 @@ package body Are.Utils is
                            Default : in Boolean := False) return Boolean is
       V : constant DOM.Core.DOM_String := DOM.Core.Elements.Get_Attribute (Node, Name);
    begin
-      if V = "yes" or V = "true" then
+      if V in "yes" | "true" then
          return True;
-      elsif V = "no" or V = "false" then
+      elsif V in "no" | "false" then
          return False;
       else
          return Default;
@@ -166,7 +166,7 @@ package body Are.Utils is
          return True;
       elsif Name (Name'Last) = '~' then
          return True;
-      elsif Name (Name'First) = '#' and Name (Name'Last) = '#' then
+      elsif Name (Name'First) = '#' and then Name (Name'Last) = '#' then
          return True;
       else
          return False;

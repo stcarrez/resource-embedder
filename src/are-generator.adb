@@ -193,7 +193,7 @@ package body Are.Generator is
          return;
       end if;
 
-      if Context.Verbose or Context.Debug then
+      if Context.Verbose or else Context.Debug then
          Are.Configure_Logs (Verbose => Context.Verbose,
                              Debug   => Context.Debug);
       end if;
@@ -255,7 +255,7 @@ package body Are.Generator is
          elsif Context.Language.all = "go" then
             Go_Generator.Generate (Context.Resources, Context);
 
-         elsif Context.Language.all = "Ada" or Context.Language'Length = 0 then
+         elsif Context.Language.all = "Ada" or else Context.Language'Length = 0 then
             Ada_Generator.Generate (Context.Resources, Context);
 
          else

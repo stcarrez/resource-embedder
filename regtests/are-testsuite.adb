@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-testsuite -- Testsuite for are
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -95,7 +95,7 @@ package body Are.Testsuite is
                   Digit_Count := Digit_Count + 1;
                else
                   --  Accept a difference only on numbers with 10 digits (ie, timestamp).
-                  exit when Digit_Error and Digit_Count /= 10;
+                  exit when Digit_Error and then Digit_Count /= 10;
                   Digit_Count := 0;
                   Digit_Error := False;
                end if;

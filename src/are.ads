@@ -131,7 +131,7 @@ private
                        Name     : in String;
                        Path     : in String;
                        Override : in Boolean := False) with
-     Pre  => Name'Length > 0 and Path'Length > 0,
+     Pre  => Name'Length > 0 and then Path'Length > 0,
      Post => Resource.Files.Contains (Name);
 
    --  Load and add the file in the resource library.
@@ -140,7 +140,7 @@ private
                        Path     : in String;
                        Modtime  : in Ada.Calendar.Time;
                        Override : in Boolean := False) with
-     Pre  => Name'Length > 0 and Path'Length > 0,
+     Pre  => Name'Length > 0 and then Path'Length > 0,
      Post => Resource.Files.Contains (Name);
 
    --  Add a line filter that will replace contents matching the pattern

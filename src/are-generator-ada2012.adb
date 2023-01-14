@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator-ada2012 -- Generator for Ada
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -173,16 +173,16 @@ package body Are.Generator.Ada2012 is
    begin
       Append (Result, Prefix);
       for C of Name loop
-         if C = '-' or C = '.' then
+         if C in '-' | '.' then
             Append (Result, '_');
 
-         elsif C >= 'a' and C <= 'z' then
+         elsif C in 'a' .. 'z' then
             Append (Result, C);
 
-         elsif C >= 'A' and C <= 'Z' then
+         elsif C in 'A' .. 'Z' then
             Append (Result, C);
 
-         elsif C >= '0' and C <= '9' then
+         elsif C in '0' .. '9' then
             Append (Result, C);
          end if;
       end loop;
@@ -233,7 +233,7 @@ package body Are.Generator.Ada2012 is
 
       --  The perfect hash generator can only write files in the current directory.
       --  Move them to the target directory.
-      if Context.Output'Length > 0 and Context.Output.all /= "." then
+      if Context.Output'Length > 0 and then Context.Output.all /= "." then
          declare
             Filename : String := To_File_Name (Pkg) & ".ads";
             Path     : String := Context.Get_Output_Path (Filename);
@@ -646,7 +646,7 @@ package body Are.Generator.Ada2012 is
             Put_Line (File, "   type Content_Access is access constant String;");
          end if;
          New_Line (File);
-         if Context.List_Content or not Generator.Content_Only then
+         if Context.List_Content or else not Generator.Content_Only then
             Put_Line (File, "   type Name_Access is access constant String;");
             New_Line (File);
          end if;
@@ -694,7 +694,7 @@ package body Are.Generator.Ada2012 is
          Generate_Resource_Contents (Resource, File, Context.Declare_Var,
                                      Content_Type, Context.Var_Prefix.all);
       end if;
-      if not Context.No_Type_Declaration and not Generator.Content_Only then
+      if not Context.No_Type_Declaration and then not Generator.Content_Only then
          if not Has_Private then
             Put_Line (File, "private");
             New_Line (File);
@@ -737,7 +737,7 @@ package body Are.Generator.Ada2012 is
                                             "Content_Access" else "Content_Type");
       Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
-      Use_Hash     : constant Boolean := Context.Name_Index and Generator.Names.Length > 1;
+      Use_Hash     : constant Boolean := Context.Name_Index and then Generator.Names.Length > 1;
       File         : Ada.Text_IO.File_Type;
       Count        : Natural;
       Lines        : Util.Strings.Vectors.Vector;
@@ -846,7 +846,7 @@ package body Are.Generator.Ada2012 is
                                      Content_Type, Context.Var_Prefix.all);
       end if;
 
-      if Context.Name_Index and not Context.List_Content then
+      if Context.Name_Index and then not Context.List_Content then
          if Generator.Content_Only then
             Put_Line (File, "   type Name_Access is access constant String;");
          end if;

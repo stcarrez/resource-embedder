@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are -- Advanced Resource Embedder
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -370,7 +370,7 @@ package body Are is
    function Get_Output_Path (Context : in Context_Type;
                              Name    : in String) return String is
    begin
-      if Context.Output'Length = 0 or Context.Output.all = "." then
+      if Context.Output'Length = 0 or else Context.Output.all = "." then
          return Name;
       else
          return Ada.Directories.Compose (Context.Output.all, Name);

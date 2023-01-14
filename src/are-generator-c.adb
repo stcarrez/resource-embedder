@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator-c -- Generator for C/C++
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -135,7 +135,7 @@ package body Are.Generator.C is
               - Character'Pos ('a')
               + Character'Pos ('A'));
 
-         elsif Name (J) = '.' or Name (J) = ' ' then
+         elsif Name (J) in '.' | ' ' then
             Result (J) := '_';
 
          else
@@ -157,7 +157,7 @@ package body Are.Generator.C is
               - Character'Pos ('A')
               + Character'Pos ('a'));
 
-         elsif Name (J) = '.' or Name (J) = ' ' then
+         elsif Name (J) in '.' | ' ' then
             Result (J) := '_';
 
          else
@@ -173,16 +173,16 @@ package body Are.Generator.C is
    begin
       Append (Result, Prefix);
       for C of Name loop
-         if C = '-' or C = '.' then
+         if C in '-' | '.' then
             Append (Result, '_');
 
-         elsif C >= 'a' and C <= 'z' then
+         elsif C in 'a' .. 'z' then
             Append (Result, C);
 
-         elsif C >= 'A' and C <= 'Z' then
+         elsif C in 'A' .. 'Z' then
             Append (Result, C);
 
-         elsif C >= '0' and C <= '9' then
+         elsif C in '0' .. '9' then
             Append (Result, C);
          end if;
       end loop;
