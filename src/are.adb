@@ -275,6 +275,8 @@ package body Are is
          end loop;
          if Length (Result) > 0 then
             Lines.Append (To_String (Result));
+         elsif Resource.Keep_Empty_Lines then
+            Lines.Append ("");
          end if;
       end Apply_Filters;
 
@@ -297,10 +299,17 @@ package body Are is
          Start := Pos;
          while Pos <= Last loop
             End_Pos := Find_End (Content, Pos);
-            if Start < End_Pos then
+            if Start <= End_Pos + 1 then
                Apply_Filters (Content (Start .. End_Pos));
             end if;
-            Pos := Skip_End (Content, End_Pos + 1);
+            if Resource.Keep_Empty_Lines then
+               Pos := End_Pos + 1;
+               if Pos <= Last and then Is_In (Content (Pos), Resource.Separators) then
+                  Pos := Pos + 1;
+               end if;
+            else
+               Pos := Skip_End (Content, End_Pos + 1);
+            end if;
             Start := Pos;
          end loop;
       end;

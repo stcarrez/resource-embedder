@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are -- Advanced Resource Embedder
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -83,6 +83,7 @@ private
       Next                : Resource_Access;
       Name                : UString;
       Format              : Format_Type := R_BINARY;
+      Keep_Empty_Lines    : Boolean := False;
       Files               : File_Maps.Map;
       Separators          : Character_Set := Ada.Strings.Maps.Null_Set;
       Filters             : Filter_Vectors.Vector;

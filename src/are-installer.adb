@@ -299,6 +299,7 @@ package body Are.Installer is
          Resource.Member_Modtime_Name := Are.Utils.Get_Attribute (Node, "member-time", "");
          Resource.Member_Length_Name := Are.Utils.Get_Attribute (Node, "member-length", "");
          Resource.Member_Format_Name := Are.Utils.Get_Attribute (Node, "member-format", "");
+         Resource.Keep_Empty_Lines := Are.Utils.Get_Attribute (Node, "keep-empty-lines", False);
          Iterate_Line_Separator (Resource, Node, "line-separator");
          Iterate_Line_Filter (Resource, Node, "line-filter");
          Iterate (Resource, Node, "install");
