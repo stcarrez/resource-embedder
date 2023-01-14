@@ -1,4 +1,4 @@
---  Advanced Resource Embedder 1.2.1
+--  Advanced Resource Embedder 1.3.0
 package Lines_With_Empty is
 
    type Content_Array is array (Positive range <>) of access constant String;

@@ -1,4 +1,4 @@
---  Advanced Resource Embedder 1.2.1
+--  Advanced Resource Embedder 1.3.0
 with Interfaces; use Interfaces;
 
 package body Bundle is
