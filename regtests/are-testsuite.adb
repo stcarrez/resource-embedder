@@ -42,29 +42,6 @@ package body Are.Testsuite is
    end Suite;
 
    --  ------------------------------
-   --  Execute the command and get the output in a string.
-   --  ------------------------------
-   procedure Execute2 (T       : in out Test;
-                      Command : in String;
-                      Result  : out Ada.Strings.Unbounded.Unbounded_String;
-                      Status  : in Natural := 0) is
-      P        : aliased Util.Streams.Pipes.Pipe_Stream;
-      Buffer   : Util.Streams.Buffered.Input_Buffer_Stream;
-   begin
-      Log.Info ("Execute: {0}", Command);
-      P.Open (Command, Util.Processes.READ_ALL);
-
-      --  Write on the process input stream.
-      Result := Ada.Strings.Unbounded.Null_Unbounded_String;
-      Buffer.Initialize (P'Unchecked_Access, 8192);
-      Buffer.Read (Result);
-      P.Close;
-      Ada.Text_IO.Put_Line (Ada.Strings.Unbounded.To_String (Result));
-      Log.Info ("Command result: {0}", Result);
-      Util.Tests.Assert_Equals (T, Status, P.Get_Exit_Status, "Command '" & Command & "' failed");
-   end Execute2;
-
-   --  ------------------------------
    --  Check that two generated files are almost equal.  While doing the comparison,
    --  we ignore some generated timestamps in the form '1622183646'.
    --  ------------------------------

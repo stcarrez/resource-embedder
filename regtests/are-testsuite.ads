@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-testsuite -- Testsuite for are
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023s Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,12 +35,6 @@ package Are.Testsuite is
    function Suite return Util.Tests.Access_Test_Suite;
 
    type Test is new Util.Tests.Test with null record;
-
-   --  Execute the command and get the output in a string.
-   procedure Execute2 (T       : in out Test;
-                      Command : in String;
-                      Result  : out Ada.Strings.Unbounded.Unbounded_String;
-                      Status  : in Natural := 0);
 
    procedure Assert_Equal_Files (T       : in Test'Class;
                                  Expect  : in String;
