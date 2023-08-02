@@ -50,9 +50,9 @@ macos = true
 '...' = false
 
 [[depends-on]]
-xmlada = "~21.0.0"
-utilada = "^2.5.0"
-elada = "^1.8.4"
+xmlada = "~23.0.0"
+utilada = "^2.6.0"
+elada = "^1.8.6"
 
 [gpr-externals]
 ARE_BUILD = ["distrib", "debug", "optimize", "profile", "coverage"]
