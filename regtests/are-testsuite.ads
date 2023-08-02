@@ -37,7 +37,7 @@ package Are.Testsuite is
    type Test is new Util.Tests.Test with null record;
 
    --  Execute the command and get the output in a string.
-   procedure Execute (T       : in out Test;
+   procedure Execute2 (T       : in out Test;
                       Command : in String;
                       Result  : out Ada.Strings.Unbounded.Unbounded_String;
                       Status  : in Natural := 0);

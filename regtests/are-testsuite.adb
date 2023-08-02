@@ -44,7 +44,7 @@ package body Are.Testsuite is
    --  ------------------------------
    --  Execute the command and get the output in a string.
    --  ------------------------------
-   procedure Execute (T       : in out Test;
+   procedure Execute2 (T       : in out Test;
                       Command : in String;
                       Result  : out Ada.Strings.Unbounded.Unbounded_String;
                       Status  : in Natural := 0) is
@@ -62,7 +62,7 @@ package body Are.Testsuite is
       Ada.Text_IO.Put_Line (Ada.Strings.Unbounded.To_String (Result));
       Log.Info ("Command result: {0}", Result);
       Util.Tests.Assert_Equals (T, Status, P.Get_Exit_Status, "Command '" & Command & "' failed");
-   end Execute;
+   end Execute2;
 
    --  ------------------------------
    --  Check that two generated files are almost equal.  While doing the comparison,
