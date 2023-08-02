@@ -58,11 +58,8 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
-## Version 1.3    - Under development
+## Version 1.3    - Aug 2023
 - Fix #3: Allow to keep empty lines when content is split
-
-## Version 1.2.1  - Jul 2022
-- Fix alire package to allow running are from any alire project
 
 [List all versions](https://gitlab.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 

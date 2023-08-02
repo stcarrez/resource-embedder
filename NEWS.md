@@ -1,4 +1,4 @@
-## Version 1.3    - Under development
+## Version 1.3    - Aug 2023
 - Fix #3: Allow to keep empty lines when content is split
 
 ## Version 1.2.1  - Jul 2022
