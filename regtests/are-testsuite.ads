@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-testsuite -- Testsuite for are
---  Copyright (C) 2021, 2023s Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Ada.Strings.Unbounded;
 with GNAT.Source_Info;
 
 with Util.Tests;

@@ -15,21 +15,14 @@
 --  See the License for the specific language governing permissions and
 --  limitations under the License.
 -----------------------------------------------------------------------
-with Ada.Text_IO;
 with Ada.Characters.Handling;
 
-with Util.Log.Loggers;
 with Util.Files;
-with Util.Processes;
 with Util.Strings.Vectors;
-with Util.Streams.Pipes;
-with Util.Streams.Buffered;
 
 with Are.Generator.Tests;
 with Are.Tests;
 package body Are.Testsuite is
-
-   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are.Testsuite");
 
    Tests : aliased Util.Tests.Test_Suite;
 
