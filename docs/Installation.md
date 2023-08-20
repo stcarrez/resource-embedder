@@ -26,12 +26,12 @@ sudo apt install -y make git
 sudo apt install -y gnat-10 gprbuild libxmlada-dom10-dev
 ```
 
-### FreeBSD 12
+### FreeBSD 13
 
 Install the following packages:
 
 ```
-pkg install gmake gcc6-aux-20180516_1,1 gprbuild-20160609_1 git
+pkg install gmake gnat12 gprbuild git
 ```
 
 ### Windows
@@ -87,13 +87,11 @@ After configuration is successful, you can build the library by running:
 make
 ```
 
-If you have a recent GNAT compiler (gcc >= 8) you may build with:
+If you have an old GNAT compiler (gcc < 8) you may build with:
 
 ```
-make GNAT_SWITCH=HAS_CALLBACK
+make GNAT_SWITCH=NO_CALLBACK
 ```
-
-and this allows to use multiple `--resource=` and `--fileset=` options.
 
 After building, it is good practice to run the unit tests before installing
 the library.  The unit tests are built and executed using:
