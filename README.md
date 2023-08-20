@@ -145,12 +145,12 @@ the installation.
 
 ## Development Host Installation
 
-### Ubuntu 18.04
+### Ubuntu 22.04
 
 Install the following packages:
 ```
 sudo apt install -y make git
-sudo apt install -y gnat-7 gprbuild libxmlada-dom7-dev
+sudo apt install -y gnat gprbuild libxmlada-dom10-dev
 ```
 
 ### Ubuntu 20.04
@@ -161,12 +161,12 @@ sudo apt install -y make git
 sudo apt install -y gnat-9 gprbuild libxmlada-dom9-dev
 ```
 
-### FreeBSD 12
+### FreeBSD 13
 
 Install the following packages:
 
 ```
-pkg install gmake gcc6-aux-20180516_1,1 gprbuild-20160609_1 git
+pkg install gmake gnat12 gprbuild git
 ```
 
 ### Windows
@@ -203,17 +203,16 @@ To configure the resource embedder, use the following command:
 ## Build
 
 To build the resource embedder, run the command:
+
 ```
 make
 ```
 
-If you have a recent GNAT compiler (gcc >= 8) you may build with:
+If you have an old GNAT compiler (gcc < 8) you may build with:
 
 ```
-make GNAT_SWITCH=HAS_CALLBACK
+make GNAT_SWITCH=NO_CALLBACK
 ```
-
-and this allows to use multiple `--resource=` and `--fileset=` options.
 
 And install it:
 
@@ -227,24 +226,24 @@ You can install ARE by using the Debian 10 and Ubuntu 20.04 or 18.04 packages.
 First, setup to accept the signed packages:
 
 ```
-wget -O - https://apt.vacs.fr/apt.vacs.fr.gpg.key | sudo apt-key add -
+wget -O - https://apt.vacs.fr/apt.vacs.fr.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt-vacs-fr.asc
 ```
 
 and choose one of the `echo` command according to your Linux distribution:
+
+Ubuntu 22.04
+```
+echo "deb https://apt.vacs.fr/ubuntu-jammy jammy main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+```
 
 Ubuntu 20.04
 ```
 echo "deb https://apt.vacs.fr/ubuntu-focal focal main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
 ```
 
-Ubuntu 18.04
+Debian 12
 ```
-echo "deb https://apt.vacs.fr/ubuntu-bionic bionic main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
-```
-
-Debian 10
-```
-echo "deb https://apt.vacs.fr/debian-buster buster main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+echo "deb https://apt.vacs.fr/debian-bullseye bullseye main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
 ```
 
 Then, launch the apt update command:
