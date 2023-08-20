@@ -2,7 +2,8 @@ dnl Autoconf configure script for are
 
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(src/are.ads)
+AC_INIT
+AC_CONFIG_SRCDIR([src/are.ads])
 
 # Current release settings
 ARE_MAJOR_VERSION=1
@@ -21,6 +22,6 @@ AC_CHECK_PROG(HAVE_DYNAMO,dynamo,yes)
 
 AM_GNAT_LIBRARY_PROJECT(are)
 
-AC_OUTPUT(
-Makefile.conf
-)
+AC_CONFIG_FILES([Makefile.conf
+])
+AC_OUTPUT
