@@ -25,8 +25,7 @@ endif
 
 endif
 
-# Be conservative and use the GNAT.Command_Line.Define_Switch without a callback.
-GNAT_SWITCH?=NO_CALLBACK
+GNAT_SWITCH?=HAS_CALLBACK
 
 STATIC_MAKE_ARGS = -XARE_BUILD=$(BUILD) $(MAKE_ARGS) -XARE_LIBRARY_TYPE=static -XUTIL_OS=$(UTIL_OS) -XARE_SWITCH=$(GNAT_SWITCH)
 

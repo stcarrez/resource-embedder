@@ -61,7 +61,7 @@ UTIL_OS = ["win32", "win64", "linux32", "linux64", "macos64", "netbsd32", "netbs
 
 [gpr-set-externals]
 ARE_BUILD = "distrib"
-ARE_SWITCH = "NO_CALLBACK"
+ARE_SWITCH = "HAS_CALLBACK"
 
 [gpr-set-externals."case(os)".linux."case(word-size)".bits-32]
 UTIL_OS = "linux32"
