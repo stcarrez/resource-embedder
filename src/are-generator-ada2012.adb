@@ -293,6 +293,7 @@ package body Are.Generator.Ada2012 is
                               Content : in Are.File_Info) is
          Need_Sep : Boolean := False;
          Column   : Natural := 0;
+         Index    : Positive := 1;
       begin
          Put (Into, "   ");
          Put (Into, Name);
@@ -301,7 +302,7 @@ package body Are.Generator.Ada2012 is
          if Content.Content = null or else Content.Content'Length = 0 then
             Put_Line (Into, "(1 .. 0) := (others => <>);");
          elsif Content.Content'Length = 1 then
-            Put (Into, " := (0 => ");
+            Put (Into, " := (1 => ");
             Put (Into, Util.Strings.Image (Natural (Content.Content (Content.Content'First))));
             Put_Line (Into, ");");
          else
@@ -312,15 +313,23 @@ package body Are.Generator.Ada2012 is
                   Put (Into, ",");
                   Need_Sep := False;
                end if;
-               if Column > 20 then
+               if Column > 60 then
                   New_Line (Into);
                   Put (Into, "      ");
-                  Column := 1;
+                  Column := 6;
                elsif Column > 0 then
                   Put (Into, " ");
                end if;
-               Put (Into, Util.Strings.Image (Natural (C)));
-               Column := Column + 1;
+               declare
+                  Idx : constant String := Util.Strings.Image (Index);
+                  S   : constant String := Util.Strings.Image (Natural (C));
+               begin
+                  Put (Into, Idx);
+                  Put (Into, " => ");
+                  Put (Into, S);
+                  Column := Column + S'Length + Idx'Length + 4 + 2;
+               end;
+               Index := Index + 1;
                Need_Sep := True;
             end loop;
             Put_Line (Into, ");");
@@ -764,7 +773,7 @@ package body Are.Generator.Ada2012 is
             if Need_Sep then
                Put (File, ",");
             end if;
-            if Col > 5 then
+            if Col > 4 then
                New_Line (File);
                Put (File, "      ");
                Col := 0;
