@@ -1,6 +1,6 @@
 .\"
 .\"
-.TH ARE 1 "Jan 14, 2023" "Advanced Resource Embedder"
+.TH ARE 1 "Oct 31, 2023" "Advanced Resource Embedder"
 .SH NAME
 are - Resource embedder to include files in Ada, C/C++, Go binaries
 .SH SYNOPSIS
@@ -256,6 +256,7 @@ that identify the files.
 .RS 0
  <package>
   <resource name='help' format='string'>
+   <header>--  Some header comment</header>
    <install mode='copy'>
      <fileset dir='help'>
       <include name='**/*.txt'/>

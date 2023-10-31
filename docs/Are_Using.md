@@ -71,6 +71,25 @@ directory and with the `.txt` file extension.  The code generator will use
 the name `man_content` for the data type that represents the file description
 and it will use `man_get_help_content` for the generated function name.
 
+## Custom headers
+
+It is possible to add custom headers in the generated files by using the `header` XML
+element within each `resource`.  Each `header` element is written verbatim in the output code.
+It can contain comment or some target source code.  A `type` attribute can be defined
+to limit in which file the header content is written.  By default, the header line is written
+in the specification  (`.ads`, `.h`) and body files (`.adb`, `.c`).
+
+```XML
+<package>
+  <resource ...>
+    <header>...</header>
+    <header type='spec'>...</header>
+    <header type='body'>...</header>
+    ...
+  </resource>
+  ...
+</package>
+```
 
 ## Controlling the lines format
 
