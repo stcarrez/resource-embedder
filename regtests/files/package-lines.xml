@@ -1,6 +1,10 @@
 <package>
 
   <resource name='Lines' format='lines'>
+    <header>--  Header test line 1</header>
+    <header>--  Header test line 2</header>
+    <header type='body'>--  Header body test line 3</header>
+    <header type='spec'>--  Header spec test line 3</header>
     <line-separator>\r</line-separator>
     <line-separator>\n</line-separator>
 

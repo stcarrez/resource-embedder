@@ -1,4 +1,7 @@
 --  Advanced Resource Embedder 1.3.0
+--  Header test line 1
+--  Header test line 2
+--  Header spec test line 3
 package Lines is
 
    type Content_Array is array (Positive range <>) of access constant String;
