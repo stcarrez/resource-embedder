@@ -17,7 +17,6 @@
 -----------------------------------------------------------------------
 with Ada.Directories;
 with Ada.Command_Line;
-with Ada.Text_IO;
 
 with Are.Generator.Ada2012;
 with Are.Generator.C;
@@ -275,5 +274,16 @@ package body Are.Generator is
 
       Ada.Command_Line.Set_Exit_Status (Context.Status);
    end Main;
+
+   --  ------------------------------
+   --  Write a list of lines in the output file.
+   --  ------------------------------
+   procedure Put_Lines (File : in out Ada.Text_IO.File_Type;
+                        Lines : in Util.Strings.Vectors.Vector) is
+   begin
+      for Line of Lines loop
+         Ada.Text_IO.Put_Line (File, Line);
+      end loop;
+   end Put_Lines;
 
 end Are.Generator;

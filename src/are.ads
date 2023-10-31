@@ -94,6 +94,8 @@ private
       Member_Length_Name  : UString;
       Member_Modtime_Name : UString;
       Member_Format_Name  : UString;
+      Headers_Spec        : Util.Strings.Vectors.Vector;
+      Headers_Impl        : Util.Strings.Vectors.Vector;
    end record;
 
    --  Get the name of type and struct/record members for the generator:

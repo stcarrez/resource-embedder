@@ -104,6 +104,8 @@ package body Are.Installer is
                                          Node     : in DOM.Core.Node);
       procedure Register_Line_Filter (Resource : in out Are.Resource_Access;
                                       Node     : in DOM.Core.Node);
+      procedure Register_Header (Resource : in out Are.Resource_Access;
+                                 Node     : in DOM.Core.Node);
 
       --  ------------------------------
       --  Register a new type mapping.
@@ -259,6 +261,22 @@ package body Are.Installer is
       end Register_Line_Filter;
 
       --  ------------------------------
+      --  Register a new header line to add in the generated files.
+      --  ------------------------------
+      procedure Register_Header (Resource : in out Are.Resource_Access;
+                                 Node     : in DOM.Core.Node) is
+         Header : constant String := Are.Utils.Get_Data_Content (Node);
+         Kind   : constant String := Are.Utils.Get_Attribute (Node, "type");
+      begin
+         if Kind = "" or else Kind = "spec" then
+            Resource.Headers_Spec.Append (Header);
+         end if;
+         if Kind = "" or else Kind = "body" then
+            Resource.Headers_Impl.Append (Header);
+         end if;
+      end Register_Header;
+
+      --  ------------------------------
       --  Register the resource definition.
       --  ------------------------------
       procedure Register_Resource (List  : in out Are.Resource_List;
@@ -273,6 +291,9 @@ package body Are.Installer is
          procedure Iterate_Line_Filter is
            new Are.Utils.Iterate_Nodes (T => Are.Resource_Access,
                                         Process => Register_Line_Filter);
+         procedure Iterate_Header is
+           new Are.Utils.Iterate_Nodes (T => Are.Resource_Access,
+                                        Process => Register_Header);
 
          function Get_Format (Name : in String) return Are.Format_Type is
          begin
@@ -300,6 +321,7 @@ package body Are.Installer is
          Resource.Member_Length_Name := Are.Utils.Get_Attribute (Node, "member-length", "");
          Resource.Member_Format_Name := Are.Utils.Get_Attribute (Node, "member-format", "");
          Resource.Keep_Empty_Lines := Are.Utils.Get_Attribute (Node, "keep-empty-lines", False);
+         Iterate_Header (Resource, Node, "header");
          Iterate_Line_Separator (Resource, Node, "line-separator");
          Iterate_Line_Filter (Resource, Node, "line-filter");
          Iterate (Resource, Node, "install");

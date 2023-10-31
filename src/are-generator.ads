@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator -- Advanced Resource Embedder Generator
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 --  limitations under the License.
 -----------------------------------------------------------------------
 with GNAT.Command_Line;
+private with Ada.Text_IO;
 
 --  = Generator =
 --  The code generators are invoked when the installer has scanned the directories,
@@ -55,5 +56,9 @@ private
    --  Portability hack to support old GNAT.Command_Line before gcc 7.3
    procedure Specific_Options (Config  : in out GC.Command_Line_Configuration;
                                Context : in out Are.Context_Type'Class);
+
+   --  Write a list of lines in the output file.
+   procedure Put_Lines (File : in out Ada.Text_IO.File_Type;
+                        Lines : in Util.Strings.Vectors.Vector);
 
 end Are.Generator;

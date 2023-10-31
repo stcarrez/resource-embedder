@@ -618,6 +618,7 @@ package body Are.Generator.Ada2012 is
                           Name => Path);
       Put (File, "--  ");
       Put_Line (File, Get_Title);
+      Put_Lines (File, Resource.Headers_Spec);
       if not Context.No_Type_Declaration then
          if Resource.Format = R_BINARY then
             declare
@@ -828,6 +829,7 @@ package body Are.Generator.Ada2012 is
                           Name => Path);
       Put (File, "--  ");
       Put_Line (File, Get_Title);
+      Put_Lines (File, Resource.Headers_Impl);
       if Context.Ignore_Case then
          Put_Line (File, "with Ada.Characters.Handling;");
       end if;
