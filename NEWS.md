@@ -1,3 +1,7 @@
+## Version 1.4    - Under development
+- Feature #5: Need customisation of starting index in binary embedder
+- Feature #4: Need ability to insert custom headers in generated files
+
 ## Version 1.3    - Aug 2023
 - Fix #3: Allow to keep empty lines when content is split
 
