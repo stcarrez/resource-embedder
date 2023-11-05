@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-tests -- Various tests for the are tool (based on examples)
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,6 +37,8 @@ package Are.Tests is
    procedure Test_Example_Ada_Help (T : in out Test);
 
    procedure Test_Example_Ada_Lines (T : in out Test);
+
+   procedure Test_Example_Ada_Mapping (T : in out Test);
 
    procedure Test_Example_Go_Help (T : in out Test);
 

@@ -38,6 +38,8 @@ package body Are.Tests is
                        Test_Example_Ada_Help'Access);
       Caller.Add_Test (Suite, "Test examples ada-lines",
                        Test_Example_Ada_Lines'Access);
+      Caller.Add_Test (Suite, "Test examples ada-mapping",
+                       Test_Example_Ada_Mapping'Access);
       if Ada.Directories.Exists ("/usr/bin/go") then
          Caller.Add_Test (Suite, "Test examples go-config",
                           Test_Example_Go_Config'Access);
@@ -71,6 +73,18 @@ package body Are.Tests is
                                  Result,
                                  "Invalid Ada show_config");
    end Test_Example_Ada_Config;
+
+   procedure Test_Example_Ada_Mapping (T : in out Test) is
+      Result : Ada.Strings.Unbounded.Unbounded_String;
+   begin
+      T.Execute ("make -C examples/ada-mapping clean", Result, Status => 0);
+      T.Execute ("make -C examples/ada-mapping ARE=../../bin/are", Result, Status => 0);
+      T.Execute ("examples/ada-mapping/extension" & Are.Testsuite.EXE & " test.adb",
+                 Result, Status => 0);
+      Util.Tests.Assert_Matches (T, "Ada",
+                                 Result,
+                                 "Invalid Ada extension");
+   end Test_Example_Ada_Mapping;
 
    procedure Test_Example_Go_Config (T : in out Test) is
       Result : Ada.Strings.Unbounded.Unbounded_String;
