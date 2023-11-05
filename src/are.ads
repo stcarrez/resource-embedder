@@ -27,6 +27,7 @@ private with Ada.Command_Line;
 private with GNAT.Strings;
 private with GNAT.Regpat;
 private with Util.Strings.Vectors;
+private with Util.Strings.Maps;
 package Are is
 
    function "-" (Message : in String) return String is (Message);
@@ -65,7 +66,8 @@ private
                                                  "<"          => "<",
                                                  "="          => "=");
 
-   type Format_Type is (R_BINARY, R_STRING, R_LINES);
+   type Format_Type is (R_BINARY, R_STRING, R_LINES, R_MAP);
+   type Mapper_Type is (M_NONE, M_TEXT, M_JSON);
 
    type Line_Filter_Type (Size : GNAT.Regpat.Program_Size;
                           Replace_Length : Natural) is
@@ -83,6 +85,7 @@ private
       Next                : Resource_Access;
       Name                : UString;
       Format              : Format_Type := R_BINARY;
+      Mapper              : Mapper_Type := M_NONE;
       Keep_Empty_Lines    : Boolean := False;
       Files               : File_Maps.Map;
       Separators          : Character_Set := Ada.Strings.Maps.Null_Set;
@@ -155,6 +158,13 @@ private
    procedure Convert_To_Lines (Resource : in Resource_Type;
                                File     : in File_Info;
                                Lines    : in out Util.Strings.Vectors.Vector);
+
+   --  Convert the file content to a mapping table.
+   procedure Convert_To_Map (Resource : in Resource_Type;
+                             Path     : in String;
+                             File     : in File_Info;
+                             Context  : in out Context_Type'Class;
+                             Map      : in out Util.Strings.Maps.Map);
 
    --  Collect the list of files names for the resource (list is sorted).
    procedure Collect_Names (Resource    : in Resource_Type;

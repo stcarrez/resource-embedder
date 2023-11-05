@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator-ada2012 -- Generator for Ada
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2023 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 -----------------------------------------------------------------------
 private with Ada.Text_IO;
 private with Util.Strings.Vectors;
+private with Util.Strings.Maps;
 
 --  == Ada Generator ==
 --  The Ada code generator produces for each resource description an Ada
@@ -107,6 +108,7 @@ private
       Pragma_Preelaborate : aliased Boolean := False;
       Content_Only        : aliased Boolean := False;
       Names               : Util.Strings.Vectors.Vector;
+      Map                 : Util.Strings.Maps.Map;
    end record;
 
    --  Generate the package specification.
@@ -126,6 +128,14 @@ private
 
    --  Generate the keyword table.
    procedure Generate_Keyword_Table (Generator : in out Generator_Type;
+                                     Into      : in out Ada.Text_IO.File_Type);
+
+   --  Generate the mapping table for the resource (when format = R_MAP).
+   procedure Generate_Resource_Mapping (Generator    : in out Generator_Type;
+                                        Resource     : in Are.Resource_Type;
+                                        Context      : in out Are.Context_Type'Class);
+
+   procedure Generate_Mapping_Table (Generator : in out Generator_Type;
                                      Into      : in out Ada.Text_IO.File_Type);
 
    function To_File_Name (Name : in String) return String;

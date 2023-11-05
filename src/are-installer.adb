@@ -277,6 +277,22 @@ package body Are.Installer is
       end Register_Header;
 
       --  ------------------------------
+      --  Register a mapper definition.
+      --  ------------------------------
+      procedure Register_Mapper (Resource : in out Are.Resource_Access;
+                                 Node     : in DOM.Core.Node) is
+         Kind   : constant String := Are.Utils.Get_Attribute (Node, "type");
+      begin
+         if Kind = "text" then
+            Resource.Mapper := M_TEXT;
+         elsif Kind = "json" then
+            Resource.Mapper := M_JSON;
+         else
+            Context.Error ("{0}: invalid mapper type '{1}'", File, Kind);
+         end if;
+      end Register_MApper;
+
+      --  ------------------------------
       --  Register the resource definition.
       --  ------------------------------
       procedure Register_Resource (List  : in out Are.Resource_List;
@@ -294,6 +310,9 @@ package body Are.Installer is
          procedure Iterate_Header is
            new Are.Utils.Iterate_Nodes (T => Are.Resource_Access,
                                         Process => Register_Header);
+         procedure Iterate_Mapper is
+           new Are.Utils.Iterate_Nodes (T => Are.Resource_Access,
+                                        Process => Register_Mapper);
 
          function Get_Format (Name : in String) return Are.Format_Type is
          begin
@@ -303,6 +322,8 @@ package body Are.Installer is
                return R_STRING;
             elsif Name = "lines" then
                return R_LINES;
+            elsif Name = "map" then
+               return R_MAP;
             else
                Context.Error ("{0}: invalid resource format '{1}'", File, Name);
                return R_BINARY;
@@ -324,6 +345,7 @@ package body Are.Installer is
          Iterate_Header (Resource, Node, "header");
          Iterate_Line_Separator (Resource, Node, "line-separator");
          Iterate_Line_Filter (Resource, Node, "line-filter");
+         Iterate_Mapper (Resource, Node, "mapper");
          Iterate (Resource, Node, "install");
          if Resource.Format = R_LINES and then Resource.Separators = Null_Set then
             Context.Error ("{0}: missing 'line-separator' for resource '{1}'",

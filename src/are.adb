@@ -21,11 +21,17 @@ with Ada.Characters.Handling;
 with Util.Log.Loggers;
 with Util.Properties;
 with Util.Files;
+with Util.Serialize.IO.JSON;
+with Util.Serialize.IO.CSV;
+with Util.Beans.Objects.Readers;
+with Util.Beans.Objects.Iterators;
 package body Are is
+
+   package UBO renames Util.Beans.Objects;
 
    use Ada.Strings.Unbounded;
 
-   Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are");
+   Log : aliased constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are");
 
    function Get_Type_Name (Resource : in Resource_Type;
                            Context  : in Context_Type'Class;
@@ -314,6 +320,63 @@ package body Are is
          end loop;
       end;
    end Convert_To_Lines;
+
+   procedure Convert_Json_Map (Resource : in Resource_Type;
+                               Path     : in String;
+                               File     : in File_Info;
+                               Context  : in out Context_Type'Class;
+                               Map      : in out Util.Strings.Maps.Map) is
+      Content : String (1 .. Natural (File.Length));
+      for Content'Address use File.Content.all'Address;
+
+      P    : Util.Serialize.IO.JSON.Parser;
+      R    : UBO.Readers.Reader;
+      Root : UBO.Object;
+   begin
+      P.Set_Filename (Path);
+      P.Set_Logger (Log'Access);
+      P.Parse_String (Content, R);
+      if P.Has_Error then
+         Context.Error ("file '{0}' is not a valid JSON file", Path);
+         return;
+      end if;
+      Root := R.Get_Root;
+      if UBO.Is_Null (Root) then
+         Context.Error ("empty JSON file '{0}'", Path);
+         return;
+      end if;
+
+      declare
+         Iter  : UBO.Iterators.Iterator := UBO.Iterators.First (Root);
+         Value : UBO.Object;
+      begin
+         while UBO.Iterators.Has_Element (Iter) loop
+            if UBO.Iterators.Has_Key (Iter) then
+               Value := UBO.Iterators.Element (Iter);
+               Map.Include (UBO.Iterators.Key (Iter), UBO.To_String (Value));
+            end if;
+            UBO.Iterators.Next (Iter);
+         end loop;
+      end;
+   end Convert_Json_Map;
+
+   procedure Convert_To_Map (Resource : in Resource_Type;
+                             Path     : in String;
+                             File     : in File_Info;
+                             Context  : in out Context_Type'Class;
+                             Map      : in out Util.Strings.Maps.Map) is
+      Lines : Util.Strings.Vectors.Vector;
+   begin
+      Map.Clear;
+      if File.Content = null or else File.Content'Length = 0 then
+         return;
+      end if;
+      if Resource.Mapper = M_JSON then
+         Convert_Json_Map (Resource, Path, File, Context, Map);
+      else
+         Convert_To_Lines (Resource, File, Lines);
+      end if;
+   end Convert_To_Map;
 
    --  ------------------------------
    --  Collect the list of files names for the resource (list is sorted).

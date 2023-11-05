@@ -48,7 +48,8 @@ package body Are.Generator.Ada2012 is
                                          Into         : in out Ada.Text_IO.File_Type;
                                          Declare_Var  : in Boolean;
                                          Content_Type : in String;
-                                         Var_Prefix   : in String);
+                                         Var_Prefix   : in String;
+                                         Context      : in out Are.Context_Type'Class);
 
    Log : constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are.Generator.Ada2012");
 
@@ -62,7 +63,9 @@ package body Are.Generator.Ada2012 is
       Resource : Resource_Access := Resources.Head;
    begin
       while Resource /= null loop
-         if Context.Name_Index then
+         if Resource.Format = R_MAP then
+            Generator.Generate_Resource_Mapping (Resource.all, Context);
+         elsif Context.Name_Index then
             Resource.Collect_Names (Context.Ignore_Case, Generator.Names);
             if Generator.Names.Length > 1 then
                Generator.Generate_Perfect_Hash (Resource.all, Context);
@@ -279,7 +282,8 @@ package body Are.Generator.Ada2012 is
                                          Into         : in out Ada.Text_IO.File_Type;
                                          Declare_Var  : in Boolean;
                                          Content_Type : in String;
-                                         Var_Prefix   : in String) is
+                                         Var_Prefix   : in String;
+                                         Context      : in out Are.Context_Type'Class) is
       function Get_Variable_Name (Key : in String) return String;
       procedure Write_Binary (Name    : in String;
                               Content : in Are.File_Info);
@@ -516,7 +520,8 @@ package body Are.Generator.Ada2012 is
    begin
       for File in Resource.Files.Iterate loop
          declare
-            Name    : constant String := Get_Variable_Name (File_Maps.Key (File));
+            Path    : constant String := File_Maps.Key (File);
+            Name    : constant String := Get_Variable_Name (Path);
             Content : constant Are.File_Info := File_Maps.Element (File);
          begin
             Index := Index + 1;
@@ -525,13 +530,47 @@ package body Are.Generator.Ada2012 is
                Write_Lines (Name, Content);
             elsif Resource.Format = R_STRING then
                Write_String (Name, Content);
-            else
+            elsif Resource.Format = R_BINARY then
                Write_Binary (Name, Content);
             end if;
          end;
          New_Line (Into);
       end loop;
    end Generate_Resource_Contents;
+
+   --  ------------------------------
+   --  Generate the mapping table for the resource (when format = R_MAP).
+   --  ------------------------------
+   procedure Generate_Resource_Mapping (Generator    : in out Generator_Type;
+                                        Resource     : in Are.Resource_Type;
+                                        Context      : in out Are.Context_Type'Class) is
+   begin
+      Generator.Map.Clear;
+      Generator.Names.Clear;
+
+      --  Build the map by reading files.
+      for File in Resource.Files.Iterate loop
+         declare
+            Path    : constant String := File_Maps.Key (File);
+            Content : constant Are.File_Info := File_Maps.Element (File);
+         begin
+            Convert_To_Map (Resource, Path, Content, Context, Generator.Map);
+         end;
+      end loop;
+
+      --  Collect the keys for the generation of the perfect hash function.
+      for Item in Generator.Map.Iterate loop
+         declare
+            Name : constant String := Util.Strings.Maps.Key (Item);
+         begin
+            Generator.Names.Append (Name);
+         end;
+      end loop;
+
+      if Generator.Names.Length > 1 then
+         Generator.Generate_Perfect_Hash (Resource, Context);
+      end if;
+   end Generate_Resource_Mapping;
 
    --  ------------------------------
    --  Generate the keyword table.
@@ -596,6 +635,85 @@ package body Are.Generator.Ada2012 is
    end Generate_Keyword_Table;
 
    --  ------------------------------
+   --  Generate the mapping table.
+   --  ------------------------------
+   procedure Generate_Mapping_Table (Generator : in out Generator_Type;
+                                     Into      : in out Ada.Text_IO.File_Type) is
+
+      Index    : Integer := 0;
+      Key_Mode : Boolean := True;
+
+      procedure Print_Mapping (Pos : in Util.Strings.Maps.Cursor);
+      procedure Print_Table (Pos : in Util.Strings.Maps.Cursor);
+
+      --  ------------------------------
+      --  Print a value associated with the key as an Ada constant string.
+      --  ------------------------------
+      procedure Print_Mapping (Pos : in Util.Strings.Maps.Cursor) is
+         Key   : constant String := Util.Strings.Maps.Key (Pos);
+         Value : constant String := Util.Strings.Maps.Element (Pos);
+      begin
+         Put (Into, "   K_");
+         Put (Into, Util.Strings.Image (Index));
+         Set_Col (Into, 20);
+         Put (Into, ": aliased constant String := """);
+         Put (Into, Key);
+         Put_Line (Into, """;");
+         Put (Into, "   M_");
+         Put (Into, Util.Strings.Image (Index));
+         Set_Col (Into, 20);
+         Put (Into, ": aliased constant String := """);
+         Put (Into, Value);
+         Put_Line (Into, """;");
+         Index := Index + 1;
+      end Print_Mapping;
+
+      --  ------------------------------
+      --  Build the mapping table.
+      --  ------------------------------
+      procedure Print_Table (Pos : in Util.Strings.Maps.Cursor) is
+         pragma Unreferenced (Pos);
+      begin
+         if Index > 0 then
+            if Index mod 4 = 0 then
+               Put_Line (Into, ",");
+               Put (Into, "      ");
+            else
+               Put (Into, ", ");
+            end if;
+         end if;
+         Put (Into, (if Key_Mode then "K_" else "M_"));
+         Put (Into, Util.Strings.Image (Index));
+         Put (Into, "'Access");
+         Index := Index + 1;
+      end Print_Table;
+
+   begin
+      Generator.Map.Iterate (Print_Mapping'Access);
+      New_Line (Into);
+
+      Index := 0;
+      Put_Line (Into, "   Names : constant Name_Array := (");
+      Put (Into, "      ");
+      if Generator.Map.Length = 1 then
+         Put (Into, "0 => ");
+      end if;
+      Generator.Map.Iterate (Print_Table'Access);
+      Put_Line (Into, ");");
+      New_Line (Into);
+
+      Index := 0;
+      Key_Mode := False;
+      Put_Line (Into, "   Contents : constant Name_Array := (");
+      Put (Into, "      ");
+      if Generator.Map.Length = 1 then
+         Put (Into, "0 => ");
+      end if;
+      Generator.Map.Iterate (Print_Table'Access);
+      Put_Line (Into, ");");
+   end Generate_Mapping_Table;
+
+   --  ------------------------------
    --  Generate the package specification.
    --  ------------------------------
    procedure Generate_Specs (Generator   : in out Generator_Type;
@@ -610,6 +728,9 @@ package body Are.Generator.Ada2012 is
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
       File         : Ada.Text_IO.File_Type;
       Has_Private  : Boolean := False;
+      Name_Index   : Boolean := Context.Name_Index;
+      List_Content : Boolean := Context.List_Content;
+      Content_Only : Boolean := Generator.Content_Only;
    begin
       Log.Info ("Writing {0}", Path);
 
@@ -631,7 +752,7 @@ package body Are.Generator.Ada2012 is
                end if;
             end;
          end if;
-         if not Generator.Content_Only then
+         if not Content_Only then
             Put_Line (File, "with Interfaces.C;");
          end if;
       end if;
@@ -643,6 +764,11 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, "   pragma Preelaborate;");
       end if;
       New_Line (File);
+      if Resource.Format = R_MAP then
+         List_Content := False;
+         Name_Index := False;
+         Content_Only := True;
+      end if;
       if not Context.No_Type_Declaration then
          if Resource.Format = R_BINARY then
             Put (File, "   type Content_Access is access constant ");
@@ -654,13 +780,15 @@ package body Are.Generator.Ada2012 is
             Put_Line (File, "   type Content_Access is access constant Content_Array;");
          elsif Resource.Format = R_STRING then
             Put_Line (File, "   type Content_Access is access constant String;");
+         elsif Resource.Format = R_MAP then
+            Put_Line (File, "   type Content_Access is access constant String;");
          end if;
          New_Line (File);
-         if Context.List_Content or else not Generator.Content_Only then
+         if List_Content or else not Content_Only then
             Put_Line (File, "   type Name_Access is access constant String;");
             New_Line (File);
          end if;
-         if not Generator.Content_Only then
+         if not Content_Only then
             Put_Line (File, "   type Format_Type is (FILE_RAW, FILE_GZIP);");
             New_Line (File);
             Put (File, "   type ");
@@ -681,7 +809,7 @@ package body Are.Generator.Ada2012 is
       if Context.Declare_Var then
          Generate_Resource_Declarations (Resource, File, Content_Type, Context.Var_Prefix.all);
       end if;
-      if Context.List_Content then
+      if List_Content then
          if not Context.No_Type_Declaration then
             Put_Line (File, "   type Name_Array is array (Natural range <>) of Name_Access;");
             New_Line (File);
@@ -689,9 +817,17 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, "   Names : constant Name_Array;");
          New_Line (File);
       end if;
-      if Context.Name_Index then
+      if Name_Index then
          Put_Line (File, "   --  Returns the data stream with the given name or null.");
          Put_Line (File, "   function Get_Content (Name : String) return");
+         Put (File, "      ");
+         Put (File, Type_Name);
+         Put_Line (File, ";");
+         New_Line (File);
+      end if;
+      if Resource.Format = R_MAP then
+         Put_Line (File, "   --  Returns the mapping that corresponds to the name or null.");
+         Put_Line (File, "   function Get_Mapping (Name : String) return");
          Put (File, "      ");
          Put (File, Type_Name);
          Put_Line (File, ";");
@@ -702,9 +838,9 @@ package body Are.Generator.Ada2012 is
          New_Line (File);
          Has_Private := True;
          Generate_Resource_Contents (Resource, File, Context.Declare_Var,
-                                     Content_Type, Context.Var_Prefix.all);
+                                     Content_Type, Context.Var_Prefix.all, Context);
       end if;
-      if not Context.No_Type_Declaration and then not Generator.Content_Only then
+      if not Context.No_Type_Declaration and then not Content_Only then
          if not Has_Private then
             Put_Line (File, "private");
             New_Line (File);
@@ -715,7 +851,7 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, " := (others => <>);");
          New_Line (File);
       end if;
-      if Context.List_Content then
+      if List_Content then
          if not Has_Private then
             Put_Line (File, "private");
             New_Line (File);
@@ -747,7 +883,10 @@ package body Are.Generator.Ada2012 is
                                             "Content_Access" else "Content_Type");
       Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
-      Use_Hash     : constant Boolean := Context.Name_Index and then Generator.Names.Length > 1;
+      Content_Only : Boolean := Generator.Content_Only;
+      Use_Mapping  : constant Boolean := Resource.Format = R_MAP;
+      Use_Hash     : constant Boolean :=
+        (Use_Mapping or else Context.Name_Index) and then Generator.Names.Length > 1;
       File         : Ada.Text_IO.File_Type;
       Count        : Natural;
       Lines        : Util.Strings.Vectors.Vector;
@@ -813,7 +952,9 @@ package body Are.Generator.Ada2012 is
       end Generate_Contents_Array;
 
    begin
-      if not Context.Name_Index or else Generator.Names.Is_Empty then
+      if (not Use_Mapping and then not Context.Name_Index)
+        or else Generator.Names.Is_Empty
+      then
          Log.Debug ("Skipping body generation for {0}", Filename);
          return;
       end if;
@@ -854,7 +995,7 @@ package body Are.Generator.Ada2012 is
 
       if not Context.Declare_Var then
          Generate_Resource_Contents (Resource, File, Context.Declare_Var,
-                                     Content_Type, Context.Var_Prefix.all);
+                                     Content_Type, Context.Var_Prefix.all, Context);
       end if;
 
       if Context.Name_Index and then not Context.List_Content then
@@ -867,16 +1008,29 @@ package body Are.Generator.Ada2012 is
          Generate_Keyword_Table (Generator, File);
       end if;
 
-      New_Line (File);
-      Put (File, "   type Content_List_Array is array (Natural range <>) of ");
-      Put (File, Type_Name);
-      Put_Line (File, ";");
-
-      Generate_Contents_Array;
-
-      if Context.Name_Index then
+      if Resource.Format = R_MAP then
+         Put_Line (File, "   type Name_Array is array "
+                   & "(Natural range <>) of Content_Access;");
          New_Line (File);
-         Put (File, "   function Get_Content (Name : String) return ");
+         Generate_Mapping_Table (Generator, File);
+      end if;
+
+      if Resource.Format /= R_MAP then
+         New_Line (File);
+         Put (File, "   type Content_List_Array is array (Natural range <>) of ");
+         Put (File, Type_Name);
+         Put_Line (File, ";");
+
+         Generate_Contents_Array;
+      end if;
+
+      if Context.Name_Index or else Resource.Format = R_MAP then
+         New_Line (File);
+         if Resource.Format = R_MAP then
+            Put (File, "   function Get_Mapping (Name : String) return ");
+         else
+            Put (File, "   function Get_Content (Name : String) return ");
+         end if;
          Put (File, Type_Name);
          Put_Line (File, " is");
          if Use_Hash then
@@ -893,7 +1047,7 @@ package body Are.Generator.Ada2012 is
             else
                Put (File, "      return (if Names (H).all = Name then Contents (H) else ");
             end if;
-            if Generator.Content_Only then
+            if Content_Only or else Use_Mapping then
                Put_Line (File, "null);");
             else
                Put_Line (File, "Null_Content);");
@@ -909,13 +1063,17 @@ package body Are.Generator.Ada2012 is
             else
                Put (File, "      return (if Names (0).all = Name then Contents (0) else ");
             end if;
-            if Generator.Content_Only then
+            if Content_Only or else Use_Mapping then
                Put_Line (File, "null);");
             else
                Put_Line (File, "Null_Content);");
             end if;
          end if;
-         Put_Line (File, "   end Get_Content;");
+         if Resource.Format = R_MAP then
+            Put_Line (File, "   end Get_Mapping;");
+         else
+            Put_Line (File, "   end Get_Content;");
+         end if;
          New_Line (File);
       end if;
 
