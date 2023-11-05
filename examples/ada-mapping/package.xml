@@ -1,0 +1,15 @@
+<package>
+
+  <resource name='Extensions_Map'
+            format='map'
+            type='access constant String'>
+    <mapper type="json"/>
+
+    <install mode='copy' strip-extension='yes'>
+      <fileset dir=".">
+        <include name="**/*.json"/>
+      </fileset>
+    </install>
+  </resource>
+
+</package>
