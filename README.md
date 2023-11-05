@@ -1,8 +1,8 @@
 # Advanced Resource Embedder
 
 [![Alire](https://img.shields.io/endpoint?url=https://alire.ada.dev/badges/are.json)](https://alire.ada.dev/crates/are)
-[![Build Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/build.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder)
-[![Test Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/tests.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder)
+[![Build Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/build.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder/summary)
+[![Test Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/tests.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder/xunits)
 [![Coverage](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/coverage.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder)
 [![Documentation Status](https://readthedocs.org/projects/resource-embedder/badge/?version=latest)](https://resource-embedder.readthedocs.io/en/latest/?badge=latest)
 [![Download](https://img.shields.io/badge/download-1.2.0-brightgreen.svg)](http://download.vacs.fr/resource-embedder/resource-embedder-1.2.0.tar.gz)
