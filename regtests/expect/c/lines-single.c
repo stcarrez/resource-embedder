@@ -1,4 +1,4 @@
-// Advanced Resource Embedder 1.3.0
+// Advanced Resource Embedder 1.4.0
 #include <string.h>
 #include "lines.h"
 
