@@ -59,6 +59,7 @@ extern const struct config_content *config_get_content(const char* name);
 ```
 
 ## Version 1.4    - Under development
+- Feature #6: New embedder for simple mapping generation
 - Feature #5: Need customisation of starting index in binary embedder
 - Feature #4: Need ability to insert custom headers in generated files
 
@@ -137,6 +138,7 @@ More specific examples show how to make specific transformations on the files be
 * [Embedding merged properties in Ada](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/ada-bundles)
 * [Embedding SQL scripts in Ada and mapping them in array of String](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/ada-lines)
 * [Embedding SQL scripts in C and mapping them in array of String](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/c-lines)
+* [Embedding mapping tables in Ada](https://gitlab.com/stcarrez/resource-embedder/tree/master/examples/ada-mapping)
 
 
 # Building ARE

@@ -36,6 +36,8 @@ examples/ada-bundles/src/bundle.adb
 examples/ada-help/src/resources-*.ad?
 examples/ada-config/show_config
 examples/ada-help/show_help
+examples/ada-mapping/extension
+examples/ada-mapping/src/extensions_map.ad?
 examples/c-config/show-config
 examples/c-help/show-help
 examples/c-web/show-web
