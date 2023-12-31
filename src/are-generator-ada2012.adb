@@ -810,6 +810,9 @@ package body Are.Generator.Ada2012 is
          Generate_Resource_Declarations (Resource, File, Content_Type, Context.Var_Prefix.all);
       end if;
       if List_Content then
+         Put (File, "   Names_Count : constant :=");
+         Put (File, Generator.Names.Length'Image);
+         Put_Line (File, ";");
          if not Context.No_Type_Declaration then
             Put_Line (File, "   type Name_Array is array (Natural range <>) of Name_Access;");
             New_Line (File);
