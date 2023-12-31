@@ -290,7 +290,7 @@ package body Are.Installer is
          else
             Context.Error ("{0}: invalid mapper type '{1}'", File, Kind);
          end if;
-      end Register_MApper;
+      end Register_Mapper;
 
       --  ------------------------------
       --  Register the resource definition.
