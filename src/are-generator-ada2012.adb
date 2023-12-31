@@ -284,6 +284,7 @@ package body Are.Generator.Ada2012 is
                                          Content_Type : in String;
                                          Var_Prefix   : in String;
                                          Context      : in out Are.Context_Type'Class) is
+      pragma Unreferenced (Context);
       function Get_Variable_Name (Key : in String) return String;
       procedure Write_Binary (Name    : in String;
                               Content : in Are.File_Info);
@@ -886,7 +887,7 @@ package body Are.Generator.Ada2012 is
                                             "Content_Access" else "Content_Type");
       Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
-      Content_Only : Boolean := Generator.Content_Only;
+      Content_Only : constant Boolean := Generator.Content_Only;
       Use_Mapping  : constant Boolean := Resource.Format = R_MAP;
       Use_Hash     : constant Boolean :=
         (Use_Mapping or else Context.Name_Index) and then Generator.Names.Length > 1;
