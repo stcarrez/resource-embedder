@@ -337,6 +337,7 @@ package body Are.Installer is
          Resource.Type_Name := Are.Utils.Get_Attribute (Node, "type", "");
          Resource.Format := Get_Format (Are.Utils.Get_Attribute (Node, "format", "binary"));
          Resource.Function_Name := Are.Utils.Get_Attribute (Node, "function-name", "");
+         Resource.Index_Type_Name := Are.Utils.Get_Attribute (Node, "index-type", "");
          Resource.Member_Content_Name := Are.Utils.Get_Attribute (Node, "member-content", "");
          Resource.Member_Modtime_Name := Are.Utils.Get_Attribute (Node, "member-time", "");
          Resource.Member_Length_Name := Are.Utils.Get_Attribute (Node, "member-length", "");

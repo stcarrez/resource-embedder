@@ -91,6 +91,7 @@ private
       Separators          : Character_Set := Ada.Strings.Maps.Null_Set;
       Filters             : Filter_Vectors.Vector;
       Type_Name           : UString;
+      Index_Type_Name     : UString;
       Content_Type_Name   : UString;
       Function_Name       : UString;
       Member_Content_Name : UString;
@@ -108,6 +109,9 @@ private
    function Get_Type_Name (Resource : in Resource_Type;
                            Context  : in Context_Type'Class;
                            Default  : in String) return String;
+   function Get_Index_Type_Name (Resource : in Resource_Type;
+                                 Context  : in Context_Type'Class;
+                                 Default  : in String) return String;
    function Get_Content_Type_Name (Resource : in Resource_Type;
                                    Context  : in Context_Type'Class;
                                    Default  : in String) return String;
@@ -204,6 +208,7 @@ private
       Output              : aliased GNAT.Strings.String_Access;
       Tmp_Dir             : aliased GNAT.Strings.String_Access;
       Type_Name           : aliased GNAT.Strings.String_Access;
+      Index_Type_Name     : aliased GNAT.Strings.String_Access;
       Function_Name       : aliased GNAT.Strings.String_Access;
       Member_Content_Name : aliased GNAT.Strings.String_Access;
       Member_Length_Name  : aliased GNAT.Strings.String_Access;

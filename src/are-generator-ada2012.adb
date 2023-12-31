@@ -31,6 +31,9 @@ package body Are.Generator.Ada2012 is
    function Get_Function_Type (Generator : in Generator_Type;
                                Resource  : in Are.Resource_Type;
                                Context   : in Are.Context_Type'Class) return String;
+   function Get_Index_Type (Generator : in Generator_Type;
+                            Resource  : in Are.Resource_Type;
+                            Context   : in Are.Context_Type'Class) return String;
    function Get_Content_Type (Generator : in Generator_Type;
                               Resource  : in Are.Resource_Type;
                               Context   : in Are.Context_Type'Class) return String;
@@ -105,6 +108,14 @@ package body Are.Generator.Ada2012 is
    begin
       return Resource.Get_Type_Name (Context, Def_Type);
    end Get_Function_Type;
+
+   function Get_Index_Type (Generator : in Generator_Type;
+                            Resource  : in Are.Resource_Type;
+                            Context   : in Are.Context_Type'Class) return String is
+      pragma Unreferenced (Generator);
+   begin
+      return Resource.Get_Index_Type_Name (Context, "Natural");
+   end Get_Index_Type;
 
    function Get_Content_Type (Generator : in Generator_Type;
                               Resource  : in Are.Resource_Type;
@@ -815,7 +826,9 @@ package body Are.Generator.Ada2012 is
          Put (File, Generator.Names.Length'Image);
          Put_Line (File, ";");
          if not Context.No_Type_Declaration then
-            Put_Line (File, "   type Name_Array is array (Natural range <>) of Name_Access;");
+            Put (File, "   type Name_Array is array (");
+            Put (File, Get_Index_Type (Generator, Resource, Context));
+            Put_Line (File, " range <>) of Name_Access;");
             New_Line (File);
          end if;
          Put_Line (File, "   Names : constant Name_Array;");
@@ -887,6 +900,7 @@ package body Are.Generator.Ada2012 is
                                             "Content_Access" else "Content_Type");
       Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
+      Index_Type   : constant String := Get_Index_Type (Generator, Resource, Context);
       Content_Only : constant Boolean := Generator.Content_Only;
       Use_Mapping  : constant Boolean := Resource.Format = R_MAP;
       Use_Hash     : constant Boolean :=
@@ -1046,10 +1060,17 @@ package body Are.Generator.Ada2012 is
                Put_Line (File, "      H : constant Natural := Hash (Name);");
             end if;
             Put_Line (File, "   begin");
-            if Context.Ignore_Case then
-               Put (File, "      return (if Names (H).all = K then Contents (H) else ");
+            Put (File, "      return (if Names (");
+            if Index_Type /= "Natural" then
+               Put (File, Index_Type);
+               Put (File, " (H)).all = ");
             else
-               Put (File, "      return (if Names (H).all = Name then Contents (H) else ");
+               Put (File, "H).all = ");
+            end if;
+            if Context.Ignore_Case then
+               Put (File, "K then Contents (H) else ");
+            else
+               Put (File, "Name then Contents (H) else ");
             end if;
             if Content_Only or else Use_Mapping then
                Put_Line (File, "null);");
@@ -1062,10 +1083,11 @@ package body Are.Generator.Ada2012 is
                          & "Ada.Characters.Handling.To_Upper (Name);");
             end if;
             Put_Line (File, "   begin");
+            Put (File, "      return (if Names (Names'First).all = ");
             if Context.Ignore_Case then
-               Put (File, "      return (if Names (0).all = K then Contents (0) else ");
+               Put (File, "K then Contents (0) else ");
             else
-               Put (File, "      return (if Names (0).all = Name then Contents (0) else ");
+               Put (File, "Name then Contents (0) else ");
             end if;
             if Content_Only or else Use_Mapping then
                Put_Line (File, "null);");

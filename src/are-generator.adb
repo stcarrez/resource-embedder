@@ -154,6 +154,11 @@ package body Are.Generator is
                         Argument => "NAME",
                         Help   => -("Define the name of the type used to hold the information"));
       GC.Define_Switch (Config => Config,
+                        Output => Context.Index_Type_Name'Access,
+                        Long_Switch => "--index-type-name=",
+                        Argument => "NAME",
+                        Help   => -("Define the name of the index type used for name arrays"));
+      GC.Define_Switch (Config => Config,
                         Output => Context.Function_Name'Access,
                         Long_Switch => "--function-name=",
                         Argument => "NAME",
