@@ -3,11 +3,11 @@ Upstream-Name: resource-embedder
 Source: https://gitlab.com/stcarrez/resource-embedder/
 
 Files: *
-Copyright: 2021-2022 Stephane Carrez <Stephane.Carrez@gmail.com>
+Copyright: 2021-2024 Stephane Carrez <Stephane.Carrez@gmail.com>
 License: Apache-2.0
 
 Files: debian/*
-Copyright: 2021-2022 Stephane Carrez <Stephane.Carrez@gmail.com>
+Copyright: 2021-2024 Stephane Carrez <Stephane.Carrez@gmail.com>
 License: GPL-3.0+
 
 License: Apache-2.0

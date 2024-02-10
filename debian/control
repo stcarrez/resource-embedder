@@ -13,8 +13,6 @@ Build-Depends: debhelper (>= 10), autotools-dev,
  pandoc, texlive-fonts-extra
 Standards-Version: 4.1.4
 Homepage: https://gitlab.com/stcarrez/resource-embedder/
-Vcs-Git: https://gitlab.com/stcarrez/resource-embedder.git -b debian-gnat-9
-Vcs-Browser: https://gitlab.com/stcarrez/resource-embedder/tree/debian-gnat-9
 
 Package: are
 Section: devel
