@@ -19,6 +19,7 @@ The code generator supports several data format to access the file content.
 | binary | access constant Ada.Streams.Stream_Element_Array |
 | string | access constant String                           |
 | lines  | array of access constant String                  |
+| map    | access constant String                           |
 
 When the `--content-only` option is used, the code generator uses the
 following type to describe a file content in the `binary` format:
@@ -82,6 +83,12 @@ on the name.  It is declared as follows:
 type Name_Array is array (Natural range <>) of Name_Access;
 Names : constant Name_Array;
 ```
+
+The `map` format is special as it produces a mapping table defined by
+reading a JSON or XML content.  Files matched by the rules are read and
+parsed to populate the internal map table.  Content of these files is not
+available directly but the mapping is queried by using the generated
+`Get_Content` function with the name.
 
 ## C Generator
 The C code generator produces for each resource description a C

@@ -453,6 +453,7 @@ that identify the files.
 ```
  <package>
   <resource name='help' format='string'>
+   <header>--  Some header comment</header>
    <install mode='copy'>
      <fileset dir='help'>
       <include name='**/*.txt'/>
@@ -478,6 +479,25 @@ discarded.  The default will discard empty lines.  With the
    <install mode='copy'>
      <fileset dir='help'>
       <include name='**/*.txt'/>
+     </fileset>
+   </install>
+  </resource>
+ </package>
+```
+
+The special format
+*map* reads the content of files which are collected and produce a mapping table with them.
+The files can be a JSON file with name/value pairs and the mapping table will provide
+an efficient conversion of a name into the corresponding value.
+
+```
+ <package>
+  <resource name='Extensions_Map' format='map'
+            type='access constant String'>
+   <mapper type='json'/>
+   <install mode='copy'>
+     <fileset dir='.'>
+      <include name='**/*.json'/>
      </fileset>
    </install>
   </resource>

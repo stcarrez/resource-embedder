@@ -2,7 +2,19 @@
 
 This chapter explains how to build and install the tool.
 
-## Before Building
+## Using Alire
+
+The `Advanced Resource Embedder` is available as an Alire crates to simplify the installation
+and setup your project.  Run the following commands to setup your project to use the library:
+
+```
+alr index --update-all
+alr with are
+```
+
+## Without Alire
+
+### Before Building
 
 To build `Advanced Resource Embedder` you will need the GNAT Ada compiler, either
 the FSF version available in Debian, FreeBSD systems NetBSD or the
@@ -10,23 +22,17 @@ AdaCore GNAT Community 2021 edition.  Because there exists different versions of
 the compiler, you may have to adapt some of the commands proposed below for
 the installation.
 
-### Ubuntu 20.04
+#### Ubuntu 22.04
+
 
 Install the following packages:
-```
-sudo apt install -y make git
-sudo apt install -y gnat-9 gprbuild libxmlada-dom9-dev
-```
 
-### Ubuntu 22.04
-
-Install the following packages:
 ```
 sudo apt install -y make git
 sudo apt install -y gnat-10 gprbuild libxmlada-dom10-dev
 ```
 
-### FreeBSD 13
+#### FreeBSD 13
 
 Install the following packages:
 
@@ -34,7 +40,7 @@ Install the following packages:
 pkg install gmake gnat12 gprbuild git
 ```
 
-### Windows
+#### Windows
 
 Get the Ada compiler from [AdaCore Download](https://www.adacore.com/download)
 site and install.
@@ -47,7 +53,7 @@ pacman -S make
 pacman -S base-devel --needed
 ```
 
-## Getting the sources
+### Getting the sources
 
 The project uses a sub-module to help you in the integration and build
 process.  You should checkout the project with the following commands:
@@ -57,7 +63,7 @@ git clone --recursive https://gitlab.com/stcarrez/resource-embedder.git
 cd resource-embedder
 ```
 
-## Configuration (optional)
+### Configuration (optional)
 
 Running the `configure` script is optional and is useful if the pre-defined
 default configuration must be changed.
@@ -80,7 +86,7 @@ In most cases you will configure with the following command:
 ./configure
 ```
 
-## Build
+### Build
 
 After configuration is successful, you can build the library by running:
 ```
@@ -99,7 +105,7 @@ the library.  The unit tests are built and executed using:
 make test
 ```
 
-## Installation
+### Installation
 The installation is done by running the `install` target:
 
 ```

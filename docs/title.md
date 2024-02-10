@@ -1,7 +1,7 @@
 ---
 title: "Advanced Resource Embedder"
 author: [Stephane Carrez]
-date: 2023-08-20
+date: 2024-02-10
 subject: "Resource Embedder"
 tags: [Resource, Embedder, Generator, C, Ada, Go]
 titlepage: true
