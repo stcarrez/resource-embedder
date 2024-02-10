@@ -1,6 +1,6 @@
 .\"
 .\"
-.TH ARE 1 "Oct 31, 2023" "Advanced Resource Embedder"
+.TH ARE 1 "Feb 10, 2024" "Advanced Resource Embedder"
 .SH NAME
 are - Resource embedder to include files in Ada, C/C++, Go binaries
 .SH SYNOPSIS
@@ -288,6 +288,27 @@ format, the final content will be represented as an array of strings.
    <install mode='copy'>
      <fileset dir='help'>
       <include name='**/*.txt'/>
+     </fileset>
+   </install>
+  </resource>
+ </package>
+.RE
+.\"
+.PP
+The special format
+.B map
+reads the content of files which are collected and produce a mapping table with them.
+The files can be a JSON file with name/value pairs and the mapping table will provide
+an efficient conversion of a name into the corresponding value.
+.PP
+.RS 0
+ <package>
+  <resource name='Extensions_Map' format='map'
+            type='access constant String'>
+   <mapper type='json'/>
+   <install mode='copy'>
+     <fileset dir='.'>
+      <include name='**/*.json'/>
      </fileset>
    </install>
   </resource>
