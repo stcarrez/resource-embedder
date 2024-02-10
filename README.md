@@ -166,14 +166,6 @@ sudo apt install -y make git
 sudo apt install -y gnat gprbuild libxmlada-dom10-dev
 ```
 
-### Ubuntu 20.04
-
-Install the following packages:
-```
-sudo apt install -y make git
-sudo apt install -y gnat-9 gprbuild libxmlada-dom9-dev
-```
-
 ### FreeBSD 13
 
 Install the following packages:
