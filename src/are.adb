@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are -- Advanced Resource Embedder
---  Copyright (C) 2021, 2023 Stephane Carrez
+--  Copyright (C) 2021, 2023, 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ with Util.Log.Loggers;
 with Util.Properties;
 with Util.Files;
 with Util.Serialize.IO.JSON;
-with Util.Serialize.IO.CSV;
 with Util.Beans.Objects.Readers;
 with Util.Beans.Objects.Iterators;
 package body Are is
@@ -32,6 +31,12 @@ package body Are is
    use Ada.Strings.Unbounded;
 
    Log : aliased constant Util.Log.Loggers.Logger := Util.Log.Loggers.Create ("Are");
+
+   procedure Convert_Json_Map (Resource : in Resource_Type;
+                               Path     : in String;
+                               File     : in File_Info;
+                               Context  : in out Context_Type'Class;
+                               Map      : in out Util.Strings.Maps.Map);
 
    function Get_Type_Name (Resource : in Resource_Type;
                            Context  : in Context_Type'Class;
@@ -339,6 +344,7 @@ package body Are is
                                File     : in File_Info;
                                Context  : in out Context_Type'Class;
                                Map      : in out Util.Strings.Maps.Map) is
+      pragma Unreferenced (Resource);
       Content : String (1 .. Natural (File.Length));
       for Content'Address use File.Content.all'Address;
 
