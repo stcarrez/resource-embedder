@@ -58,15 +58,12 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
-## Version 1.4    - Under development
+## Version 1.4    - Feb 2024
 - Feature #8: Allow to define the index type of Name_Array
 - Feature #7: Emit a constant to indicate the number of embedded files
 - Feature #6: New embedder for simple mapping generation
 - Feature #5: Need customisation of starting index in binary embedder
 - Feature #4: Need ability to insert custom headers in generated files
-
-## Version 1.3    - Aug 2023
-- Fix #3: Allow to keep empty lines when content is split
 
 [List all versions](https://gitlab.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 

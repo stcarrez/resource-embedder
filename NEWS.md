@@ -1,4 +1,4 @@
-## Version 1.4    - Under development
+## Version 1.4    - Feb 2024
 - Feature #8: Allow to define the index type of Name_Array
 - Feature #7: Emit a constant to indicate the number of embedded files
 - Feature #6: New embedder for simple mapping generation
