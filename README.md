@@ -148,6 +148,14 @@ AdaCore GNAT Community 2021 edition.  Because there exists different versions of
 the compiler, you may have to adapt some of the commands proposed below for
 the installation.
 
+## Build with Alire
+
+You can build ARE by using the Alire package manager.  Just type:
+
+```
+alr build
+```
+
 ## Development Host Installation
 
 ### Ubuntu 22.04
@@ -239,11 +247,6 @@ and choose one of the `echo` command according to your Linux distribution:
 Ubuntu 22.04
 ```
 echo "deb https://apt.vacs.fr/ubuntu-jammy jammy main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
-```
-
-Ubuntu 20.04
-```
-echo "deb https://apt.vacs.fr/ubuntu-focal focal main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
 ```
 
 Debian 12
