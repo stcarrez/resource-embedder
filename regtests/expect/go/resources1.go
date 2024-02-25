@@ -1,4 +1,4 @@
-// Advanced Resource Embedder 1.4.0
+// Advanced Resource Embedder 1.5.0
 package Resources1
 
 import (
