@@ -103,8 +103,9 @@ package body Are.Generator.Ada2012 is
    function Get_Function_Type (Generator : in Generator_Type;
                                Resource  : in Are.Resource_Type;
                                Context   : in Are.Context_Type'Class) return String is
-      Def_Type    : constant String := (if Generator.Content_Only then
-                                           "Content_Access" else "Content_Type");
+      Content_Only : constant Boolean := Generator.Content_Only or else Resource.Content_Only;
+      Def_Type     : constant String := (if Content_Only then
+                                            "Content_Access" else "Content_Type");
    begin
       return Resource.Get_Type_Name (Context, Def_Type);
    end Get_Function_Type;
@@ -734,18 +735,18 @@ package body Are.Generator.Ada2012 is
       Name         : constant String := To_String (Resource.Name);
       Filename     : constant String := To_File_Name (Name) & ".ads";
       Path         : constant String := Context.Get_Output_Path (Filename);
-      Def_Type     : constant String := (if Generator.Content_Only then
+      Content_Only : constant Boolean := Generator.Content_Only or else Resource.Content_Only;
+      Def_Type     : constant String := (if Content_Only then
                                             "Content_Access" else "Content_Type");
       Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
+      Var_Access   : constant Boolean := Context.Var_Access or else Resource.Var_Access;
+      No_Type_Declaration : constant Boolean
+        := Context.No_Type_Declaration or else Resource.No_Type_Declaration;
       File         : Ada.Text_IO.File_Type;
       Has_Private  : Boolean := False;
       Name_Access  : Boolean := Context.Name_Access or else Resource.Name_Access;
       List_Access  : Boolean := Context.List_Access or else Resource.List_Access;
-      Content_Only : Boolean := Generator.Content_Only;
-      Var_Access   : constant Boolean := Context.Var_Access or else Resource.Var_Access;
-      No_Type_Declaration : constant Boolean
-        := Context.No_Type_Declaration or else Resource.No_Type_Declaration;
    begin
       Log.Info ("Writing {0}", Path);
 
@@ -782,7 +783,6 @@ package body Are.Generator.Ada2012 is
       if Resource.Format = R_MAP then
          List_Access := False;
          Name_Access := False;
-         Content_Only := True;
       end if;
       if not No_Type_Declaration then
          if Resource.Format = R_BINARY then
@@ -799,11 +799,14 @@ package body Are.Generator.Ada2012 is
             Put_Line (File, "   type Content_Access is access constant String;");
          end if;
          New_Line (File);
-         if List_Access or else not Content_Only then
+         if List_Access
+           or else not Content_Only
+           or else Resource.Format = R_MAP
+         then
             Put_Line (File, "   type Name_Access is access constant String;");
             New_Line (File);
          end if;
-         if not Content_Only then
+         if not Content_Only and then Resource.Format /= R_MAP then
             Put_Line (File, "   type Format_Type is (FILE_RAW, FILE_GZIP);");
             New_Line (File);
             Put (File, "   type ");
@@ -863,7 +866,10 @@ package body Are.Generator.Ada2012 is
          Generate_Resource_Contents (Resource, File, Var_Access,
                                      Content_Type, Context.Var_Prefix.all, Context);
       end if;
-      if not No_Type_Declaration and then not Content_Only then
+      if not No_Type_Declaration
+        and then not Content_Only
+        and then Resource.Format /= R_MAP
+      then
          if not Has_Private then
             Put_Line (File, "private");
             New_Line (File);
@@ -902,12 +908,12 @@ package body Are.Generator.Ada2012 is
       Name         : constant String := To_String (Resource.Name);
       Filename     : constant String := To_File_Name (Name) & ".adb";
       Path         : constant String := Context.Get_Output_Path (Filename);
-      Def_Type     : constant String := (if Generator.Content_Only then
+      Content_Only : constant Boolean := Generator.Content_Only or else Resource.Content_Only;
+      Def_Type     : constant String := (if Content_Only then
                                             "Content_Access" else "Content_Type");
       Type_Name    : constant String := Resource.Get_Type_Name (Context, Def_Type);
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
       Index_Type   : constant String := Get_Index_Type (Generator, Resource, Context);
-      Content_Only : constant Boolean := Generator.Content_Only;
       Name_Access  : constant Boolean := Context.Name_Access or else Resource.Name_Access;
       Use_Mapping  : constant Boolean := Resource.Format = R_MAP;
       Use_Hash     : constant Boolean :=
@@ -947,7 +953,7 @@ package body Are.Generator.Ada2012 is
             else
                Put (File, " ");
             end if;
-            if not Generator.Content_Only then
+            if not Content_Only then
                Put (File, "(K_");
                Put (File, Util.Strings.Image (Index));
                Put (File, "'Access, ");
@@ -960,7 +966,7 @@ package body Are.Generator.Ada2012 is
             end if;
             Index := Index + 1;
             Put (File, "'Access");
-            if not Generator.Content_Only then
+            if not Content_Only then
                declare
                   use Ada.Calendar.Conversions;
 
@@ -1026,7 +1032,7 @@ package body Are.Generator.Ada2012 is
       end if;
 
       if Name_Access and then not List_Access then
-         if Generator.Content_Only then
+         if Content_Only then
             Put_Line (File, "   type Name_Access is access constant String;");
          end if;
          Put_Line (File, "   type Name_Array is array "
