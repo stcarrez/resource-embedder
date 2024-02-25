@@ -68,7 +68,7 @@ package body Are.Generator.Ada2012 is
       while Resource /= null loop
          if Resource.Format = R_MAP then
             Generator.Generate_Resource_Mapping (Resource.all, Context);
-         elsif Context.Name_Index then
+         elsif Context.Name_Access or else Resource.Name_Access then
             Resource.Collect_Names (Context.Ignore_Case, Generator.Names);
             if Generator.Names.Length > 1 then
                Generator.Generate_Perfect_Hash (Resource.all, Context);
@@ -740,9 +740,12 @@ package body Are.Generator.Ada2012 is
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
       File         : Ada.Text_IO.File_Type;
       Has_Private  : Boolean := False;
-      Name_Index   : Boolean := Context.Name_Index;
-      List_Content : Boolean := Context.List_Content;
+      Name_Access  : Boolean := Context.Name_Access or else Resource.Name_Access;
+      List_Access  : Boolean := Context.List_Access or else Resource.List_Access;
       Content_Only : Boolean := Generator.Content_Only;
+      Var_Access   : constant Boolean := Context.Var_Access or else Resource.Var_Access;
+      No_Type_Declaration : constant Boolean
+        := Context.No_Type_Declaration or else Resource.No_Type_Declaration;
    begin
       Log.Info ("Writing {0}", Path);
 
@@ -752,7 +755,7 @@ package body Are.Generator.Ada2012 is
       Put (File, "--  ");
       Put_Line (File, Get_Title);
       Put_Lines (File, Resource.Headers_Spec);
-      if not Context.No_Type_Declaration then
+      if not No_Type_Declaration then
          if Resource.Format = R_BINARY then
             declare
                Pkg_Import : constant String := Get_Import_Type (Name, Content_Type);
@@ -777,11 +780,11 @@ package body Are.Generator.Ada2012 is
       end if;
       New_Line (File);
       if Resource.Format = R_MAP then
-         List_Content := False;
-         Name_Index := False;
+         List_Access := False;
+         Name_Access := False;
          Content_Only := True;
       end if;
-      if not Context.No_Type_Declaration then
+      if not No_Type_Declaration then
          if Resource.Format = R_BINARY then
             Put (File, "   type Content_Access is access constant ");
             Put (File, Content_Type);
@@ -796,7 +799,7 @@ package body Are.Generator.Ada2012 is
             Put_Line (File, "   type Content_Access is access constant String;");
          end if;
          New_Line (File);
-         if List_Content or else not Content_Only then
+         if List_Access or else not Content_Only then
             Put_Line (File, "   type Name_Access is access constant String;");
             New_Line (File);
          end if;
@@ -818,14 +821,17 @@ package body Are.Generator.Ada2012 is
             New_Line (File);
          end if;
       end if;
-      if Context.Declare_Var then
-         Generate_Resource_Declarations (Resource, File, Content_Type, Context.Var_Prefix.all);
+      if Var_Access then
+         Generate_Resource_Declarations (Resource, File, Content_Type,
+                                         (if Length (Resource.Var_Prefix) > 0 then
+                                             To_String (Resource.Var_Prefix)
+                                          else Context.Var_Prefix.all));
       end if;
-      if List_Content then
+      if List_Access then
          Put (File, "   Names_Count : constant :=");
          Put (File, Generator.Names.Length'Image);
          Put_Line (File, ";");
-         if not Context.No_Type_Declaration then
+         if not No_Type_Declaration then
             Put (File, "   type Name_Array is array (");
             Put (File, Get_Index_Type (Generator, Resource, Context));
             Put_Line (File, " range <>) of Name_Access;");
@@ -834,7 +840,7 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, "   Names : constant Name_Array;");
          New_Line (File);
       end if;
-      if Name_Index then
+      if Name_Access then
          Put_Line (File, "   --  Returns the data stream with the given name or null.");
          Put_Line (File, "   function Get_Content (Name : String) return");
          Put (File, "      ");
@@ -850,14 +856,14 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, ";");
          New_Line (File);
       end if;
-      if Context.Declare_Var then
+      if Var_Access then
          Put_Line (File, "private");
          New_Line (File);
          Has_Private := True;
-         Generate_Resource_Contents (Resource, File, Context.Declare_Var,
+         Generate_Resource_Contents (Resource, File, Var_Access,
                                      Content_Type, Context.Var_Prefix.all, Context);
       end if;
-      if not Context.No_Type_Declaration and then not Content_Only then
+      if not No_Type_Declaration and then not Content_Only then
          if not Has_Private then
             Put_Line (File, "private");
             New_Line (File);
@@ -868,7 +874,7 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, " := (others => <>);");
          New_Line (File);
       end if;
-      if List_Content then
+      if List_Access then
          if not Has_Private then
             Put_Line (File, "private");
             New_Line (File);
@@ -902,9 +908,12 @@ package body Are.Generator.Ada2012 is
       Content_Type : constant String := Get_Content_Type (Generator, Resource, Context);
       Index_Type   : constant String := Get_Index_Type (Generator, Resource, Context);
       Content_Only : constant Boolean := Generator.Content_Only;
+      Name_Access  : constant Boolean := Context.Name_Access or else Resource.Name_Access;
       Use_Mapping  : constant Boolean := Resource.Format = R_MAP;
       Use_Hash     : constant Boolean :=
-        (Use_Mapping or else Context.Name_Index) and then Generator.Names.Length > 1;
+        (Use_Mapping or else Name_Access) and then Generator.Names.Length > 1;
+      Var_Access   : constant Boolean := Context.Var_Access or else Resource.Var_Access;
+      List_Access  : constant Boolean := Context.List_Access or else Resource.List_Access;
       File         : Ada.Text_IO.File_Type;
       Count        : Natural;
       Lines        : Util.Strings.Vectors.Vector;
@@ -943,7 +952,7 @@ package body Are.Generator.Ada2012 is
                Put (File, Util.Strings.Image (Index));
                Put (File, "'Access, ");
             end if;
-            if Context.Declare_Var then
+            if Var_Access then
                Put (File, To_Ada_Name (Context.Var_Prefix.all, File_Maps.Key (Content)));
             else
                Put (File, "C_");
@@ -970,7 +979,7 @@ package body Are.Generator.Ada2012 is
       end Generate_Contents_Array;
 
    begin
-      if (not Use_Mapping and then not Context.Name_Index)
+      if (not Use_Mapping and then not Name_Access)
         or else Generator.Names.Is_Empty
       then
          Log.Debug ("Skipping body generation for {0}", Filename);
@@ -1011,12 +1020,12 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, " is");
       end if;
 
-      if not Context.Declare_Var then
-         Generate_Resource_Contents (Resource, File, Context.Declare_Var,
-                                     Content_Type, Context.Var_Prefix.all, Context);
+      if not Var_Access then
+         Generate_Resource_Contents (Resource, File, False,
+                                     Content_Type, "", Context);
       end if;
 
-      if Context.Name_Index and then not Context.List_Content then
+      if Name_Access and then not List_Access then
          if Generator.Content_Only then
             Put_Line (File, "   type Name_Access is access constant String;");
          end if;
@@ -1042,7 +1051,7 @@ package body Are.Generator.Ada2012 is
          Generate_Contents_Array;
       end if;
 
-      if Context.Name_Index or else Resource.Format = R_MAP then
+      if Name_Access or else Resource.Format = R_MAP then
          New_Line (File);
          if Resource.Format = R_MAP then
             Put (File, "   function Get_Mapping (Name : String) return ");

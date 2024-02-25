@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-installer -- Resource selector, preparer and installer
---  Copyright (C) 2012, 2013, 2015, 2020, 2021, 2023 Stephane Carrez
+--  Copyright (C) 2012, 2013, 2015, 2020, 2021, 2023, 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,6 +105,8 @@ package body Are.Installer is
       procedure Register_Line_Filter (Resource : in out Are.Resource_Access;
                                       Node     : in DOM.Core.Node);
       procedure Register_Header (Resource : in out Are.Resource_Access;
+                                 Node     : in DOM.Core.Node);
+      procedure Register_Mapper (Resource : in out Are.Resource_Access;
                                  Node     : in DOM.Core.Node);
 
       --  ------------------------------
@@ -342,7 +344,17 @@ package body Are.Installer is
          Resource.Member_Modtime_Name := Are.Utils.Get_Attribute (Node, "member-time", "");
          Resource.Member_Length_Name := Are.Utils.Get_Attribute (Node, "member-length", "");
          Resource.Member_Format_Name := Are.Utils.Get_Attribute (Node, "member-format", "");
+         Resource.Var_Prefix := Are.Utils.Get_Attribute (Node, "var-prefix", "");
          Resource.Keep_Empty_Lines := Are.Utils.Get_Attribute (Node, "keep-empty-lines", False);
+         Resource.Content_Only := Are.Utils.Get_Attribute (Node, "content-only", False);
+         Resource.No_Type_Declaration := Are.Utils.Get_Attribute (Node, "no-type-declaration",
+                                                                  False);
+         Resource.Var_Access := Are.Utils.Get_Attribute (Node, "var-access", False);
+         Resource.Name_Access := Are.Utils.Get_Attribute (Node, "name-access", False);
+         Resource.List_Access := Are.Utils.Get_Attribute (Node, "list-access", False);
+         if Ada.Strings.Unbounded.Length (Resource.Var_Prefix) > 0 then
+            Resource.Var_Access := True;
+         end if;
          Iterate_Header (Resource, Node, "header");
          Iterate_Line_Separator (Resource, Node, "line-separator");
          Iterate_Line_Filter (Resource, Node, "line-filter");

@@ -127,15 +127,15 @@ package body Are.Generator is
                         Long_Switch => "--ignore-case",
                         Help   => -("Ignore the case when comparing names"));
       GC.Define_Switch (Config => Config,
-                        Output => Context.Name_Index'Access,
+                        Output => Context.Name_Access'Access,
                         Long_Switch => "--name-access",
                         Help   => -("Generate support to query content with a name"));
       GC.Define_Switch (Config => Config,
-                        Output => Context.List_Content'Access,
+                        Output => Context.List_Access'Access,
                         Long_Switch => "--list-access",
                         Help   => -("Generate support to list the content names"));
       GC.Define_Switch (Config => Config,
-                        Output => Context.Declare_Var'Access,
+                        Output => Context.Var_Access'Access,
                         Long_Switch => "--var-access",
                         Help   => -("Declare a variable to give access to each content"));
       GC.Define_Switch (Config => Config,
@@ -211,7 +211,7 @@ package body Are.Generator is
       end if;
 
       if Context.Var_Prefix'Length > 0 then
-         Context.Declare_Var := True;
+         Context.Var_Access := True;
       end if;
 
       --  Read the rule definitions.

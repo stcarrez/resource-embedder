@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator-c -- Generator for C/C++
---  Copyright (C) 2021, 2023 Stephane Carrez
+--  Copyright (C) 2021, 2023, 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,7 +62,7 @@ package body Are.Generator.C is
       Resource : Resource_Access := Resources.Head;
    begin
       while Resource /= null loop
-         if Context.Name_Index then
+         if Context.Name_Access or else Resource.Name_Access then
             Resource.Collect_Names (Context.Ignore_Case, Generator.Names);
          end if;
 
@@ -418,6 +418,11 @@ package body Are.Generator.C is
       Content_Type : constant String := Get_Content_Type (Resource, Context);
       Func_Name    : constant String := Resource.Get_Function_Name (Context, Def_Func);
       Type_Define  : constant String := To_Define_Name (Type_Name, "_TYPE_");
+      Var_Access   : constant Boolean := Context.Var_Access or else Resource.Var_Access;
+      List_Access  : constant Boolean := Context.List_Access or else Resource.List_Access;
+      Name_Access  : constant Boolean := Context.Name_Access or else Resource.Name_Access;
+      No_Type_Declaration : constant Boolean
+        := Context.No_Type_Declaration or else Resource.No_Type_Declaration;
       File         : Ada.Text_IO.File_Type;
    begin
       Log.Info ("Writing resource {0} in {1}", Name, Path);
@@ -441,7 +446,7 @@ package body Are.Generator.C is
       New_Line (File);
 
       --  Declare the struct holding the data.
-      if not Context.No_Type_Declaration then
+      if not No_Type_Declaration then
          Log.Debug ("Writing struct {0} declaration", Type_Name);
 
          Put (File, "#ifndef ");
@@ -477,7 +482,7 @@ package body Are.Generator.C is
          New_Line (File);
       end if;
 
-      if Context.List_Content then
+      if List_Access then
          Put_Line (File, "// Sorted array of names composing the resource.");
          Put (File, "extern const char* const ");
          Put (File, List_Names);
@@ -490,11 +495,11 @@ package body Are.Generator.C is
          New_Line (File);
       end if;
 
-      if Context.Declare_Var then
+      if Var_Access then
          Generate_Resource_Declarations (Resource, File, Content_Name,
                                          Type_Name, Context.Var_Prefix.all);
       end if;
-      if Context.Name_Index then
+      if Name_Access then
          Log.Debug ("Writing {0} declaration", Func_Name);
 
          Put_Line (File, "// Returns the data stream with the given name or null.");
@@ -538,6 +543,9 @@ package body Are.Generator.C is
       Type_Name    : constant String := Get_Type_Name (Prefix, Resource, Context);
       Func_Name    : constant String := Resource.Get_Function_Name (Context, Def_Func);
       Count        : constant Natural := Natural (Resource.Files.Length);
+      Var_Access   : constant Boolean := Context.Var_Access or else Resource.Var_Access;
+      Name_Access  : constant Boolean := Context.Name_Access or else Resource.Name_Access;
+      List_Access  : constant Boolean := Context.List_Access or else Resource.List_Access;
       File         : Ada.Text_IO.File_Type;
 
       --  ------------------------------
@@ -548,7 +556,7 @@ package body Are.Generator.C is
          Index : Integer := 0;
       begin
          New_Line (Into);
-         if not Context.List_Content then
+         if not List_Access then
             Put (Into, "static ");
          end if;
          Put (Into, "const char* const ");
@@ -584,7 +592,7 @@ package body Are.Generator.C is
 
       Generate_Resource_Contents (Resource, File);
 
-      if Context.Name_Index then
+      if Name_Access then
          Generate_Keyword_Table (File, Generator.Names);
       end if;
 
@@ -594,7 +602,7 @@ package body Are.Generator.C is
                     Type_Name, Util.Strings.Image (Count));
 
          New_Line (File);
-         if not Context.Declare_Var then
+         if not Var_Access then
             Put (File, "static ");
          end if;
          Put (File, "const ");
@@ -639,7 +647,7 @@ package body Are.Generator.C is
          Put_Line (File, "};");
       end if;
 
-      if Context.Name_Index then
+      if Name_Access then
          Log.Debug ("Writing {0} implementation", Func_Name);
 
          Put_Line (File, "// Returns the data stream with the given name or null.");

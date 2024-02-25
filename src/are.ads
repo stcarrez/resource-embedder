@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are -- Advanced Resource Embedder
---  Copyright (C) 2021, 2023 Stephane Carrez
+--  Copyright (C) 2021, 2023, 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -87,6 +87,11 @@ private
       Format              : Format_Type := R_BINARY;
       Mapper              : Mapper_Type := M_NONE;
       Keep_Empty_Lines    : Boolean := False;
+      Var_Access          : Boolean := False;
+      Name_Access         : Boolean := False;
+      List_Access         : Boolean := False;
+      Content_Only        : Boolean := False;
+      No_Type_Declaration : Boolean := False;
       Files               : File_Maps.Map;
       Separators          : Character_Set := Ada.Strings.Maps.Null_Set;
       Filters             : Filter_Vectors.Vector;
@@ -98,6 +103,7 @@ private
       Member_Length_Name  : UString;
       Member_Modtime_Name : UString;
       Member_Format_Name  : UString;
+      Var_Prefix          : UString;
       Headers_Spec        : Util.Strings.Vectors.Vector;
       Headers_Impl        : Util.Strings.Vectors.Vector;
    end record;
@@ -198,10 +204,10 @@ private
       Debug       : aliased Boolean := False;
       Version     : aliased Boolean := False;
       Ignore_Case : aliased Boolean := False;
-      Name_Index  : aliased Boolean := False;
-      Declare_Var : aliased Boolean := False;
+      Name_Access : aliased Boolean := False;
+      Var_Access  : aliased Boolean := False;
       No_Type_Declaration : aliased Boolean := False;
-      List_Content        : aliased Boolean := False;
+      List_Access         : aliased Boolean := False;
       Keep_Temporary      : aliased Boolean := False;
       Rule_File           : aliased GNAT.Strings.String_Access;
       Language            : aliased GNAT.Strings.String_Access;

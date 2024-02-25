@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator-go -- Generator for Go
---  Copyright (C) 2021 Stephane Carrez
+--  Copyright (C) 2021, 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,7 @@ package body Are.Generator.Go is
       Resource : Resource_Access := Resources.Head;
    begin
       while Resource /= null loop
-         if Context.Name_Index then
+         if Context.Name_Access or else Resource.Name_Access then
             Resource.Collect_Names (Context.Ignore_Case, Generator.Names);
          end if;
 
@@ -96,10 +96,12 @@ package body Are.Generator.Go is
       Type_Name   : constant String := Resource.Get_Type_Name (Context, "content");
       Func_Name   : constant String := Resource.Get_Function_Name (Context, Def_Func);
       Count       : constant Natural := Natural (Resource.Files.Length);
+      Name_Access : constant Boolean := Context.Name_Access or else Resource.Name_Access;
+      List_Access : constant Boolean := Context.List_Access or else Resource.List_Access;
       File        : Ada.Text_IO.File_Type;
 
       function List_Names return String is
-         (if Context.List_Content then "Names" else "names");
+         (if List_Access then "Names" else "names");
 
       --  ------------------------------
       --  Generate the keyword table.
@@ -176,7 +178,7 @@ package body Are.Generator.Go is
       Put_Line (File, Name);
       New_Line (File);
 
-      if Context.Name_Index then
+      if Name_Access then
          Put_Line (File, "import (");
          Put_Line (File, "  ""strings""");
          if Count > 1 then
@@ -206,7 +208,7 @@ package body Are.Generator.Go is
 
       --  Generate_Resource_Contents (Resource, File, Context.Declare_Var);
 
-      if Context.Name_Index then
+      if Name_Access then
          Generate_Keyword_Table (File, Generator.Names);
       end if;
 
@@ -241,7 +243,7 @@ package body Are.Generator.Go is
          New_Line (File);
       end if;
 
-      if Context.Name_Index then
+      if Name_Access then
          Log.Debug ("Writing {0} implementation", Func_Name);
 
          Put_Line (File, "// Returns the data stream with the given name or null.");
