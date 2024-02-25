@@ -71,62 +71,6 @@ directory and with the `.txt` file extension.  The code generator will use
 the name `man_content` for the data type that represents the file description
 and it will use `man_get_help_content` for the generated function name.
 
-## Controlling the lines format
-
-The `lines` format tells the code generator to represent the content as an
-array of separate lines.  For this integration, some control is available to
-indicate how the content must be split and optionaly apply some filter on
-the input content.  These controls are made within the XML description
-by using the `line-separator` and `line-filter` description:
-The `line-separator` indicates the characters that represent a line separation.
-There can be several `line-separator` definition.  The `line-filter`
-defines a regular expression that when matched must be replaced by an empty
-string or a specified content.  The `line-filter` are applied in the order
-of the XML definition.
-
-The example below is intended to integrate an SQL scripts with:
-
-* a separate line for each SQL statement,
-* remove spurious empty lines and SQL comments.
-
-The SQL statements are separated by `;` (semi-colon) and the `line-separator`
-indicates to split lines on that character.  By splitting on the `;`, we allow to
-have an SQL statement on multiple lines.
-
-```XML
-<package>
-  <resource name='Scripts'
-            format='lines' keep-empty-lines="no"
-            type='access constant String'>
-    <line-separator>;</line-separator>
-
-    <!-- Remove new lines -->
-    <line-filter>[\r\n]</line-filter>
-
-    <!-- Remove C comments -->
-    <line-filter>/\*[^/]*\*/</line-filter>
-
-    <!-- Remove contiguous spaces after C comments removal -->
-    <line-filter replace=' '>[ \t][ \t]+</line-filter>
-
-    <install mode='copy' strip-extension='yes'>
-      <fileset dir="sql">
-        <include name="**/*.sql"/>
-      </fileset>
-    </install>
-  </resource>
-</package>
-```
-
-Then the first `line-filter` will remove the `\r` and `\n` characters.
-
-The regular expression `/\*[^/]*\*/` matches a C style comment and remove it.
-
-The last `line-filter` replaces multiple tabs and spaces by a single occurence.
-
-By default an empty line is discarded.  This behavior can be changed by
-using the `keep-empty-lines` attribute and setting the value to `true`.
-
 ## Selecting files
 
 An important step in the configuration of the `Advanced Resource Embedder` is
@@ -223,6 +167,101 @@ in the specification  (`.ads`, `.h`) and body files (`.adb`, `.c`).
   ...
 </package>
 ```
+
+## Controlling the lines format
+
+The `lines` format tells the code generator to represent the content as an
+array of separate lines.  For this integration, some control is available to
+indicate how the content must be split and optionaly apply some filter on
+the input content.  These controls are made within the XML description
+by using the `line-separator` and `line-filter` description:
+The `line-separator` indicates the characters that represent a line separation.
+There can be several `line-separator` definition.  The `line-filter`
+defines a regular expression that when matched must be replaced by an empty
+string or a specified content.  The `line-filter` are applied in the order
+of the XML definition.
+
+The example below is intended to integrate an SQL scripts with:
+
+* a separate line for each SQL statement,
+* remove spurious empty lines and SQL comments.
+
+The SQL statements are separated by `;` (semi-colon) and the `line-separator`
+indicates to split lines on that character.  By splitting on the `;`, we allow to
+have an SQL statement on multiple lines.
+
+```XML
+<package>
+  <resource name='Scripts'
+            format='lines' keep-empty-lines="no"
+            type='access constant String'>
+    <line-separator>;</line-separator>
+
+    <!-- Remove new lines -->
+    <line-filter>[\r\n]</line-filter>
+
+    <!-- Remove C comments -->
+    <line-filter>/\*[^/]*\*/</line-filter>
+
+    <!-- Remove contiguous spaces after C comments removal -->
+    <line-filter replace=' '>[ \t][ \t]+</line-filter>
+
+    <install mode='copy' strip-extension='yes'>
+      <fileset dir="sql">
+        <include name="**/*.sql"/>
+      </fileset>
+    </install>
+  </resource>
+</package>
+```
+
+Then the first `line-filter` will remove the `\r` and `\n` characters.
+
+The regular expression `/\*[^/]*\*/` matches a C style comment and remove it.
+
+The last `line-filter` replaces multiple tabs and spaces by a single occurence.
+
+By default an empty line is discarded.  This behavior can be changed by
+using the `keep-empty-lines` attribute and setting the value to `true`.
+
+
+## Other control for the generation
+
+The generation can be controlled with several attributes defined on the
+`resource` XML element.
+
+```XML
+<package>
+  <resource name='...'
+            format='...'
+            type='...'
+            function-name='...'
+            index-type='...'
+            member-content='...'
+            member-time='...'
+            member-length='...'
+            member-format='...'
+            var-prefix='...'
+            keep-empty-lines='...'
+            content-only='...'
+            var-access='...'
+            name-access='...'
+            list-access='...'>
+  </resource>
+</package>
+```
+
+| Attribute | Type | Description                                                        |
+| --------- | ---- | ------------------------------------------------------------------ |
+| name   | String | Name used for the target generation (file name or Ada package name) |
+| format | String | Define the format used to embed the selected files |
+| type   | String | The name of the type to access content |
+| function-name | String | The name of the generated function |
+| index-type | String | For Ada, the type of index used for array declaration |
+| var-prefix | String | The prefix to used for variable name generation when a variable must be created for each content |
+| var-access | Boolean | When true, generate a variable to access the content directly through a variable |
+| name-access | Boolean | When true, generate a function to access the content from the file name |
+| list-access | Boolean | When true, generate a function to list the available names |
 
 ## Man page
 
