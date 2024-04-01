@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator-ada2012 -- Generator for Ada
---  Copyright (C) 2021, 2023 Stephane Carrez
+--  Copyright (C) 2021, 2023, 2024 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --
 --  Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,6 +39,10 @@ package body Are.Generator.Ada2012 is
                               Context   : in Are.Context_Type'Class) return String;
    function Get_Import_Type (Cur_Pkg   : in String;
                              Type_Name : in String) return String;
+   procedure Write_String (Into    : in out Ada.Text_IO.File_Type;
+                           Content : in String);
+   function Should_Break (Column  : in Natural;
+                          Content : in String) return Boolean;
 
    --  Generate the resource declaration list.
    procedure Generate_Resource_Declarations (Resource     : in Are.Resource_Type;
@@ -287,6 +291,127 @@ package body Are.Generator.Ada2012 is
       New_Line (Into);
    end Generate_Resource_Declarations;
 
+   function Should_Break (Column  : in Natural;
+                          Content : in String) return Boolean is
+      Count : Natural := 0;
+   begin
+      if Column >= 70 then
+         for C of Content loop
+            if C in ' ' | '!' | '#' .. '~' then
+               return Count + Column > 80;
+            end if;
+            if C < ' ' then
+               return True;
+            end if;
+            Count := Count + 1;
+            if Count > 15 then
+               return True;
+            end if;
+         end loop;
+      end if;
+      return False;
+   end Should_Break;
+
+   procedure Write_String (Into    : in out Ada.Text_IO.File_Type;
+                           Content : in String) is
+      Need_Sep : Boolean := False;
+      Column   : Natural := 0;
+      C        : Character;
+      Pos      : Natural := Content'First;
+   begin
+      Column := 40;
+      Put (Into, """");
+      while Pos <= Content'Last loop
+         C := Content (Pos);
+         if Should_Break (Column, Content (Pos .. Content'Last)) then
+            if not Need_Sep then
+               Put (Into, """");
+            end if;
+            New_Line (Into);
+            Put (Into, "      ");
+            Column := 6;
+            Need_Sep := True;
+         end if;
+         case C is
+            when ASCII.CR =>
+               if not Need_Sep then
+                  Put (Into, """");
+                  Need_Sep := True;
+                  Column := Column + 1;
+               end if;
+               Put (Into, " & ASCII.CR");
+               Column := Column + 11;
+
+            when ASCII.LF =>
+               if not Need_Sep then
+                  Put (Into, """");
+                  Need_Sep := True;
+                  Column := Column + 1;
+               end if;
+               Put (Into, " & ASCII.LF");
+               Column := Column + 11;
+
+            when ASCII.HT =>
+               if not Need_Sep then
+                  Put (Into, """");
+                  Need_Sep := True;
+                  Column := Column + 1;
+               end if;
+               Put (Into, " & ASCII.HT");
+               Column := Column + 11;
+
+            when '"' =>
+               if Need_Sep then
+                  Put (Into, " & """);
+                  Need_Sep := False;
+                  Column := Column + 5;
+               end if;
+               Put (Into, """""");
+               Column := Column + 1;
+
+            when ' ' | '!' | '#' .. '~' =>
+               if Need_Sep then
+                  Put (Into, " & """);
+                  Need_Sep := False;
+                  Column := Column + 5;
+               end if;
+               Put (Into, C);
+
+            when Character'Val (192) .. Character'Val (255) =>
+               if Need_Sep then
+                  Put (Into, " & """);
+                  Need_Sep := False;
+                  Column := Column + 5;
+               end if;
+               Put (Into, C);
+               while Pos + 1 <= Content'Last loop
+                  C := Content (Pos + 1);
+                  exit when Character'Pos (C) < 128;
+                  exit when Character'Pos (C) >= 192;
+                  Pos := Pos + 1;
+                  Put (Into, C);
+               end loop;
+
+            when others =>
+               if not Need_Sep then
+                  Put (Into, """");
+                  Need_Sep := True;
+                  Column := Column + 1;
+               end if;
+               Put (Into, " & Character'Val (");
+               Put (Into, Util.Strings.Image (Integer (Character'Pos (C))));
+               Put (Into, ")");
+               Column := Column + 22;
+
+         end case;
+         Column := Column + 1;
+         Pos := Pos + 1;
+      end loop;
+      if not Need_Sep then
+         Put (Into, """");
+      end if;
+   end Write_String;
+
    --  ------------------------------
    --  Generate the resource content definition.
    --  ------------------------------
@@ -300,7 +425,6 @@ package body Are.Generator.Ada2012 is
       function Get_Variable_Name (Key : in String) return String;
       procedure Write_Binary (Name    : in String;
                               Content : in Are.File_Info);
-      procedure Write_String (Content : in String);
       procedure Write_String (Name    : in String;
                               Content : in Are.File_Info);
       procedure Write_Lines (Name    : in String;
@@ -353,105 +477,6 @@ package body Are.Generator.Ada2012 is
          end if;
       end Write_Binary;
 
-      procedure Write_String (Content : in String) is
-         Need_Sep : Boolean := False;
-         Column   : Natural := 0;
-         C        : Character;
-         Pos      : Natural := Content'First;
-      begin
-         Column := 40;
-         Put (Into, """");
-         while Pos <= Content'Last loop
-            C := Content (Pos);
-            if Column > 80 then
-               if not Need_Sep then
-                  Put (Into, """");
-               end if;
-               New_Line (Into);
-               Put (Into, "      ");
-               Column := 6;
-               Need_Sep := True;
-            end if;
-            case C is
-               when ASCII.CR =>
-                  if not Need_Sep then
-                     Put (Into, """");
-                     Need_Sep := True;
-                     Column := Column + 1;
-                  end if;
-                  Put (Into, " & ASCII.CR");
-                  Column := Column + 11;
-
-               when ASCII.LF =>
-                  if not Need_Sep then
-                     Put (Into, """");
-                     Need_Sep := True;
-                     Column := Column + 1;
-                  end if;
-                  Put (Into, " & ASCII.LF");
-                  Column := Column + 11;
-
-               when ASCII.HT =>
-                  if not Need_Sep then
-                     Put (Into, """");
-                     Need_Sep := True;
-                     Column := Column + 1;
-                  end if;
-                  Put (Into, " & ASCII.HT");
-                  Column := Column + 11;
-
-               when '"' =>
-                  if Need_Sep then
-                     Put (Into, " & """);
-                     Need_Sep := False;
-                     Column := Column + 3;
-                  end if;
-                  Put (Into, """""");
-                  Column := Column + 1;
-
-               when ' ' | '!' | '#' .. '~' =>
-                  if Need_Sep then
-                     Put (Into, " & """);
-                     Need_Sep := False;
-                     Column := Column + 3;
-                  end if;
-                  Put (Into, C);
-
-               when Character'Val (192) .. Character'Val (255) =>
-                  if Need_Sep then
-                     Put (Into, " & """);
-                     Need_Sep := False;
-                     Column := Column + 3;
-                  end if;
-                  Put (Into, C);
-                  while Pos + 1 <= Content'Last loop
-                     C := Content (Pos + 1);
-                     exit when Character'Pos (C) < 128;
-                     exit when Character'Pos (C) >= 192;
-                     Pos := Pos + 1;
-                     Put (Into, C);
-                  end loop;
-
-               when others =>
-                  if not Need_Sep then
-                     Put (Into, """");
-                     Need_Sep := True;
-                     Column := Column + 1;
-                  end if;
-                  Put (Into, " & Character'Val (");
-                  Put (Into, Util.Strings.Image (Integer (Character'Pos (C))));
-                  Put (Into, ")");
-                  Column := Column + 22;
-
-            end case;
-            Column := Column + 1;
-            Pos := Pos + 1;
-         end loop;
-         if not Need_Sep then
-            Put (Into, """");
-         end if;
-      end Write_String;
-
       procedure Write_String (Name    : in String;
                               Content : in Are.File_Info) is
       begin
@@ -468,7 +493,7 @@ package body Are.Generator.Ada2012 is
                File_Content : String (First .. Last);
                for File_Content'Address use Content.Content.all'Address;
             begin
-               Write_String (File_Content);
+               Write_String (Into, File_Content);
             end;
          end if;
          Put_Line (Into, ";");
@@ -489,7 +514,7 @@ package body Are.Generator.Ada2012 is
             Put (Into, Util.Strings.Image (Line_Index));
             Set_Col (Into, 10);
             Put (Into, ": aliased constant String := ");
-            Write_String (Line);
+            Write_String (Into, Line);
             Put_Line (Into, ";");
          end loop;
          Put (Into, "   ");
@@ -669,15 +694,15 @@ package body Are.Generator.Ada2012 is
          Put (Into, "   K_");
          Put (Into, Util.Strings.Image (Index));
          Set_Col (Into, 20);
-         Put (Into, ": aliased constant String := """);
-         Put (Into, Key);
-         Put_Line (Into, """;");
+         Put (Into, ": aliased constant String := ");
+         Write_String (Into, Key);
+         Put_Line (Into, ";");
          Put (Into, "   M_");
          Put (Into, Util.Strings.Image (Index));
          Set_Col (Into, 20);
-         Put (Into, ": aliased constant String := """);
-         Put (Into, Value);
-         Put_Line (Into, """;");
+         Put (Into, ": aliased constant String := ");
+         Write_String (Into, Value);
+         Put_Line (Into, ";");
          Index := Index + 1;
       end Print_Mapping;
 
@@ -1013,6 +1038,7 @@ package body Are.Generator.Ada2012 is
             declare
                L : constant String := Lines.Element (I);
             begin
+               exit when I = Count - 1 and then L = "";
                Put_Line (File, L);
 
                if Util.Strings.Starts_With (L, "package ") then
