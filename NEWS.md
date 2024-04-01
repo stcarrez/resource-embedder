@@ -1,3 +1,7 @@
+## Version 1.5    - Under development
+- Feature #9: More control of generation through XML resource description
+- Feature #10: Improvement of Ada string formatting
+
 ## Version 1.4    - Feb 2024
 - Feature #8: Allow to define the index type of Name_Array
 - Feature #7: Emit a constant to indicate the number of embedded files
