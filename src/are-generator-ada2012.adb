@@ -770,8 +770,8 @@ package body Are.Generator.Ada2012 is
         := Context.No_Type_Declaration or else Resource.No_Type_Declaration;
       File         : Ada.Text_IO.File_Type;
       Has_Private  : Boolean := False;
-      Name_Access  : Boolean := Context.Name_Access or else Resource.Name_Access;
-      List_Access  : Boolean := Context.List_Access or else Resource.List_Access;
+      Name_Access  : constant Boolean := Context.Name_Access or else Resource.Name_Access;
+      List_Access  : constant Boolean := Context.List_Access or else Resource.List_Access;
    begin
       Log.Info ("Writing {0}", Path);
 
@@ -793,7 +793,7 @@ package body Are.Generator.Ada2012 is
                end if;
             end;
          end if;
-         if not Content_Only then
+         if not Content_Only and then Resource.Format /= R_MAP then
             Put_Line (File, "with Interfaces.C;");
          end if;
       end if;
@@ -805,10 +805,6 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, "   pragma Preelaborate;");
       end if;
       New_Line (File);
-      if Resource.Format = R_MAP then
-         List_Access := False;
-         Name_Access := False;
-      end if;
       if not No_Type_Declaration then
          if Resource.Format = R_BINARY then
             Put (File, "   type Content_Access is access constant ");
@@ -868,21 +864,26 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, "   Names : constant Name_Array;");
          New_Line (File);
       end if;
-      if Name_Access then
-         Put_Line (File, "   --  Returns the data stream with the given name or null.");
-         Put_Line (File, "   function Get_Content (Name : String) return");
-         Put (File, "      ");
-         Put (File, Type_Name);
-         Put_Line (File, ";");
-         New_Line (File);
-      end if;
       if Resource.Format = R_MAP then
+         if Name_Access then
+            Put_Line (File, "   Contents : constant Name_Array;");
+            New_Line (File);
+         end if;
          Put_Line (File, "   --  Returns the mapping that corresponds to the name or null.");
          Put_Line (File, "   function Get_Mapping (Name : String) return");
          Put (File, "      ");
          Put (File, Type_Name);
          Put_Line (File, ";");
          New_Line (File);
+      else
+         if Name_Access then
+            Put_Line (File, "   --  Returns the data stream with the given name or null.");
+            Put_Line (File, "   function Get_Content (Name : String) return");
+            Put (File, "      ");
+            Put (File, Type_Name);
+            Put_Line (File, ";");
+            New_Line (File);
+         end if;
       end if;
       if Var_Access then
          Put_Line (File, "private");
@@ -905,13 +906,22 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, " := (others => <>);");
          New_Line (File);
       end if;
-      if List_Access then
+      if List_Access and then (Resource.Format /= R_MAP or else not Name_Access) then
          if not Has_Private then
             Put_Line (File, "private");
             New_Line (File);
             Has_Private := True;
          end if;
          Generate_Keyword_Table (Generator, File);
+      end if;
+      if Resource.Format = R_MAP and then List_Access and then Name_Access then
+         if not Has_Private then
+            Put_Line (File, "private");
+            New_Line (File);
+            Has_Private := True;
+         end if;
+         Generate_Mapping_Table (Generator, File);
+         New_Line (File);
       end if;
       Put      (File, "end ");
       Put      (File, Name);
@@ -1068,10 +1078,12 @@ package body Are.Generator.Ada2012 is
       end if;
 
       if Resource.Format = R_MAP then
-         Put_Line (File, "   type Name_Array is array "
-                   & "(Natural range <>) of Content_Access;");
-         New_Line (File);
-         Generate_Mapping_Table (Generator, File);
+         if not Name_Access and then not List_Access then
+            Put_Line (File, "   type Name_Array is array "
+                      & "(Natural range <>) of Content_Access;");
+            New_Line (File);
+            Generate_Mapping_Table (Generator, File);
+         end if;
       end if;
 
       if Resource.Format /= R_MAP then
