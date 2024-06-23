@@ -898,7 +898,6 @@ package body Are.Generator.Ada2012 is
       then
          if not Has_Private then
             Put_Line (File, "private");
-            New_Line (File);
             Has_Private := True;
          end if;
          Put (File, "   Null_Content : constant ");
