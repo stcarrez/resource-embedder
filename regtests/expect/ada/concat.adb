@@ -191,6 +191,7 @@ package body Concat is
       K_0'Access, K_1'Access);
 
    type Content_List_Array is array (Natural range <>) of Content_Access;
+
    Contents : constant Content_List_Array := (
       C_0'Access, C_1'Access);
 

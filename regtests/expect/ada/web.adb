@@ -4461,6 +4461,7 @@ package body web is
       K_56'Access, K_57'Access);
 
    type Content_List_Array is array (Natural range <>) of web_content;
+
    Contents : constant Content_List_Array := (
       C_0'Access, C_1'Access, C_2'Access, C_3'Access, C_4'Access,
       C_5'Access, C_6'Access, C_7'Access, C_8'Access, C_9'Access,
