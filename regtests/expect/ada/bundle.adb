@@ -56,7 +56,6 @@ package body Bundle is
    type Name_Access is access constant String;
    type Name_Array is array (Natural range <>) of Name_Access;
 
-
    K_0             : aliased constant String := "msg";
    K_1             : aliased constant String := "msg_fr";
 

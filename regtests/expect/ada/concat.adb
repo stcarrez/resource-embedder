@@ -184,7 +184,6 @@ package body Concat is
    type Name_Access is access constant String;
    type Name_Array is array (Natural range <>) of Name_Access;
 
-
    K_0             : aliased constant String := "css/css/main.css";
    K_1             : aliased constant String := "js/js/main.js";
 
