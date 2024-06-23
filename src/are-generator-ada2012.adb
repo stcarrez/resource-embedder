@@ -1061,7 +1061,7 @@ package body Are.Generator.Ada2012 is
          Put_Line (File, " is");
       end if;
 
-      if not Var_Access then
+      if not Var_Access and then Resource.Format /= R_MAP then
          New_Line (File);
          Generate_Resource_Contents (Resource, File, False,
                                      Content_Type, "", Context);
