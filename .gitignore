@@ -50,7 +50,7 @@ examples/c-lines/show-script
 examples/c-lines/src/scripts.c
 examples/c-lines/src/scripts.h
 b~*.ad?
-**/are-generator
+**/are-generator/
 regtests/files/test-ada-*/resource*.ad?
 debian/.debhelper/
 debian/autoreconf.after
