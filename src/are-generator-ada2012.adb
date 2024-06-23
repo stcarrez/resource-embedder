@@ -1086,11 +1086,14 @@ package body Are.Generator.Ada2012 is
       end if;
 
       if Resource.Format /= R_MAP then
-         New_Line (File);
+         if Var_Access or else (Name_Access and then not List_Access) then
+            New_Line (File);
+         end if;
          Put (File, "   type Content_List_Array is array (Natural range <>) of ");
          Put (File, Type_Name);
          Put_Line (File, ";");
 
+         New_Line (File);
          Generate_Contents_Array;
       end if;
 
