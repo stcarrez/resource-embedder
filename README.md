@@ -58,16 +58,9 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
-## Version 1.5    - Under development
+## Version 1.5    - Jun 2024
 - Feature #9: More control of generation through XML resource description
 - Feature #10: Improvement of Ada string formatting
-
-## Version 1.4    - Feb 2024
-- Feature #8: Allow to define the index type of Name_Array
-- Feature #7: Emit a constant to indicate the number of embedded files
-- Feature #6: New embedder for simple mapping generation
-- Feature #5: Need customisation of starting index in binary embedder
-- Feature #4: Need ability to insert custom headers in generated files
 
 [List all versions](https://gitlab.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 
@@ -231,7 +224,7 @@ make install
 
 # Debian Packages for x86_64
 
-You can install ARE by using the Debian 10 and Ubuntu 20.04 or 18.04 packages.
+You can install ARE by using the Debian 12 and Ubuntu 22.04 packages.
 First, setup to accept the signed packages:
 
 ```

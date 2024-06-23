@@ -225,7 +225,7 @@ By default an empty line is discarded.  This behavior can be changed by
 using the `keep-empty-lines` attribute and setting the value to `true`.
 
 
-## Controlling the generation
+## Other control for the generation
 
 The generation can be controlled with several attributes defined on the
 `resource` XML element.
