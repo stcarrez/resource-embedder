@@ -1077,6 +1077,7 @@ package body Are.Generator.Ada2012 is
 
       if Resource.Format = R_MAP then
          if not Name_Access and then not List_Access then
+            New_Line (File);
             Put_Line (File, "   type Name_Array is array "
                       & "(Natural range <>) of Content_Access;");
             New_Line (File);
