@@ -908,7 +908,6 @@ package body Are.Generator.Ada2012 is
       if List_Access and then (Resource.Format /= R_MAP or else not Name_Access) then
          if not Has_Private then
             Put_Line (File, "private");
-            New_Line (File);
             Has_Private := True;
          end if;
          Generate_Keyword_Table (Generator, File);
