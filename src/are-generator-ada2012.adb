@@ -1062,6 +1062,7 @@ package body Are.Generator.Ada2012 is
       end if;
 
       if not Var_Access then
+         New_Line (File);
          Generate_Resource_Contents (Resource, File, False,
                                      Content_Type, "", Context);
       end if;
@@ -1072,7 +1073,6 @@ package body Are.Generator.Ada2012 is
          end if;
          Put_Line (File, "   type Name_Array is array "
                    & "(Natural range <>) of Name_Access;");
-         New_Line (File);
          Generate_Keyword_Table (Generator, File);
       end if;
 
