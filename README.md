@@ -140,12 +140,7 @@ More specific examples show how to make specific transformations on the files be
 # Building ARE
 
 To build the ARE you will need the GNAT Ada compiler, either
-the FSF version available in Debian, FreeBSD systems, NetBSD or the
-AdaCore GNAT Community 2021 edition.  Because there exists different versions of
-the compiler, you may have to adapt some of the commands proposed below for
-the installation.
-
-## Build with Alire
+the FSF version available in Debian, FreeBSD systems, NetBSD.
 
 You can build ARE by using the Alire package manager.  Just type:
 
@@ -159,16 +154,16 @@ alr build
 
 Install the following packages:
 ```
-sudo apt install -y make git
-sudo apt install -y gnat gprbuild libxmlada-dom10-dev
+sudo apt install -y make git alire
+sudo apt install -y gnat gprbuild
 ```
 
-### FreeBSD 13
+### FreeBSD 14
 
 Install the following packages:
 
 ```
-pkg install gmake gnat12 gprbuild git
+pkg install gmake gnat13 gprbuild git alire
 ```
 
 ### Windows
@@ -186,20 +181,11 @@ pacman -S base-devel --needed
 
 ## Getting the sources
 
-The project uses a sub-module to help you in the integration and build
-process.  You should checkout the project with the following commands:
+You should checkout the project with the following commands:
 
 ```
-git clone --recursive https://gitlab.com/stcarrez/resource-embedder.git
+git clone https://gitlab.com/stcarrez/resource-embedder.git
 cd resource-embedder
-```
-
-## Configuration (optional)
-
-Running the `configure` script is optional
-To configure the resource embedder, use the following command:
-```
-./configure
 ```
 
 ## Build
@@ -208,12 +194,6 @@ To build the resource embedder, run the command:
 
 ```
 make
-```
-
-If you have an old GNAT compiler (gcc < 8) you may build with:
-
-```
-make GNAT_SWITCH=NO_CALLBACK
 ```
 
 And install it:

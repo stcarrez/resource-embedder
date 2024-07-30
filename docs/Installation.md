@@ -2,45 +2,29 @@
 
 This chapter explains how to build and install the tool.
 
-## Using Alire
-
-The `Advanced Resource Embedder` is available as an Alire crates to simplify the installation
-and setup your project.  Run the following commands to setup your project to use the library:
-
-```
-alr index --update-all
-alr with are
-```
-
-## Without Alire
-
-### Before Building
+## Before Building
 
 To build `Advanced Resource Embedder` you will need the GNAT Ada compiler, either
-the FSF version available in Debian, FreeBSD systems NetBSD or the
-AdaCore GNAT Community 2021 edition.  Because there exists different versions of
-the compiler, you may have to adapt some of the commands proposed below for
-the installation.
+the FSF version available in Debian, FreeBSD systems NetBSD.
 
-#### Ubuntu 22.04
-
+### Ubuntu 22.04
 
 Install the following packages:
 
 ```
-sudo apt install -y make git
-sudo apt install -y gnat-10 gprbuild libxmlada-dom10-dev
+sudo apt install -y make git alire
+sudo apt install -y gnat gprbuild
 ```
 
-#### FreeBSD 13
+### FreeBSD 14
 
 Install the following packages:
 
 ```
-pkg install gmake gnat12 gprbuild git
+pkg install gmake gnat13 gprbuild git alire
 ```
 
-#### Windows
+### Windows
 
 Get the Ada compiler from [AdaCore Download](https://www.adacore.com/download)
 site and install.
@@ -53,50 +37,31 @@ pacman -S make
 pacman -S base-devel --needed
 ```
 
-### Getting the sources
+## Getting the sources
 
-The project uses a sub-module to help you in the integration and build
-process.  You should checkout the project with the following commands:
+You should checkout the project with the following commands:
 
 ```
-git clone --recursive https://gitlab.com/stcarrez/resource-embedder.git
+git clone https://gitlab.com/stcarrez/resource-embedder.git
 cd resource-embedder
 ```
 
-### Configuration (optional)
+## Using Alire
 
-Running the `configure` script is optional and is useful if the pre-defined
-default configuration must be changed.
+The `Advanced Resource Embedder` is available as an Alire crate to simplify the installation
+and setup your project.  Run the following commands to setup your project to use the library:
 
-The `configure` script is used to detect the build environment,
-setup specific build configuration.
-If some component is missing, the
-`configure` script will report an error or it will disable the feature.
-The `configure` script provides several standard options
-and you may use:
-
-  * `--enable-distrib` to build for a distribution and strip symbols,
-  * `--disable-distrib` to build with debugging support,
-  * `--enable-coverage` to build with code coverage support (`-fprofile-arcs -ftest-coverage`),
-  * `--prefix=DIR` to control the installation directory,
-  * `--help` to get a detailed list of supported options.
-
-In most cases you will configure with the following command:
 ```
-./configure
+alr index --update-all
+alr with are
 ```
 
 ### Build
 
 After configuration is successful, you can build the library by running:
+
 ```
 make
-```
-
-If you have an old GNAT compiler (gcc < 8) you may build with:
-
-```
-make GNAT_SWITCH=NO_CALLBACK
 ```
 
 After building, it is good practice to run the unit tests before installing
@@ -106,6 +71,7 @@ make test
 ```
 
 ### Installation
+
 The installation is done by running the `install` target:
 
 ```
