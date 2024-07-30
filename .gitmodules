@@ -1,6 +1,0 @@
-[submodule "ada-util"]
-	path = ada-util
-	url = https://gitlab.com/stcarrez/ada-util.git
-[submodule "ada-el"]
-	path = ada-el
-	url = https://gitlab.com/stcarrez/ada-el.git
