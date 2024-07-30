@@ -5,8 +5,8 @@ abstract project Are_Config is
 
    type Library_Type_Type is ("relocatable", "static", "static-pic");
 
-   type Build_Type is ("distrib", "debug", "optimize", "profile", "coverage");
-   Mode : Build_Type := external ("ARE_BUILD", "debug");
+   type Build_Type is ("distrib", "Production", "Debug", "debug", "optimize", "profile", "coverage");
+   Mode : Build_Type := external ("ARE_BUILD", "Debug");
 
    Processors := External ("PROCESSORS", "1");
 
@@ -18,10 +18,10 @@ abstract project Are_Config is
       warnings := ("-gnatwua");
       defaults := ("-gnat2012");
       case Mode is
-         when "distrib" =>
+         when "distrib" | "Production" =>
             for Default_Switches ("Ada") use defaults & ("-O2", "-gnatafno", "-gnatVa", "-gnatwa");
 
-         when "debug" =>
+         when "debug" | "Debug" =>
             for Default_Switches ("Ada") use defaults & warnings
                & ("-g", "-gnata", "-gnatVaMI", "-gnaty3abcefhiklmnprstxM99OABu");
 
