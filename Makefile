@@ -1,42 +1,31 @@
 NAME=are
+VERSION=1.5.1
+prefix = /usr/local
+exec_prefix = ${prefix}
 
 -include Makefile.conf
 
-DIST_DIRS=ada-util ada-el
+ALIRE=alr --non-interactive
+BUILD_COMMAND=$(ALIRE) build -- -XARE_BUILD=$(BUILD)
+
 DIST_DIR=resource-embedder-$(VERSION)
 DIST_FILE=$(DIST_DIR).tar.gz
-
-ifeq (${OS},Windows_NT)
-UTIL_OS=win64
-else
-
-ARE_SYSTEM := $(shell uname -sm | sed "s- -_-g")
-
-ifeq ($(ARE_SYSTEM),Linux_x86_64)
-UTIL_OS=linux64
-
-else ifeq ($(ARE_SYSTEM),Linux_i686)
-UTIL_OS=linux32
-
-else ifeq ($(ARE_SYSTEM),Darwin_x86_64)
-UTIL_OS=macos64
-
-endif
-
-endif
 
 GNAT_SWITCH?=HAS_CALLBACK
 
 STATIC_MAKE_ARGS = -XARE_BUILD=$(BUILD) $(MAKE_ARGS) -XARE_LIBRARY_TYPE=static -XUTIL_OS=$(UTIL_OS) -XARE_SWITCH=$(GNAT_SWITCH)
 
+build::
+	$(BUILD_COMMAND)
+
+build-test::
+	cd regtests && $(BUILD_COMMAND)
+
 include Makefile.defaults
 
 # Build and run the unit tests
-test:	build
+test:	build-test
 	bin/are_harness -xml are-aunit.xml
-
-
-$(eval $(call ada_program,$(NAME)))
 
 install:: install-data
 
@@ -74,9 +63,4 @@ $(eval $(call pandoc_build,are-book,$(ARE_DOC),\
 dist::
 	rm -f $(DIST_FILE)
 	git archive -o $(DIST_DIR).tar --prefix=$(DIST_DIR)/ HEAD
-	for i in $(DIST_DIRS); do \
-	   cd $$i && git archive -o ../$$i.tar --prefix=$(DIST_DIR)/$$i/ HEAD ; \
-           cd .. && tar --concatenate --file=$(DIST_DIR).tar $$i.tar ; \
-           rm -f $$i.tar; \
-        done
 	gzip $(DIST_DIR).tar
