@@ -11,9 +11,8 @@ BUILD_COMMAND=$(ALIRE) build -- -XARE_BUILD=$(BUILD)
 DIST_DIR=resource-embedder-$(VERSION)
 DIST_FILE=$(DIST_DIR).tar.gz
 
-GNAT_SWITCH?=HAS_CALLBACK
-
-STATIC_MAKE_ARGS = -XARE_BUILD=$(BUILD) $(MAKE_ARGS) -XARE_LIBRARY_TYPE=static -XUTIL_OS=$(UTIL_OS) -XARE_SWITCH=$(GNAT_SWITCH)
+PANDOC := $(shell which pandoc)
+DYNAMO := $(shell which dynamo)
 
 build::
 	$(BUILD_COMMAND)
@@ -59,8 +58,3 @@ HTML_OPTIONS=-f markdown -o are-book.html --listings --number-sections --toc --c
 $(eval $(call pandoc_build,are-book,$(ARE_DOC),\
 	cp docs/Using.md docs/Are_Using.md; \
 	sed -e s/^\\\#\\\#/\\\#\\\#\\\#/ docs/are.md >> docs/Are_Using.md))
-
-dist::
-	rm -f $(DIST_FILE)
-	git archive -o $(DIST_DIR).tar --prefix=$(DIST_DIR)/ HEAD
-	gzip $(DIST_DIR).tar
