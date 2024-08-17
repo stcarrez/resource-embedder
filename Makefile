@@ -13,10 +13,10 @@ PANDOC := $(shell which pandoc)
 DYNAMO := $(shell which dynamo)
 
 build::
-	$(BUILD_COMMAND)
+	$(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
 
 build-test::
-	cd regtests && $(BUILD_COMMAND)
+	cd regtests && $(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
 
 include Makefile.defaults
 
