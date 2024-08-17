@@ -1,15 +1,13 @@
 NAME=are
 VERSION=1.5.1
-prefix = /usr/local
+DIST_DIR=resource-embedder-$(VERSION)
+DIST_FILE=$(DIST_DIR).tar.gz
+
+MAKE_ARGS += -XARE_BUILD=$(BUILD)
+
 exec_prefix = ${prefix}
 
 -include Makefile.conf
-
-ALIRE=alr --non-interactive
-BUILD_COMMAND=$(ALIRE) build -- -XARE_BUILD=$(BUILD)
-
-DIST_DIR=resource-embedder-$(VERSION)
-DIST_FILE=$(DIST_DIR).tar.gz
 
 PANDOC := $(shell which pandoc)
 DYNAMO := $(shell which dynamo)

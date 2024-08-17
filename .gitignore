@@ -2,7 +2,6 @@
 #*
 *.ali
 *.log
-config.status
 Makefile.conf
 *.cproject
 *.gb_project
@@ -12,13 +11,11 @@ Makefile.conf
 *.o
 ChangeLog
 .settings
-configure.lineno
 gnatinspect.db*
 clang_ref_cache.db
 gpsauto.cgpr
 are-tests.xml
 are-aunit.xml
-autom4te.cache
 bin
 lib/
 obj/
