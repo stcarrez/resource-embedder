@@ -1,5 +1,6 @@
 NAME=are
 VERSION=1.5.1
+
 DIST_DIR=resource-embedder-$(VERSION)
 DIST_FILE=$(DIST_DIR).tar.gz
 
@@ -8,9 +9,6 @@ MAKE_ARGS += -XARE_BUILD=$(BUILD)
 exec_prefix = ${prefix}
 
 -include Makefile.conf
-
-PANDOC := $(shell which pandoc)
-DYNAMO := $(shell which dynamo)
 
 build::
 	$(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
