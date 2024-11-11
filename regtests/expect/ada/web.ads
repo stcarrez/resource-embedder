@@ -1,4 +1,4 @@
---  Advanced Resource Embedder 1.5.0
+--  Advanced Resource Embedder 1.5.1
 with Ada.Streams;
 package web is
 

@@ -44,7 +44,7 @@ package body Are.Generator is
    --  ------------------------------
    function Get_Title return String is
    begin
-      return "Advanced Resource Embedder 1.5.0";
+      return "Advanced Resource Embedder 1.5.1";
    end Get_Title;
 
    --  ------------------------------
