@@ -50,7 +50,7 @@ macos = true
 '...' = false
 
 [[depends-on]]
-xmlada = "~23.0.0"
+xmlada = "^23.0.0"
 utilada = "^2.6.0"
 elada = "^1.8.6"
 
