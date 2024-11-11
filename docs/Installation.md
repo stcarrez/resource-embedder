@@ -4,10 +4,10 @@ This chapter explains how to build and install the tool.
 
 ## Before Building
 
-To build `Advanced Resource Embedder` you will need the GNAT Ada compiler, either
-the FSF version available in Debian, FreeBSD systems NetBSD.
+To build `Advanced Resource Embedder` you will need the GNAT Ada compiler as well
+as the [Alire](https://alire.ada.dev/) package manager.
 
-### Ubuntu 22.04
+### Ubuntu 24.04
 
 Install the following packages:
 
@@ -26,8 +26,7 @@ pkg install gmake gnat13 gprbuild git alire
 
 ### Windows
 
-Get the Ada compiler from [AdaCore Download](https://www.adacore.com/download)
-site and install.
+Get the Alire package manager [Alire](https://alire.ada.dev/) site and install.
 
 Install the following packages:
 
@@ -63,6 +62,8 @@ After configuration is successful, you can build the library by running:
 ```
 make
 ```
+
+Note that on FreeBSD and NetBSD, you must use `gmake` instead of `make`.
 
 After building, it is good practice to run the unit tests before installing
 the library.  The unit tests are built and executed using:
