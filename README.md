@@ -171,8 +171,7 @@ pkg install gmake gnat13 gprbuild git alire
 
 ### Windows
 
-Get the Ada compiler from [AdaCore Download](https://www.adacore.com/download)
-site and install.
+Get the Alire package manager [Alire](https://alire.ada.dev/) site and install.
 
 Install the following packages:
 
