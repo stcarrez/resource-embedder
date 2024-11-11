@@ -1,3 +1,6 @@
+## Version 1.5.1  - Nov 2024
+- Cleanup build environment and drop configure scripts
+
 ## Version 1.5    - Jun 2024
 - Feature #9: More control of generation through XML resource description
 - Feature #10: Improvement of Ada string formatting

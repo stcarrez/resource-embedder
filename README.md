@@ -5,7 +5,7 @@
 [![Test Status](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/tests.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder/xunits)
 [![Coverage](https://img.shields.io/endpoint?url=https://porion.vacs.fr/porion/api/v1/projects/resource-embedder/badges/coverage.json)](https://porion.vacs.fr/porion/projects/view/resource-embedder)
 [![Documentation Status](https://readthedocs.org/projects/resource-embedder/badge/?version=latest)](https://resource-embedder.readthedocs.io/en/latest/?badge=latest)
-[![Download](https://img.shields.io/badge/download-1.5.0-brightgreen.svg)](http://download.vacs.fr/resource-embedder/resource-embedder-1.5.0.tar.gz)
+[![Download](https://img.shields.io/badge/download-1.5.1-brightgreen.svg)](http://download.vacs.fr/resource-embedder/resource-embedder-1.5.1.tar.gz)
 [![License](http://img.shields.io/badge/license-APACHE2-blue.svg)](LICENSE)
 [![semver](https://img.shields.io/badge/semver-2.0.0-blue.svg?cacheSeconds=2592000)]()
 
@@ -58,9 +58,8 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
-## Version 1.5    - Jun 2024
-- Feature #9: More control of generation through XML resource description
-- Feature #10: Improvement of Ada string formatting
+## Version 1.5.1  - Nov 2024
+- Cleanup build environment and drop configure scripts
 
 [List all versions](https://gitlab.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 
@@ -150,9 +149,13 @@ alr build
 
 ## Development Host Installation
 
-### Ubuntu 22.04
+To build the ARE you will need the GNAT Ada compiler as well
+as the [Alire](https://alire.ada.dev/) package manager.
+
+### Ubuntu 24.04
 
 Install the following packages:
+
 ```
 sudo apt install -y make git alire
 sudo apt install -y gnat gprbuild
@@ -196,6 +199,8 @@ To build the resource embedder, run the command:
 make
 ```
 
+Note that on FreeBSD and NetBSD, you must use `gmake` instead of `make`.
+
 And install it:
 
 ```
@@ -204,7 +209,7 @@ make install
 
 # Debian Packages for x86_64
 
-You can install ARE by using the Debian 12 and Ubuntu 22.04 packages.
+You can install ARE by using the Debian 12 and Ubuntu 24.04 packages.
 First, setup to accept the signed packages:
 
 ```
@@ -213,9 +218,9 @@ wget -O - https://apt.vacs.fr/apt.vacs.fr.gpg.key | sudo tee /etc/apt/trusted.gp
 
 and choose one of the `echo` command according to your Linux distribution:
 
-Ubuntu 22.04
+Ubuntu 24.04
 ```
-echo "deb https://apt.vacs.fr/ubuntu-jammy jammy main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
+echo "deb https://apt.vacs.fr/ubuntu-noble noble main" | sudo tee -a /etc/apt/sources.list.d/vacs.list
 ```
 
 Debian 12
