@@ -3,11 +3,10 @@ Priority: extra
 Section: devel
 Maintainer: Stephane Carrez <Stephane.Carrez@gmail.com>
 Build-Depends: debhelper (>= 10), autotools-dev,
- gnat, gnat-9,
+ gnat,
 # This line is parsed by debian/rules.
  gprbuild (>= 2015-2),
  pkg-config,
- libxmlada-dom9-dev,
  libxml2-utils,
 # pandoc requires texlive-fonts-extra for PDF
  pandoc, texlive-fonts-extra
