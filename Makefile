@@ -54,3 +54,5 @@ HTML_OPTIONS=-f markdown -o are-book.html --listings --number-sections --toc --c
 $(eval $(call pandoc_build,are-book,$(ARE_DOC),\
 	cp docs/Using.md docs/Are_Using.md; \
 	sed -e s/^\\\#\\\#/\\\#\\\#\\\#/ docs/are.md >> docs/Are_Using.md))
+
+$(eval $(call alire_publish,.,ar/are,are-$(VERSION).toml))
