@@ -212,7 +212,7 @@ You can install ARE by using the Debian 12 and Ubuntu 24.04 packages.
 First, setup to accept the signed packages:
 
 ```
-wget -O - https://apt.vacs.fr/apt.vacs.fr.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt-vacs-fr.asc
+wget -O - https://apt.vacs.fr/apt.vacs.fr.gpg.asc | sudo tee /etc/apt/trusted.gpg.d/apt-vacs-fr.asc
 ```
 
 and choose one of the `echo` command according to your Linux distribution:
