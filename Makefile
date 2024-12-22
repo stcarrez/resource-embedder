@@ -20,7 +20,7 @@ include Makefile.defaults
 
 # Build and run the unit tests
 test:	build-test
-	bin/are_harness -xml are-aunit.xml
+	$(EXEC) bin/are_harness -xml are-aunit.xml
 
 install:: install-data
 

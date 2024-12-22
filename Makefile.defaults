@@ -33,9 +33,11 @@ DEFAULT_ADA_PROJECT_PATH?=$(SRC_ROOT):$(ADA_PROJECT_PATH)
 ifeq ($(HAVE_ALIRE),yes)
 BUILD_COMMAND?=$(ALR) build --
 GNATPREP?=$(ALR) exec -- gnatprep
+EXEC?=$(shell $(ALR) printenv --unix|grep 'export PATH'|sed -e s,export,env,)
 else
 BUILD_COMMAND?=env ADA_PROJECT_PATH="$(DEFAULT_ADA_PROJECT_PATH)" $(GPRBUILD)
 GNATPREP?=gnatprep
+EXEC?=
 endif
 
 ifeq (${OS},Windows_NT)
