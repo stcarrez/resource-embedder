@@ -58,8 +58,8 @@ struct config_content {
 extern const struct config_content *config_get_content(const char* name);
 ```
 
-## Version 1.5.1  - Nov 2024
-- Cleanup build environment and drop configure scripts
+## Version 1.5.2  - Jun 2026
+- Fix compilation warning with gcc 15 for Ada Calendar To_Unix_Time
 
 [List all versions](https://gitlab.com/stcarrez/resource-embedder/blob/master/NEWS.md)
 

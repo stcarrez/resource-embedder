@@ -1,3 +1,6 @@
+## Version 1.5.2  - Jun 2026
+- Fix compilation warning with gcc 15 for Ada Calendar To_Unix_Time
+
 ## Version 1.5.1  - Nov 2024
 - Cleanup build environment and drop configure scripts
 
