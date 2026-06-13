@@ -1,12 +1,13 @@
 -----------------------------------------------------------------------
 --  are-generator -- Advanced Resource Embedder Generator
---  Copyright (C) 2021, 2022, 2023 Stephane Carrez
+--  Copyright (C) 2021, 2022, 2023, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 with Ada.Directories;
 with Ada.Command_Line;
 
+with Util.Dates;
 with Are.Generator.Ada2012;
 with Are.Generator.C;
 with Are.Generator.Go;
@@ -279,5 +280,14 @@ package body Are.Generator is
          Ada.Text_IO.Put_Line (File, Line);
       end loop;
    end Put_Lines;
+
+   function To_Unix_Time_Image (Time : in Ada.Calendar.Time) return String is
+      use type Util.Dates.Nanosecond_Type;
+
+      Sec : constant Util.Dates.Nanosecond_Type
+        := Util.Dates.To_Nanoseconds (Time) / 1_000_000_000;
+   begin
+      return Sec'Image;
+   end To_Unix_Time_Image;
 
 end Are.Generator;

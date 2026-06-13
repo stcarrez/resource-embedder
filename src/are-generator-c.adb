@@ -1,13 +1,10 @@
 -----------------------------------------------------------------------
 --  are-generator-c -- Generator for C/C++
---  Copyright (C) 2021, 2023, 2024 Stephane Carrez
+--  Copyright (C) 2021, 2023, 2024, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 with Ada.Text_IO;
-with Ada.Calendar.Conversions;
-
-with Interfaces.C;
 
 with Util.Log.Loggers;
 
@@ -615,8 +612,6 @@ package body Are.Generator.C is
                Index := Index + 1;
                Put (File, ",");
                declare
-                  use Ada.Calendar.Conversions;
-
                   Data : constant File_Info := File_Maps.Element (Content);
                begin
                   if Resource.Format = R_LINES then
@@ -624,7 +619,7 @@ package body Are.Generator.C is
                   else
                      Put (File, Ada.Directories.File_Size'Image (Data.Length));
                      Put (File, ",");
-                     Put (File, Interfaces.C.long'Image (To_Unix_Time (Data.Modtime)));
+                     Put (File, To_Unix_Time_Image (Data.Modtime));
                   end if;
                end;
                Put (File, " }");

@@ -1,13 +1,10 @@
 -----------------------------------------------------------------------
 --  are-generator-go -- Generator for Go
---  Copyright (C) 2021, 2024 Stephane Carrez
+--  Copyright (C) 2021, 2024, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
 with Ada.Text_IO;
-with Ada.Calendar.Conversions;
-
-with Interfaces.C;
 
 with Util.Log.Loggers;
 with Util.Strings.Transforms;
@@ -214,8 +211,6 @@ package body Are.Generator.Go is
          for Content in Resource.Files.Iterate loop
             Put (File, " { []byte(""");
             declare
-               use Ada.Calendar.Conversions;
-
                Data : constant File_Info := File_Maps.Element (Content);
             begin
                Write_Content (File, Data.Content);
@@ -223,7 +218,7 @@ package body Are.Generator.Go is
                Put (File, "   ");
                Put (File, Ada.Directories.File_Size'Image (Data.Length));
                Put (File, ", ");
-               Put (File, Interfaces.C.long'Image (To_Unix_Time (Data.Modtime)));
+               Put (File, To_Unix_Time_Image (Data.Modtime));
             end;
             Put_Line (File, ", 0,");
             Put_Line (File, " }, ");

@@ -1,12 +1,9 @@
 -----------------------------------------------------------------------
 --  are-generator-ada2012 -- Generator for Ada
---  Copyright (C) 2021, 2023, 2024 Stephane Carrez
+--  Copyright (C) 2021, 2023, 2024, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
-with Ada.Calendar.Conversions;
-with Interfaces.C;
-
 with Util.Files;
 with Util.Log.Loggers;
 with GNAT.Perfect_Hash_Generators;
@@ -990,12 +987,10 @@ package body Are.Generator.Ada2012 is
             Put (File, "'Access");
             if not Content_Only then
                declare
-                  use Ada.Calendar.Conversions;
-
                   Data : constant File_Info := File_Maps.Element (Content);
                begin
                   Put (File, ",");
-                  Put (File, Interfaces.C.long'Image (To_Unix_Time (Data.Modtime)));
+                  Put (File, To_Unix_Time_Image (Data.Modtime));
                   Put (File, ", FILE_RAW");
                end;
                Put (File, ")");

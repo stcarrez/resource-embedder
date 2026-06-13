@@ -1,6 +1,6 @@
 description = "Advanced Resource Embedder"
 name = "are"
-version = "1.5.1"
+version = "1.5.2"
 authors = ["Stephane.Carrez@gmail.com"]
 licenses = "Apache-2.0"
 maintainers = ["Stephane.Carrez@gmail.com"]
@@ -51,7 +51,7 @@ macos = true
 
 [[depends-on]]
 xmlada = "^23.0.0"
-utilada = "^2.6.0"
+utilada = "^2.9.0"
 elada = "^1.8.6"
 
 [gpr-externals]

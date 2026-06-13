@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 --  are-generator -- Advanced Resource Embedder Generator
---  Copyright (C) 2021, 2023 Stephane Carrez
+--  Copyright (C) 2021, 2023, 2026 Stephane Carrez
 --  Written by Stephane Carrez (Stephane.Carrez@gmail.com)
 --  SPDX-License-Identifier: Apache-2.0
 -----------------------------------------------------------------------
@@ -49,5 +49,7 @@ private
    --  Write a list of lines in the output file.
    procedure Put_Lines (File : in out Ada.Text_IO.File_Type;
                         Lines : in Util.Strings.Vectors.Vector);
+
+   function To_Unix_Time_Image (Time : in Ada.Calendar.Time) return String;
 
 end Are.Generator;
