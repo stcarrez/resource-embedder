@@ -1,4 +1,4 @@
---  Advanced Resource Embedder 1.5.1
+--  Advanced Resource Embedder 1.5.2
 --  Header test line 1
 --  Header test line 2
 --  Header spec test line 3
