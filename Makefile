@@ -1,5 +1,5 @@
 NAME=are
-VERSION=1.5.1
+VERSION=1.5.2
 
 DIST_DIR=resource-embedder-$(VERSION)
 DIST_FILE=$(DIST_DIR).tar.gz
@@ -9,6 +9,17 @@ MAKE_ARGS += -XARE_BUILD=$(BUILD)
 exec_prefix = ${prefix}
 
 -include Makefile.conf
+
+UTIL_OS?=
+UTIL_TIME_64?=yes
+
+ifneq ($(UTIL_OS),)
+MAKE_ARGS += -XUTIL_OS=$(UTIL_OS)
+endif
+
+ifneq ($(UTIL_TIME_64),yes)
+MAKE_ARGS += -XUTIL_TIME_64=$(UTIL_TIME_64)
+endif
 
 build::
 	$(BUILD_COMMAND) $(GPRFLAGS) $(MAKE_ARGS)
@@ -56,3 +67,7 @@ $(eval $(call pandoc_build,are-book,$(ARE_DOC),\
 	sed -e s/^\\\#\\\#/\\\#\\\#\\\#/ docs/are.md >> docs/Are_Using.md))
 
 $(eval $(call alire_publish,.,ar/are,are-$(VERSION).toml))
+
+setup::
+	echo "UTIL_OS=$(UTIL_OS)" >> Makefile.conf
+	echo "UTIL_TIME_64=$(UTIL_TIME_64)" >> Makefile.conf
